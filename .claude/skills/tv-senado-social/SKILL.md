@@ -35,11 +35,11 @@ Se não for possível identificar o modo, pergunte: "Você quer que eu melhore u
 ### Estrutura YouTube / Threads / Bluesky
 
 ```
-Título: Ao vivo: [Sigla] [verbo] [assunto principal] – [dd/mm/aa]
+Título: Ao vivo: [Sigla] [verbo] [assunto principal] – [d/m/aa]
 
-Descrição: [Nome por extenso (Sigla)] [realiza/analisa/debate/vota] o [PL X.XXX/XXXX], que [explicação]. [Contexto adicional da pauta.] [Relator, se relevante: O relator é o senador Nome (Partido-UF).]
+Descrição: [Nome por extenso (Sigla)] realiza [tipo de sessão], nesta [dia-semana] (dd), às Xh, para [debater/votar/analisar] [assunto/lei/PL com número]. [Uma ou duas frases sobre o que a sessão aborda — temas específicos, ângulos do debate.] [Requerentes, se houver: A audiência foi requerida pelo(s) senador(es) Nome e Nome.] [Para interativas: O cidadão pode participar pelo portal e-Cidadania (senado.leg.br/ecidadania) ou pelo telefone 0800 061 22 11.]
 
-Tags: TV Senado, Senado Federal, [sigla], [tema], [número do PL sem formatação], [nome da comissão por extenso], [nomes relevantes]
+Tags: TV Senado, Senado Federal, [sigla], [tema principal], [número do projeto sem formatação], [nome da comissão por extenso], [nomes relevantes]
 ```
 
 ### Estrutura X / Bluesky (versão curta)
@@ -58,15 +58,17 @@ Ao vivo: [versão ultra-resumida — máximo 8 palavras]
 
 ### Regras específicas para ao vivo
 
-- Título no YouTube **sempre começa com "Ao vivo:"** e **termina com " – dd/mm/aa"**
+- Título no YouTube **sempre começa com "Ao vivo:"** e **termina com " – d/m/aa"** (sem zero à esquerda no dia e mês)
 - No X/Bluesky, "Ao vivo:" vai na **descrição**, não no título
-- Nome por extenso da comissão com sigla entre parênteses na primeira menção
+- Nome por extenso da comissão com sigla entre parênteses na primeira menção — use o nome oficial completo (ex: "Comissão de Serviços de Infraestrutura", não "Comissão de Infraestrutura")
+- Incluir data e horário na descrição: "nesta terça-feira (16), às 14h"
 - Projetos com ponto nos milhares no texto corrido: "PL 2.810/2025"
 - Projetos em hashtags no X: sem ponto, underscore no lugar da barra: "#PL2810_2025"
 - Quando a pauta tem múltiplos projetos: citar os principais e usar "A pauta inclui ainda..."
 - Plenário deliberativo: listar os projetos em pauta
 - Plenário não deliberativo: "Sessão do Plenário do Senado, sem pauta específica ou projetos para votação. Parlamentares fazem pronunciamentos sobre temas diversos."
 - Comissões Mistas: "Senadores e deputados realizam reunião da Comissão Mista..."
+- **Participantes de audiências públicas:** quando há muitos convidados, NÃO listar nomes — descreva o que a sessão debate. Liste participante(s) apenas quando for uma autoridade de alto nível (ministro, presidente de agência reguladora, etc.) com presença confirmada. O risco de alguém não comparecer torna a menção nominal arriscada.
 
 ---
 
