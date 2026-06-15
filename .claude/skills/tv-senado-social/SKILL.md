@@ -188,6 +188,10 @@ Hashtags: #Tema1 #Tema2 #SenadoFederal
 - Sempre apresentar por extenso na primeira menção: "Comissão de Assuntos Econômicos (CAE)"
 - Nas ocorrências seguintes: só a sigla
 
+### Limites de caracteres para YouTube
+- **Título:** máximo 100 caracteres (contando espaços)
+- **Descrição:** máximo 550 caracteres (contando espaços) — inclui hashtags e quebras de parágrafo
+
 ### Tags para YouTube
 - Lista separada por vírgulas, **sem #**, em ordem: TV Senado, Senado Federal, [sigla], [tema principal], [número do projeto sem formatação], [nomes relevantes]
 
