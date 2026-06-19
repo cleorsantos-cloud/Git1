@@ -1,0 +1,23 @@
+{
+  "skill_name": "imoveis-copy",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "faz o copy de um carrossel sobre as novas regras do MCMV — o teto subiu pra R$600k na Faixa 4 e pra R$400k na Faixa 3 (mudança publicada em jun/2026). Público: compradores de primeira viagem que acham que não se encaixam no programa.",
+      "expected_output": "Carrossel com 6-9 slides: slide 1 com gancho de no máximo 8 palavras que crie curiosidade/surpresa, slides intermediários explicando as novas faixas com linguagem simples, último slide com CTA. Legenda de 150-300 chars que complementa (não repete) os slides. Tom de corretor amigo, não corporativo. Hashtags mix nicho+amplo.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "post estático pra instagram. quero postar um dado impactante: parcela de financiamento de um apê de R$300k em SP fica em torno de R$2.500 por mês. público geral, compradores de primeira viagem.",
+      "expected_output": "Texto da imagem com máximo 12 palavras que seja impactante/surpreendente. Legenda desenvolvendo o raciocínio (pode ser curta ou longa dependendo do ângulo escolhido), com CTA voltado para DM ou salvamento. Sem exageros ('incrível', 'imperdível'). Hashtags adequadas.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "carrossel: alugar ou comprar em 2026? foco em quem paga aluguel de R$2.000 a R$2.500 em SP e fica em dúvida se vale comprar. não tenho dados verificados além desses valores de aluguel, pode usar argumento qualitativo.",
+      "expected_output": "Carrossel que estrutura o dilema alugar vs comprar de forma honesta (não força conclusão, deixa raciocinar). Slide 1 como pergunta/provocação. Slides desenvolvem os dois lados ou o argumento principal. Sem inventar taxas ou dados que não foram fornecidos. Tom de quem está ajudando a decidir, não vendendo. CTA para conversa no direct.",
+      "files": []
+    }
+  ]
+}
