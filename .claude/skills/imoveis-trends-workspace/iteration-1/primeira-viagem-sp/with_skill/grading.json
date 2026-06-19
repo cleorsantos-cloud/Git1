@@ -1,0 +1,36 @@
+{
+  "eval_id": 3,
+  "run_id": "primeira-viagem-sp-with_skill",
+  "expectations": [
+    {
+      "text": "Entrega exatamente 5 itens",
+      "passed": true,
+      "evidence": "Exatamente 5 itens entregues"
+    },
+    {
+      "text": "Ao menos um item menciona FGTS, financiamento, ou crédito imobiliário",
+      "passed": true,
+      "evidence": "Item 2 (ITBI/custos), Item 3 (financiamento/Selic), Item 4 (FGTS com teto R$2,25M), Item 5 (parcela SAC)"
+    },
+    {
+      "text": "Ao menos um item é específico para São Paulo (bairros, mercado local, etc.)",
+      "passed": true,
+      "evidence": "Item 5 explicitamente: 'Quanto custa morar em SP pagando parcela de R$ 2.500 — bairro por bairro'; Item 3 menciona taxas de financiamento com contexto SP"
+    },
+    {
+      "text": "Cada item tem sugestão de gancho/título",
+      "passed": true,
+      "evidence": "Todos os 5 têm 'Sugestão de gancho' com frase específica"
+    },
+    {
+      "text": "Cada item tem formato recomendado",
+      "passed": true,
+      "evidence": "Todos os 5 têm 'Formato recomendado' e 'Por que esse formato'"
+    },
+    {
+      "text": "Nenhum item é genérico demais (ex: 'fale sobre imóveis' sem contexto)",
+      "passed": true,
+      "evidence": "Todos têm dados específicos: valores reais (R$400k + ITBI 3% = R$12k), taxas reais (9,39%-10,99% a.a.), teto FGTS (R$2,25M)"
+    }
+  ]
+}

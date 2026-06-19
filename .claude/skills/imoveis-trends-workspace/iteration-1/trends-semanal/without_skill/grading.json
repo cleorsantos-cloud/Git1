@@ -1,0 +1,36 @@
+{
+  "eval_id": 1,
+  "run_id": "trends-semanal-without_skill",
+  "expectations": [
+    {
+      "text": "Entrega pelo menos 5 itens no briefing",
+      "passed": true,
+      "evidence": "Entregou 7 posts com estrutura de calendário semanal"
+    },
+    {
+      "text": "Cada item tem formato recomendado (carrossel, reels, story ou post único)",
+      "passed": true,
+      "evidence": "Todos os posts têm formato definido"
+    },
+    {
+      "text": "Cada item tem sugestão de gancho/título",
+      "passed": true,
+      "evidence": "Todos têm título e roteiro com abertura de gancho"
+    },
+    {
+      "text": "Cada item tem ângulo imobiliário específico (não só 'fale sobre imóveis')",
+      "passed": false,
+      "evidence": "Post 2 (bastidores do corretor) e Post 7 (depoimento) são sobre marca pessoal, não sobre tendência imobiliária. Não cruzam trends gerais com imóveis — foca só em marketing do corretor"
+    },
+    {
+      "text": "Inclui pelo menos um tema de financiamento ou crédito imobiliário",
+      "passed": true,
+      "evidence": "Post 1 (FGTS/juros), Post 3 (Selic), Post 5 (FGTS Futuro)"
+    },
+    {
+      "text": "Não lista itens com conexão fraca ou forçada com imóveis",
+      "passed": false,
+      "evidence": "Post 6 (tour de imóvel de 1 dorm) e Post 7 (inspiração/depoimento) são conteúdo genérico de corretor, não têm origem em trend pesquisado — não cumprem a proposta de cruzar trends com imóveis"
+    }
+  ]
+}

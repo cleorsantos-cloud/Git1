@@ -1,0 +1,343 @@
+{
+  "metadata": {
+    "skill_name": "imoveis-trends",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-06-19T14:46:35Z",
+    "evals_run": [
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 127.4,
+        "tokens": 29836,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Entrega pelo menos 5 itens no briefing",
+          "passed": true,
+          "evidence": "Entregou 7 itens com estrutura completa"
+        },
+        {
+          "text": "Cada item tem formato recomendado (carrossel, reels, story ou post \u00fanico)",
+          "passed": true,
+          "evidence": "Todos os 7 itens t\u00eam 'Formato recomendado' e 'Por que esse formato'"
+        },
+        {
+          "text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo",
+          "passed": true,
+          "evidence": "Todos os itens t\u00eam 'Sugest\u00e3o de gancho' em it\u00e1lico"
+        },
+        {
+          "text": "Cada item tem \u00e2ngulo imobili\u00e1rio espec\u00edfico (n\u00e3o s\u00f3 'fale sobre im\u00f3veis')",
+          "passed": true,
+          "evidence": "Ex: item 2 conecta isen\u00e7\u00e3o de IR com reserva para entrada; item 4 explica FGTS para quem financiou 2021-2025"
+        },
+        {
+          "text": "Inclui pelo menos um tema de financiamento ou cr\u00e9dito imobili\u00e1rio",
+          "passed": true,
+          "evidence": "Item 4 (FGTS), item 6 (Selic e financiamento), item 7 (parcela vs. aluguel)"
+        },
+        {
+          "text": "N\u00e3o lista itens com conex\u00e3o fraca ou for\u00e7ada com im\u00f3veis",
+          "passed": true,
+          "evidence": "Todos os 7 itens t\u00eam conex\u00e3o direta e fundamentada com mercado imobili\u00e1rio"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 127.4,
+        "tokens": 29638,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Avalia honestamente se a conex\u00e3o IA \u2192 im\u00f3veis \u00e9 forte ou fraca",
+          "passed": true,
+          "evidence": "Se\u00e7\u00e3o expl\u00edcita de avalia\u00e7\u00e3o: 'Conex\u00e3o com im\u00f3veis para primeira compra: genu\u00edna e forte' com justificativa clara"
+        },
+        {
+          "text": "Se recomendar o tema, apresenta \u00e2ngulo concreto (n\u00e3o gen\u00e9rico)",
+          "passed": true,
+          "evidence": "6 posts com \u00e2ngulos distintos: medo de perder emprego \u2192 financiamento; MCMV novas faixas; Selic e simula\u00e7\u00e3o; apartamento para home office+IA; FGTS atualizado; 'e se perder emprego depois de financiar?'"
+        },
+        {
+          "text": "Se descartar, explica por que e sugere alternativa melhor",
+          "passed": true,
+          "evidence": "N\u00e3o descartou (conex\u00e3o genu\u00edna), mas a 'Nota estrat\u00e9gica' alerta para evitar o \u00e2ngulo gen\u00e9rico 'IA vai transformar o mercado imobili\u00e1rio'"
+        },
+        {
+          "text": "Tem sugest\u00e3o de gancho se recomendar o post",
+          "passed": true,
+          "evidence": "Todos os 6 posts t\u00eam 'Sugest\u00e3o de gancho' espec\u00edfico"
+        },
+        {
+          "text": "Tem formato recomendado com justificativa",
+          "passed": true,
+          "evidence": "Todos os 6 posts t\u00eam formato + 'Por que esse formato'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 103.8,
+        "tokens": 27490,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Entrega exatamente 5 itens",
+          "passed": true,
+          "evidence": "Exatamente 5 itens entregues"
+        },
+        {
+          "text": "Ao menos um item menciona FGTS, financiamento, ou cr\u00e9dito imobili\u00e1rio",
+          "passed": true,
+          "evidence": "Item 2 (ITBI/custos), Item 3 (financiamento/Selic), Item 4 (FGTS com teto R$2,25M), Item 5 (parcela SAC)"
+        },
+        {
+          "text": "Ao menos um item \u00e9 espec\u00edfico para S\u00e3o Paulo (bairros, mercado local, etc.)",
+          "passed": true,
+          "evidence": "Item 5 explicitamente: 'Quanto custa morar em SP pagando parcela de R$ 2.500 \u2014 bairro por bairro'; Item 3 menciona taxas de financiamento com contexto SP"
+        },
+        {
+          "text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo",
+          "passed": true,
+          "evidence": "Todos os 5 t\u00eam 'Sugest\u00e3o de gancho' com frase espec\u00edfica"
+        },
+        {
+          "text": "Cada item tem formato recomendado",
+          "passed": true,
+          "evidence": "Todos os 5 t\u00eam 'Formato recomendado' e 'Por que esse formato'"
+        },
+        {
+          "text": "Nenhum item \u00e9 gen\u00e9rico demais (ex: 'fale sobre im\u00f3veis' sem contexto)",
+          "passed": true,
+          "evidence": "Todos t\u00eam dados espec\u00edficos: valores reais (R$400k + ITBI 3% = R$12k), taxas reais (9,39%-10,99% a.a.), teto FGTS (R$2,25M)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6667,
+        "passed": 4,
+        "failed": 2,
+        "total": 6,
+        "time_seconds": 120.1,
+        "tokens": 26574,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Entrega pelo menos 5 itens no briefing",
+          "passed": true,
+          "evidence": "Entregou 7 posts com estrutura de calend\u00e1rio semanal"
+        },
+        {
+          "text": "Cada item tem formato recomendado (carrossel, reels, story ou post \u00fanico)",
+          "passed": true,
+          "evidence": "Todos os posts t\u00eam formato definido"
+        },
+        {
+          "text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo",
+          "passed": true,
+          "evidence": "Todos t\u00eam t\u00edtulo e roteiro com abertura de gancho"
+        },
+        {
+          "text": "Cada item tem \u00e2ngulo imobili\u00e1rio espec\u00edfico (n\u00e3o s\u00f3 'fale sobre im\u00f3veis')",
+          "passed": false,
+          "evidence": "Post 2 (bastidores do corretor) e Post 7 (depoimento) s\u00e3o sobre marca pessoal, n\u00e3o sobre tend\u00eancia imobili\u00e1ria. N\u00e3o cruzam trends gerais com im\u00f3veis \u2014 foca s\u00f3 em marketing do corretor"
+        },
+        {
+          "text": "Inclui pelo menos um tema de financiamento ou cr\u00e9dito imobili\u00e1rio",
+          "passed": true,
+          "evidence": "Post 1 (FGTS/juros), Post 3 (Selic), Post 5 (FGTS Futuro)"
+        },
+        {
+          "text": "N\u00e3o lista itens com conex\u00e3o fraca ou for\u00e7ada com im\u00f3veis",
+          "passed": false,
+          "evidence": "Post 6 (tour de im\u00f3vel de 1 dorm) e Post 7 (inspira\u00e7\u00e3o/depoimento) s\u00e3o conte\u00fado gen\u00e9rico de corretor, n\u00e3o t\u00eam origem em trend pesquisado \u2014 n\u00e3o cumprem a proposta de cruzar trends com im\u00f3veis"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6,
+        "passed": 3,
+        "failed": 2,
+        "total": 5,
+        "time_seconds": 54.2,
+        "tokens": 17636,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Avalia honestamente se a conex\u00e3o IA \u2192 im\u00f3veis \u00e9 forte ou fraca",
+          "passed": true,
+          "evidence": "Confirmou conex\u00e3o genu\u00edna: 'O erro seria ignorar o assunto ou for\u00e7ar uma conex\u00e3o irrelevante'"
+        },
+        {
+          "text": "Se recomendar o tema, apresenta \u00e2ngulo concreto (n\u00e3o gen\u00e9rico)",
+          "passed": false,
+          "evidence": "Os 5 posts t\u00eam \u00e2ngulos mas sem dados concretos: n\u00e3o menciona MCMV atualizado, Selic 14,75%, FGTS com teto de R$2,25M \u2014 apenas racioc\u00ednio emocional gen\u00e9rico ('im\u00f3vel \u00e9 seguran\u00e7a')"
+        },
+        {
+          "text": "Se descartar, explica por que e sugere alternativa melhor",
+          "passed": true,
+          "evidence": "N\u00e3o descartou \u2014 acertou ao identificar a conex\u00e3o como v\u00e1lida"
+        },
+        {
+          "text": "Tem sugest\u00e3o de gancho se recomendar o post",
+          "passed": true,
+          "evidence": "Todos os 5 posts t\u00eam gancho sugerido"
+        },
+        {
+          "text": "Tem formato recomendado com justificativa",
+          "passed": false,
+          "evidence": "Post 3 (Story interativo) e Post 4 (texto) t\u00eam justificativa, mas Posts 1, 2, 5 t\u00eam formato sem explicar o porqu\u00ea da escolha"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8333,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 58.5,
+        "tokens": 18023,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Entrega exatamente 5 itens",
+          "passed": true,
+          "evidence": "Exatamente 5 posts"
+        },
+        {
+          "text": "Ao menos um item menciona FGTS, financiamento, ou cr\u00e9dito imobili\u00e1rio",
+          "passed": true,
+          "evidence": "Post 2 (quanto guardar/FGTS), Post 4 (simula\u00e7\u00e3o financiamento)"
+        },
+        {
+          "text": "Ao menos um item \u00e9 espec\u00edfico para S\u00e3o Paulo (bairros, mercado local, etc.)",
+          "passed": true,
+          "evidence": "Post 5: Penha, Pirituba, Santo Andr\u00e9/S\u00e3o Bernardo com contexto de metr\u00f4"
+        },
+        {
+          "text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo",
+          "passed": true,
+          "evidence": "Todos t\u00eam legenda-gancho"
+        },
+        {
+          "text": "Cada item tem formato recomendado",
+          "passed": true,
+          "evidence": "Todos t\u00eam formato, mas \u00e0s vezes alternativo ('Reels ou carrossel')"
+        },
+        {
+          "text": "Nenhum item \u00e9 gen\u00e9rico demais (ex: 'fale sobre im\u00f3veis' sem contexto)",
+          "passed": false,
+          "evidence": "Post 3 (case real) \u00e9 completamente inventado \u2014 'Ela tinha 28 anos...' sem dados de mercado atuais. Sem dados da Selic, MCMV atualizado de junho 2026, ou pesquisas recentes. Nenhuma men\u00e7\u00e3o ao MCMV com teto R$600k (regra nova de 08/06/2026)"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 119.5333,
+        "stddev": 13.6255,
+        "min": 103.8,
+        "max": 127.4
+      },
+      "tokens": {
+        "mean": 28988.0,
+        "stddev": 1301.078,
+        "min": 27490,
+        "max": 29836
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.7,
+        "stddev": 0.1202,
+        "min": 0.6,
+        "max": 0.8333
+      },
+      "time_seconds": {
+        "mean": 77.6,
+        "stddev": 36.8688,
+        "min": 54.2,
+        "max": 120.1
+      },
+      "tokens": {
+        "mean": 20744.3333,
+        "stddev": 5052.3462,
+        "min": 17636,
+        "max": 26574
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.30",
+      "time_seconds": "+41.9",
+      "tokens": "+8244"
+    }
+  },
+  "notes": []
+}

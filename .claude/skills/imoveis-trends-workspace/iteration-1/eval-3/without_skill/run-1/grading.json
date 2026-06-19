@@ -1,0 +1,42 @@
+{
+  "eval_id": 3,
+  "run_id": "primeira-viagem-sp-without_skill",
+  "expectations": [
+    {
+      "text": "Entrega exatamente 5 itens",
+      "passed": true,
+      "evidence": "Exatamente 5 posts"
+    },
+    {
+      "text": "Ao menos um item menciona FGTS, financiamento, ou crédito imobiliário",
+      "passed": true,
+      "evidence": "Post 2 (quanto guardar/FGTS), Post 4 (simulação financiamento)"
+    },
+    {
+      "text": "Ao menos um item é específico para São Paulo (bairros, mercado local, etc.)",
+      "passed": true,
+      "evidence": "Post 5: Penha, Pirituba, Santo André/São Bernardo com contexto de metrô"
+    },
+    {
+      "text": "Cada item tem sugestão de gancho/título",
+      "passed": true,
+      "evidence": "Todos têm legenda-gancho"
+    },
+    {
+      "text": "Cada item tem formato recomendado",
+      "passed": true,
+      "evidence": "Todos têm formato, mas às vezes alternativo ('Reels ou carrossel')"
+    },
+    {
+      "text": "Nenhum item é genérico demais (ex: 'fale sobre imóveis' sem contexto)",
+      "passed": false,
+      "evidence": "Post 3 (case real) é completamente inventado — 'Ela tinha 28 anos...' sem dados de mercado atuais. Sem dados da Selic, MCMV atualizado de junho 2026, ou pesquisas recentes. Nenhuma menção ao MCMV com teto R$600k (regra nova de 08/06/2026)"
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 1,
+    "total": 6,
+    "pass_rate": 0.8333
+  }
+}

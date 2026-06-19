@@ -1,0 +1,36 @@
+{
+  "eval_id": 1,
+  "run_id": "trends-semanal-with_skill",
+  "expectations": [
+    {
+      "text": "Entrega pelo menos 5 itens no briefing",
+      "passed": true,
+      "evidence": "Entregou 7 itens com estrutura completa"
+    },
+    {
+      "text": "Cada item tem formato recomendado (carrossel, reels, story ou post único)",
+      "passed": true,
+      "evidence": "Todos os 7 itens têm 'Formato recomendado' e 'Por que esse formato'"
+    },
+    {
+      "text": "Cada item tem sugestão de gancho/título",
+      "passed": true,
+      "evidence": "Todos os itens têm 'Sugestão de gancho' em itálico"
+    },
+    {
+      "text": "Cada item tem ângulo imobiliário específico (não só 'fale sobre imóveis')",
+      "passed": true,
+      "evidence": "Ex: item 2 conecta isenção de IR com reserva para entrada; item 4 explica FGTS para quem financiou 2021-2025"
+    },
+    {
+      "text": "Inclui pelo menos um tema de financiamento ou crédito imobiliário",
+      "passed": true,
+      "evidence": "Item 4 (FGTS), item 6 (Selic e financiamento), item 7 (parcela vs. aluguel)"
+    },
+    {
+      "text": "Não lista itens com conexão fraca ou forçada com imóveis",
+      "passed": true,
+      "evidence": "Todos os 7 itens têm conexão direta e fundamentada com mercado imobiliário"
+    }
+  ]
+}

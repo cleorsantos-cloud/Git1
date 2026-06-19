@@ -1,0 +1,13 @@
+{
+  "eval_id": 3,
+  "eval_name": "primeira-viagem-sp",
+  "prompt": "me dá 5 ideias de post pra essa semana. sou corretor e produtor de conteúdo, compro e vendo imóveis em SP. público é de compradores de primeira viagem, faixa de 300 a 500 mil",
+  "assertions": [
+    "Entrega exatamente 5 itens",
+    "Ao menos um item menciona FGTS, financiamento, ou crédito imobiliário",
+    "Ao menos um item é específico para São Paulo (bairros, mercado local, etc.)",
+    "Cada item tem sugestão de gancho/título",
+    "Cada item tem formato recomendado",
+    "Nenhum item é genérico demais (ex: 'fale sobre imóveis' sem contexto)"
+  ]
+}

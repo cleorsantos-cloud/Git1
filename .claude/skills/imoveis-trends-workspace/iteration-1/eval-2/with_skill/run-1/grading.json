@@ -1,0 +1,37 @@
+{
+  "eval_id": 2,
+  "run_id": "ia-adaptada-imoveis-with_skill",
+  "expectations": [
+    {
+      "text": "Avalia honestamente se a conexão IA → imóveis é forte ou fraca",
+      "passed": true,
+      "evidence": "Seção explícita de avaliação: 'Conexão com imóveis para primeira compra: genuína e forte' com justificativa clara"
+    },
+    {
+      "text": "Se recomendar o tema, apresenta ângulo concreto (não genérico)",
+      "passed": true,
+      "evidence": "6 posts com ângulos distintos: medo de perder emprego → financiamento; MCMV novas faixas; Selic e simulação; apartamento para home office+IA; FGTS atualizado; 'e se perder emprego depois de financiar?'"
+    },
+    {
+      "text": "Se descartar, explica por que e sugere alternativa melhor",
+      "passed": true,
+      "evidence": "Não descartou (conexão genuína), mas a 'Nota estratégica' alerta para evitar o ângulo genérico 'IA vai transformar o mercado imobiliário'"
+    },
+    {
+      "text": "Tem sugestão de gancho se recomendar o post",
+      "passed": true,
+      "evidence": "Todos os 6 posts têm 'Sugestão de gancho' específico"
+    },
+    {
+      "text": "Tem formato recomendado com justificativa",
+      "passed": true,
+      "evidence": "Todos os 6 posts têm formato + 'Por que esse formato'"
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  }
+}

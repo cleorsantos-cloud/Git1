@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "imoveis-trends", "runs": [{"id": "eval-1-with_skill-run-1", "prompt": "quais s\u00e3o os trends imobili\u00e1rios dessa semana? preciso planejar os posts do meu instagram de im\u00f3veis. sou corretor, p\u00fablico \u00e9 de compradores de primeira viagem e geral", "eval_id": 1, "outputs": [{"name": "briefing.md", "type": "text", "content": "# Briefing Semanal de Conte\u00fado Imobili\u00e1rio\n**Semana de 16 a 22 de junho de 2026**\n**Perfil:** Corretor | P\u00fablico: compradores de primeira viagem + geral\n\n---\n\n## 1. Minha Casa Minha Vida Acabou de Mudar \u2014 E Muito Gente N\u00e3o Sabe\n\n**Por que est\u00e1 em alta:** O MCMV recebeu atualiza\u00e7\u00e3o em 08/06/2026, ampliando os limites de faixa de renda (Faixa 3 at\u00e9 R$ 9,6 mil, nova Faixa 4 at\u00e9 R$ 13 mil) e elevando o teto de im\u00f3veis financi\u00e1veis a R$ 600 mil. As mudan\u00e7as reconfiguram o perfil de quem pode acessar o programa \u2014 muita gente que achava que estava fora, agora est\u00e1 dentro.\n\n**\u00c2ngulo imobili\u00e1rio:** Compradores de primeira viagem frequentemente se auto-excluem do MCMV por acharem que \"ganham demais\" ou que o programa n\u00e3o \u00e9 para eles. Esse post desfaz esse mito com os n\u00fameros novos e convida para uma conversa.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** O comparativo antes/depois das faixas, com exemplos de renda e valor de im\u00f3vel, pede m\u00faltiplos slides \u2014 \u00e9 conte\u00fado que as pessoas salvam e mandam para fam\u00edlia.\n\n**Urg\u00eancia:** Postar essa semana \u2014 a atualiza\u00e7\u00e3o \u00e9 de 08/06 e ainda est\u00e1 quente.\n\n**Sugest\u00e3o de gancho:** *\"Voc\u00ea acha que n\u00e3o se encaixa no Minha Casa Minha Vida. Mas as regras mudaram agora em junho \u2014 e talvez voc\u00ea esteja errado.\"*\n\n---\n\n## 2. Isen\u00e7\u00e3o de IR At\u00e9 R$ 5 Mil: O Dinheiro Que Voltou Para o Seu Bolso Pode Virar Entrada de Im\u00f3vel\n\n**Por que est\u00e1 em alta:** A nova tabela do IRPF com isen\u00e7\u00e3o total para quem ganha at\u00e9 R$ 5 mil est\u00e1 em vigor desde janeiro de 2026. A estimativa do governo \u00e9 de R$ 20\u201328 bilh\u00f5es injetados na economia. O assunto ainda circula \u2014 especialmente entre quem come\u00e7ou a notar a diferen\u00e7a no holerite.\n\n**\u00c2ngulo imobili\u00e1rio:** Para o comprador de primeira viagem, esse \"dinheiro extra\" mensal (que antes ia para o IR) pode ser direcionado a uma reserva para entrada. \u00c9 um gancho de planejamento financeiro com desfecho imobili\u00e1rio \u2014 exatamente o que o p\u00fablico de primeira compra precisa ouvir.\n\n**Formato recomendado:** Carrossel ou Reels\n\n**Por que esse formato:** Carrossel se quiser mostrar o c\u00e1lculo (\"voc\u00ea que ganha R$ 4.500 passou a ter X a mais por m\u00eas \u2014 veja o que isso representa em X meses de poupan\u00e7a\"); Reels se quiser o \u00e2ngulo mais emocional/motivacional (\"essa isen\u00e7\u00e3o pode ser o come\u00e7o da sua entrada\").\n\n**Urg\u00eancia:** Postar essa semana \u2014 o tema ainda tem tra\u00e7\u00e3o e conecta direto com a ansiedade financeira do p\u00fablico de primeira compra.\n\n**Sugest\u00e3o de gancho:** *\"O governo te devolveu dinheiro esse ano. A pergunta \u00e9: voc\u00ea est\u00e1 usando isso a seu favor?\"*\n\n---\n\n## 3. Gera\u00e7\u00e3o Z Lidera Inten\u00e7\u00e3o de Compra \u2014 Mas Trava na Hora H\n\n**Por que est\u00e1 em alta:** Pesquisas de 2026 mostram que 59\u201361% da Gera\u00e7\u00e3o Z pretende comprar im\u00f3vel, o maior \u00edndice da s\u00e9rie hist\u00f3rica. Mas 36% do grupo ainda nem iniciou as buscas \u2014 o principal freio \u00e9 o medo dos juros e das taxas de condom\u00ednio. O assunto viralizou em mar\u00e7o e continua sendo discutido.\n\n**\u00c2ngulo imobili\u00e1rio:** H\u00e1 uma lacuna enorme entre querer e agir. Um post que nomeia o medo (\"juros altos me travam\"), explica o cen\u00e1rio real (MCMV com taxas a partir de 4% ao ano, por exemplo) e d\u00e1 um passo concreto tem alt\u00edssimo potencial de gerar coment\u00e1rios e salvamentos.\n\n**Formato recomendado:** Reels\n\n**Por que esse formato:** O tema \u00e9 comportamental e emocional \u2014 \"eu quero mas tenho medo\" \u00e9 exatamente o territ\u00f3rio onde Reels em primeira pessoa ou com depoimento performa melhor que carrossel.\n\n**Urg\u00eancia:** Evergreen com timing perfeito \u2014 o dado \u00e9 recente e o perfil de p\u00fablico bate exatamente no seguidor que voc\u00ea quer converter.\n\n**Sugest\u00e3o de gancho:** *\"59% dos jovens querem comprar im\u00f3vel. Mas a maioria n\u00e3o deu nem o primeiro passo. Por qu\u00ea?\"*\n\n---\n\n## 4. FGTS Mudou: Quem Financiou Entre 2021 e 2025 Pode Usar o Fundo Agora\n\n**Por que est\u00e1 em alta:** O Conselho Curador do FGTS aprovou medida permitindo que quem financiou im\u00f3vel entre 2021 e 2025 use o FGTS para amortizar, comprar ou abater parcelas \u2014 v\u00e1lido para im\u00f3veis de at\u00e9 R$ 2,25 milh\u00f5es. Essa \u00e9 uma novidade pouco divulgada e com impacto direto no bolso.\n\n**\u00c2ngulo imobili\u00e1rio:** Dupla audi\u00eancia: quem j\u00e1 comprou (pode amortizar o financiamento) e quem est\u00e1 comprando agora (entende melhor como usar o FGTS). Para o p\u00fablico de primeira viagem, esclarecer as regras do FGTS \u00e9 sempre conte\u00fado de alta performance \u2014 \u00e9 um dos temas mais buscados antes da decis\u00e3o de compra.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** Regras e requisitos pedem estrutura \u2014 lista de condi\u00e7\u00f5es, exemplos pr\u00e1ticos, passo a passo. \u00c9 conte\u00fado educativo que as pessoas salvam para consultar depois.\n\n**Urg\u00eancia:** Postar essa semana \u2014 a mudan\u00e7a \u00e9 recente e ainda gera d\u00favidas.\n\n**Sugest\u00e3o de gancho:** *\"Voc\u00ea sabia que pode usar o FGTS para abater o financiamento que fez nos \u00faltimos 4 anos? A maioria dos compradores n\u00e3o sabe disso.\"*\n\n---\n\n## 5. Studios e Compactos Dominam os Lan\u00e7amentos \u2014 E N\u00e3o \u00c9 Coincid\u00eancia\n\n**Por que est\u00e1 em alta:** Quase 70% dos lan\u00e7amentos imobili\u00e1rios em Curitiba no 1\u00ba tri de 2026 foram studios ou compactos. Em SP, \u00e9 o segmento mais vendido. Pre\u00e7os partem de R$ 280 mil em SP e R$ 350 mil em Campinas. O dado \u00e9 concreto e conta uma hist\u00f3ria sobre o mercado.\n\n**\u00c2ngulo imobili\u00e1rio:** Para o comprador de primeira viagem, o studio \u00e9 a porta de entrada mais acess\u00edvel \u2014 menor pre\u00e7o, maior liquidez, localiza\u00e7\u00e3o melhor. Mas existe muito preconceito com \"apartamento pequeno\". Um post que reconstr\u00f3i a narrativa (\"n\u00e3o \u00e9 pequeno \u2014 \u00e9 inteligente\") tem \u00f3timo potencial de engajamento.\n\n**Formato recomendado:** Reels\n\n**Por que esse formato:** O argumento \u00e9 visual e comportamental \u2014 mostrar como um studio bem projetado pode ter mais qualidade de vida do que um ap\u00ea grande mal localizado \u00e9 um gancho que pede imagem/v\u00eddeo, n\u00e3o texto.\n\n**Urg\u00eancia:** Evergreen \u2014 mas com dado atual (70% dos lan\u00e7amentos) que ancora a narrativa no presente.\n\n**Sugest\u00e3o de gancho:** *\"Quase 70% dos im\u00f3veis lan\u00e7ados agora s\u00e3o studios. Isso n\u00e3o \u00e9 por acaso \u2014 \u00e9 o mercado te dizendo algo.\"*\n\n---\n\n## 6. Selic a 14,75% \u2014 Mas o Ciclo de Corte Come\u00e7ou. E Agora?\n\n**Por que est\u00e1 em alta:** A Selic segue alta, mas o in\u00edcio do ciclo de cortes \u00e9 o sinal que o mercado estava esperando. Taxas de financiamento imobili\u00e1rio ainda operam entre 11% e 12% ao ano pelo SBPE \u2014 mas a perspectiva de queda j\u00e1 muda o c\u00e1lculo.\n\n**\u00c2ngulo imobili\u00e1rio:** O comprador de primeira viagem frequentemente usa os juros altos como justificativa para adiar a compra (\"vou esperar a Selic cair\"). Esse post fura essa bolha com um argumento estrat\u00e9gico: o momento de entrar no mercado \u00e9 antes da queda dos juros, n\u00e3o depois \u2014 porque os pre\u00e7os sobem junto. \u00c9 um post de posicionamento que gera debate.\n\n**Formato recomendado:** Post \u00fanico ou Carrossel\n\n**Por que esse formato:** Post \u00fanico funciona como provoca\u00e7\u00e3o direta (\"esperar os juros ca\u00edrem pode sair mais caro do que voc\u00ea pensa\") e abre coment\u00e1rios. Carrossel se quiser construir o racioc\u00ednio passo a passo.\n\n**Urg\u00eancia:** Postar essa semana \u2014 o tema da Selic e cr\u00e9dito imobili\u00e1rio tem volume de busca consistente e o dado de 14,75% \u00e9 o contexto atual.\n\n**Sugest\u00e3o de gancho:** *\"Voc\u00ea est\u00e1 esperando os juros ca\u00edrem para comprar im\u00f3vel. Esse racioc\u00ednio pode estar te custando caro.\"*\n\n---\n\n## 7. Apartamento Ou Aluguel em 2026? O C\u00e1lculo Mudou\n\n**Por que est\u00e1 em alta:** A principal motiva\u00e7\u00e3o de compra para jovens em 2026 \u00e9 \"parar de pagar aluguel\". Com alugu\u00e9is subindo nas capitais e o MCMV com taxas a partir de 4% ao ano, o comparativo financeiro ficou mais favor\u00e1vel \u00e0 compra \u2014 especialmente nas faixas subsidiadas.\n\n**\u00c2ngulo imobili\u00e1rio:** \u00c9 o post mais cl\u00e1ssico do segmento, mas com dados frescos de 2026 ele ganha nova vida. A virada \u00e9 mostrar o c\u00e1lculo real: em algumas cidades e faixas do MCMV, a parcela j\u00e1 \u00e9 igual ou menor que o aluguel de im\u00f3vel equivalente.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** O comparativo num\u00e9rico (parcela vs. aluguel, com exemplos de cidade e faixa de renda) pede estrutura de slides. \u00c9 o tipo de conte\u00fado que gera \"manda pro meu esposo/esposa\" nos coment\u00e1rios.\n\n**Urg\u00eancia:** Evergreen \u2014 mas com contexto 2026 (MCMV atualizado, novos tetos) que o torna relevante agora.\n\n**Sugest\u00e3o de gancho:** *\"Parcela do financiamento vs. aluguel em 2026: fiz a conta. O resultado vai te surpreender.\"*\n\n---\n\n## Resumo Executivo \u2014 Ordem de Prioridade\n\n| # | Assunto | Urg\u00eancia | Formato |\n|---|---------|----------|---------|\n| 1 | MCMV \u2014 novas regras junho 2026 | Esta semana | Carrossel |\n| 2 | Isen\u00e7\u00e3o IR \u2192 entrada de im\u00f3vel | Esta semana | Carrossel / Reels |\n| 3 | FGTS: quem financiou 2021\u20132025 | Esta semana | Carrossel |\n| 4 | Selic em corte \u2014 momento de comprar? | Esta semana | Post \u00fanico |\n| 5 | Gen Z quer comprar mas n\u00e3o age | Evergreen atual | Reels |\n| 6 | Studios dominam lan\u00e7amentos | Evergreen atual | Reels |\n| 7 | Parcela vs. aluguel 2026 | Evergreen | Carrossel |\n\n---\n\n*Briefing gerado em 19/06/2026. Fontes: Minist\u00e9rio das Cidades, Quadragon, Tribuna do Norte, Terra, Portas.com.br, Circuito Arq+Decor, Ag\u00eancia Brasil, Fazenda.gov.br, \u00c2ncora Imobili\u00e1ria.*\n"}], "grading": {"eval_id": 1, "run_id": "trends-semanal-with_skill", "expectations": [{"text": "Entrega pelo menos 5 itens no briefing", "passed": true, "evidence": "Entregou 7 itens com estrutura completa"}, {"text": "Cada item tem formato recomendado (carrossel, reels, story ou post \u00fanico)", "passed": true, "evidence": "Todos os 7 itens t\u00eam 'Formato recomendado' e 'Por que esse formato'"}, {"text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo", "passed": true, "evidence": "Todos os itens t\u00eam 'Sugest\u00e3o de gancho' em it\u00e1lico"}, {"text": "Cada item tem \u00e2ngulo imobili\u00e1rio espec\u00edfico (n\u00e3o s\u00f3 'fale sobre im\u00f3veis')", "passed": true, "evidence": "Ex: item 2 conecta isen\u00e7\u00e3o de IR com reserva para entrada; item 4 explica FGTS para quem financiou 2021-2025"}, {"text": "Inclui pelo menos um tema de financiamento ou cr\u00e9dito imobili\u00e1rio", "passed": true, "evidence": "Item 4 (FGTS), item 6 (Selic e financiamento), item 7 (parcela vs. aluguel)"}, {"text": "N\u00e3o lista itens com conex\u00e3o fraca ou for\u00e7ada com im\u00f3veis", "passed": true, "evidence": "Todos os 7 itens t\u00eam conex\u00e3o direta e fundamentada com mercado imobili\u00e1rio"}], "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0}}}, {"id": "eval-1-without_skill-run-1", "prompt": "quais s\u00e3o os trends imobili\u00e1rios dessa semana? preciso planejar os posts do meu instagram de im\u00f3veis. sou corretor, p\u00fablico \u00e9 de compradores de primeira viagem e geral", "eval_id": 1, "outputs": [{"name": "briefing.md", "type": "text", "content": "# Briefing Semanal de Trends Imobili\u00e1rios\n**Semana de 16 a 22 de junho de 2026**\nPerfil: Corretor | Publico: compradores de primeira viagem e geral | Canal: Instagram\n\n---\n\n## Contexto do Mercado Esta Semana\n\n- Selic em 14,75% apos corte de 0,25 pp em marco/2026 \u2014 primeiro corte em quase dois anos\n- Bancos (Itau, Santander) ja reduziram taxas de financiamento, que operam entre 11% e 12% ao ano\n- Credito imobiliario deve crescer 16% em 2026 vs. ano anterior (ABECIP)\n- Minha Casa Minha Vida ganhou Faixa 4 (renda ate R$ 13.000) e teto de imovel subiu para R$ 600 mil\n- FGTS Futuro segue em vigor \u2014 permite usar depositos futuros para compor renda e aumentar credito aprovado\n- Imoveis compactos de 1 dormitorio lideram valorizacao (FipeZap)\n\n---\n\n## 7 Ideias de Post para a Semana\n\n### Post 1 \u2014 Segunda-feira | Educacao / Duvida Frequente\n**Formato:** Carrossel  \n**Titulo:** \"Voce sabe qual a diferenca entre juros FGTS e juros do banco? Muita gente confunde\"  \n**Por que funciona:** Duvida classica do comprador de primeira viagem; gera salvamento e compartilhamento  \n**Roteiro sugerido:**\n- Slide 1 (gancho): \"Se voce vai financiar um imovel em 2026, precisa entender isso antes\"\n- Slide 2: O que e o financiamento pelo FGTS (Minha Casa Minha Vida) \u2014 taxas a partir de 4,5% a.a.\n- Slide 3: O que e o financiamento bancario tradicional \u2014 taxas entre 11% e 12% a.a.\n- Slide 4: Quem pode usar o FGTS? Requisito dos 3 anos + sem outro imovel no SFH\n- Slide 5: FGTS Futuro \u2014 a novidade que poucos conhecem\n- Slide 6 (CTA): \"Manda DM que te explico qual opcao cabe no seu bolso\"\n\n---\n\n### Post 2 \u2014 Terca-feira | Bastidores / Humanizacao\n**Formato:** Reels (30-45 seg)  \n**Titulo:** \"Um dia na rotina de um corretor: o que voce nao ve por tras da venda\"  \n**Por que funciona:** Algoritmo privilegia autenticidade; constroi marca pessoal \u2014 tendencia numero 1 do Instagram imobiliario em 2026  \n**Roteiro sugerido:**\n- Primeiros 2 seg (gancho): \"7h da manha, cafezinho e ja tem visita marcada \u2014 vem comigo\"\n- Bastidores: preparo do imovel, checklist de documentos, conversa com o cliente\n- Final: \"Ser corretor e ser consultor de vida, nao so de imovel\"\n- Legenda: historia de como voce ajudou um cliente de primeira viagem a realizar o sonho\n\n---\n\n### Post 3 \u2014 Quarta-feira | Noticia / Mercado\n**Formato:** Reels curto (15-20 seg) ou Story com enquete  \n**Titulo:** \"Selic caiu. Isso muda alguma coisa pra quem quer comprar imovel?\"  \n**Por que funciona:** Noticia quente do momento; posiciona voce como especialista  \n**Roteiro sugerido:**\n- \"A Selic caiu pra 14,75% e os bancos ja reduziram os juros do financiamento\"\n- \"Isso significa que sua parcela pode ficar [X] reais mais barata por cada R$ 100 mil financiados\"\n- \"Mas o melhor momento de comprar nao e quando os juros chegam no fundo \u2014 e quando voce esta pronto\"\n- CTA: \"Descubra se voce esta pronto \u2014 link na bio ou manda um oi\"\n- Story complementar: enquete \"Voce esperaria os juros ca\u00edrem mais ou compraria agora?\"\n\n---\n\n### Post 4 \u2014 Quinta-feira | Educacao / Checklist\n**Formato:** Carrossel  \n**Titulo:** \"Checklist do primeiro imovel: 8 coisas que voce precisa verificar antes de assinar\"  \n**Por que funciona:** Conteudo util que o publico de primeira viagem vai salvar; alta intencao de compra implica em seguir corretores de autoridade  \n**Roteiro sugerido:**\n- Slide 1 (gancho): \"Vai comprar seu primeiro imovel? Nao assine nada sem ver essa lista\"\n- Slide 2: Score de credito e capacidade de endividamento (limite: 30% da renda)\n- Slide 3: Valor de entrada (20-30%) + custos extras (ITBI + cartorio = 5% a 8% do valor)\n- Slide 4: Documentacao \u2014 RG, CPF, comprovante de renda, IR, extrato FGTS, certidoes negativas\n- Slide 5: Verificar escritura, registro e pendencias do imovel\n- Slide 6: Localizacao \u2014 seguranca, infraestrutura, mobilidade, valorizacao\n- Slide 7: Tipo de financiamento mais adequado ao seu perfil\n- Slide 8: Vistoria tecnica antes de fechar\n- Slide 9 (CTA): \"Salva esse post e manda pra quem precisa\"\n\n---\n\n### Post 5 \u2014 Sexta-feira | Trend / Entretenimento\n**Formato:** Reels (usar audio em alta)  \n**Titulo:** \"Quando meu cliente descobre que pode usar o FGTS Futuro\" (reacao / meme)  \n**Por que funciona:** Formato de reacao humana cola no algoritmo; audio em alta amplia alcance organico  \n**Roteiro sugerido:**\n- Adaptar um audio trending (surpresa ou comemoracao) para o momento em que o cliente descobre que tem mais credito do que imaginava\n- Legenda explica o FGTS Futuro em 2-3 linhas com CTA para DM\n- Hashtags: #FGTSFuturo #PrimeiroImovel #MinhaCasaMinhaVida #CorretorDeImoveis #ImoveisJunho2026\n\n---\n\n### Post 6 \u2014 Sabado | Imovel em Destaque / Tour\n**Formato:** Reels tour rapido (30-60 seg)  \n**Titulo:** \"Tour rapido: apartamento compacto de 1 dorm que esta valorizando mais em [sua cidade]\"  \n**Por que funciona:** Imoveis de 1 dormitorio lideram valorizacao segundo FipeZap; conteudo de produto com contexto de mercado converte melhor do que anuncio isolado  \n**Roteiro sugerido:**\n- Abrir com numero impactante: \"Esse tipo de imovel valorizou [X]% nos ultimos 12 meses\"\n- Tour rapido com narra\u00e7\u00e3o dos diferenciais: planta multifuncional, espaco compartilhado, tecnologia\n- Encerrar com preco e condicoes de financiamento estimadas\n- CTA: \"Quer ver mais opcoes assim? Manda mensagem\"\n\n---\n\n### Post 7 \u2014 Domingo | Inspiracao / Conexao\n**Formato:** Imagem ou Reels curto com depoimento  \n**Titulo:** \"A chave do primeiro imovel: historia real de um cliente que achava impossivel\"  \n**Por que funciona:** Prova social e emocao geram compartilhamento; domingo e dia de reflexao \u2014 publico receptivo a conteudo motivacional  \n**Roteiro sugerido:**\n- Contar (com permissao) a historia de um cliente: renda, desafio, solucao encontrada\n- Mostrar o momento da entrega das chaves ou a assinatura\n- Legenda: \"Muita gente acha que comprar o primeiro imovel e impossivel. [Nome do cliente] tambem achava. Hoje tem as chaves na mao.\"\n- CTA suave: \"Se voce tem uma historia assim guardada, me conta nos comentarios\"\n\n---\n\n## Hashtags da Semana\n\n```\n#PrimeiroImovel #ComprarImovel2026 #MinhaCasaMinhaVida #FGTS #FGTSFuturo\n#CorretorDeImoveis #MercadoImobiliario #FinanciamentoImobiliario #SonhoDaCasaPropria\n#ImoveisCompactos #TipsDeImovel #CorretorDicas #ImoveisBrasil #RealizacaoDesonho\n```\n\n---\n\n## Formatos por Dia (Resumo)\n\n| Dia       | Formato     | Objetivo                      |\n|-----------|-------------|-------------------------------|\n| Segunda   | Carrossel   | Educacao \u2014 diferenca de juros |\n| Terca     | Reels       | Humanizacao \u2014 bastidores      |\n| Quarta    | Reels curto | Noticia \u2014 Selic e mercado     |\n| Quinta    | Carrossel   | Checklist \u2014 primeira compra   |\n| Sexta     | Reels trend | Entretenimento \u2014 FGTS Futuro  |\n| Sabado    | Reels tour  | Produto com contexto          |\n| Domingo   | Imagem/Reels| Inspiracao \u2014 depoimento       |\n\n---\n\n## Insights Estrat\u00e9gicos da Semana\n\n1. **Audio > Producao perfeita**: Reels simples e espontaneos performam melhor que videos altamente produzidos em 2026. Use o celular, seja natural.\n\n2. **Primeiros 2 segundos decidem tudo**: Todo Reels precisa de um gancho forte logo na abertura \u2014 numero, pergunta ou afirmacao inesperada.\n\n3. **Series vencem conteudos isolados**: Considere criar uma mini-serie de 3 a 6 Reels sobre \"O caminho do primeiro imovel\". Isso aumenta retencao de seguidores e visitas ao perfil.\n\n4. **Comprador de primeira viagem quer seguranca**: O publico iniciante nao precisa de hype \u2014 precisa de clareza. Posts educativos com linguagem simples geram mais DMs e leads qualificados.\n\n5. **Marca pessoal e o diferencial de 2026**: O cliente compra do corretor, nao da imobiliaria. Apare\u00e7a, conte historias, mostre a rotina.\n\n---\n\n## Fontes Consultadas\n\n- [Tendencias do mercado imobiliario em 2026 \u2014 QuintoAndar](https://www.quintoandar.com.br/guias/manual-imobiliario/tendencias-do-mercado-imobiliario/)\n- [5 tendencias que definem o mercado imobiliario no Brasil em 2026 \u2014 NegociosSC](https://www.negociossc.com.br/blog/5-tendencias-que-definem-o-mercado-imobiliario-no-brasil-em-2026/)\n- [Mercado imobiliario Brasil junho 2026: Selic e financiamento \u2014 Quadragon](https://quadragon.com.br/mercado-imobiliario-brasil-junho-2026-selic-1475-financiamento-e-crescimento-em-foco/)\n- [Minha Casa Minha Vida 2026 \u2014 Tenda](https://www.tenda.com/blog/minha-casa-minha-vida/minha-casa-minha-vida-2026)\n- [Minha Casa Minha Vida 2026: faixas, taxas \u2014 Regente Imoveis](https://regenteimoveis.com.br/guia/compra-de-imoveis/minha-casa-minha-vida-2026-faixas-taxas/)\n- [Bancos reduzem juros do financiamento imobiliario em 2026 \u2014 ImobConecta](https://imobconecta.com.br/artigo/mercado-imobiliario/bancos-reduzem-juros-imobiliario-em-2026)\n- [11 tendencias de marketing imobiliario para corretores em 2026 \u2014 Publicidade Imobiliaria](https://publicidadeimobiliaria.com/11-tendencias-de-marketing-imobiliario-para-corretores-e-imobiliarias-em-2026/)\n- [15 tendencias de marketing digital para o mercado imobiliario em 2026 \u2014 Rafael Terra](https://rafaelterra.com.br/15-tendencias-marketing-digital-mercado-imobiliario-2026/)\n- [Como viralizar Reels em 2026 \u2014 Rafael Terra](https://rafaelterra.com.br/como-viralizar-reels-em-2026/)\n- [Checklist para quem quer comprar imovel em 2026 \u2014 Brasil Imoveis](https://brasilimoveis.blog/2025/12/30/checklist-comprar-imovel-2026/)\n- [Como se organizar para comprar um imovel em 2026 \u2014 Caixa Noticias](https://caixanoticias.caixa.gov.br/Paginas/Not%C3%ADcias/2026/02-FEVEREIRO/Como-se-organizar-para-comprar-um-im%C3%B3vel-em-2026.aspx)\n"}], "grading": {"eval_id": 1, "run_id": "trends-semanal-without_skill", "expectations": [{"text": "Entrega pelo menos 5 itens no briefing", "passed": true, "evidence": "Entregou 7 posts com estrutura de calend\u00e1rio semanal"}, {"text": "Cada item tem formato recomendado (carrossel, reels, story ou post \u00fanico)", "passed": true, "evidence": "Todos os posts t\u00eam formato definido"}, {"text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo", "passed": true, "evidence": "Todos t\u00eam t\u00edtulo e roteiro com abertura de gancho"}, {"text": "Cada item tem \u00e2ngulo imobili\u00e1rio espec\u00edfico (n\u00e3o s\u00f3 'fale sobre im\u00f3veis')", "passed": false, "evidence": "Post 2 (bastidores do corretor) e Post 7 (depoimento) s\u00e3o sobre marca pessoal, n\u00e3o sobre tend\u00eancia imobili\u00e1ria. N\u00e3o cruzam trends gerais com im\u00f3veis \u2014 foca s\u00f3 em marketing do corretor"}, {"text": "Inclui pelo menos um tema de financiamento ou cr\u00e9dito imobili\u00e1rio", "passed": true, "evidence": "Post 1 (FGTS/juros), Post 3 (Selic), Post 5 (FGTS Futuro)"}, {"text": "N\u00e3o lista itens com conex\u00e3o fraca ou for\u00e7ada com im\u00f3veis", "passed": false, "evidence": "Post 6 (tour de im\u00f3vel de 1 dorm) e Post 7 (inspira\u00e7\u00e3o/depoimento) s\u00e3o conte\u00fado gen\u00e9rico de corretor, n\u00e3o t\u00eam origem em trend pesquisado \u2014 n\u00e3o cumprem a proposta de cruzar trends com im\u00f3veis"}], "summary": {"passed": 4, "failed": 2, "total": 6, "pass_rate": 0.6667}}}, {"id": "trends-semanal-with_skill", "prompt": "quais s\u00e3o os trends imobili\u00e1rios dessa semana? preciso planejar os posts do meu instagram de im\u00f3veis. sou corretor, p\u00fablico \u00e9 de compradores de primeira viagem e geral", "eval_id": 1, "outputs": [{"name": "briefing.md", "type": "text", "content": "# Briefing Semanal de Conte\u00fado Imobili\u00e1rio\n**Semana de 16 a 22 de junho de 2026**\n**Perfil:** Corretor | P\u00fablico: compradores de primeira viagem + geral\n\n---\n\n## 1. Minha Casa Minha Vida Acabou de Mudar \u2014 E Muito Gente N\u00e3o Sabe\n\n**Por que est\u00e1 em alta:** O MCMV recebeu atualiza\u00e7\u00e3o em 08/06/2026, ampliando os limites de faixa de renda (Faixa 3 at\u00e9 R$ 9,6 mil, nova Faixa 4 at\u00e9 R$ 13 mil) e elevando o teto de im\u00f3veis financi\u00e1veis a R$ 600 mil. As mudan\u00e7as reconfiguram o perfil de quem pode acessar o programa \u2014 muita gente que achava que estava fora, agora est\u00e1 dentro.\n\n**\u00c2ngulo imobili\u00e1rio:** Compradores de primeira viagem frequentemente se auto-excluem do MCMV por acharem que \"ganham demais\" ou que o programa n\u00e3o \u00e9 para eles. Esse post desfaz esse mito com os n\u00fameros novos e convida para uma conversa.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** O comparativo antes/depois das faixas, com exemplos de renda e valor de im\u00f3vel, pede m\u00faltiplos slides \u2014 \u00e9 conte\u00fado que as pessoas salvam e mandam para fam\u00edlia.\n\n**Urg\u00eancia:** Postar essa semana \u2014 a atualiza\u00e7\u00e3o \u00e9 de 08/06 e ainda est\u00e1 quente.\n\n**Sugest\u00e3o de gancho:** *\"Voc\u00ea acha que n\u00e3o se encaixa no Minha Casa Minha Vida. Mas as regras mudaram agora em junho \u2014 e talvez voc\u00ea esteja errado.\"*\n\n---\n\n## 2. Isen\u00e7\u00e3o de IR At\u00e9 R$ 5 Mil: O Dinheiro Que Voltou Para o Seu Bolso Pode Virar Entrada de Im\u00f3vel\n\n**Por que est\u00e1 em alta:** A nova tabela do IRPF com isen\u00e7\u00e3o total para quem ganha at\u00e9 R$ 5 mil est\u00e1 em vigor desde janeiro de 2026. A estimativa do governo \u00e9 de R$ 20\u201328 bilh\u00f5es injetados na economia. O assunto ainda circula \u2014 especialmente entre quem come\u00e7ou a notar a diferen\u00e7a no holerite.\n\n**\u00c2ngulo imobili\u00e1rio:** Para o comprador de primeira viagem, esse \"dinheiro extra\" mensal (que antes ia para o IR) pode ser direcionado a uma reserva para entrada. \u00c9 um gancho de planejamento financeiro com desfecho imobili\u00e1rio \u2014 exatamente o que o p\u00fablico de primeira compra precisa ouvir.\n\n**Formato recomendado:** Carrossel ou Reels\n\n**Por que esse formato:** Carrossel se quiser mostrar o c\u00e1lculo (\"voc\u00ea que ganha R$ 4.500 passou a ter X a mais por m\u00eas \u2014 veja o que isso representa em X meses de poupan\u00e7a\"); Reels se quiser o \u00e2ngulo mais emocional/motivacional (\"essa isen\u00e7\u00e3o pode ser o come\u00e7o da sua entrada\").\n\n**Urg\u00eancia:** Postar essa semana \u2014 o tema ainda tem tra\u00e7\u00e3o e conecta direto com a ansiedade financeira do p\u00fablico de primeira compra.\n\n**Sugest\u00e3o de gancho:** *\"O governo te devolveu dinheiro esse ano. A pergunta \u00e9: voc\u00ea est\u00e1 usando isso a seu favor?\"*\n\n---\n\n## 3. Gera\u00e7\u00e3o Z Lidera Inten\u00e7\u00e3o de Compra \u2014 Mas Trava na Hora H\n\n**Por que est\u00e1 em alta:** Pesquisas de 2026 mostram que 59\u201361% da Gera\u00e7\u00e3o Z pretende comprar im\u00f3vel, o maior \u00edndice da s\u00e9rie hist\u00f3rica. Mas 36% do grupo ainda nem iniciou as buscas \u2014 o principal freio \u00e9 o medo dos juros e das taxas de condom\u00ednio. O assunto viralizou em mar\u00e7o e continua sendo discutido.\n\n**\u00c2ngulo imobili\u00e1rio:** H\u00e1 uma lacuna enorme entre querer e agir. Um post que nomeia o medo (\"juros altos me travam\"), explica o cen\u00e1rio real (MCMV com taxas a partir de 4% ao ano, por exemplo) e d\u00e1 um passo concreto tem alt\u00edssimo potencial de gerar coment\u00e1rios e salvamentos.\n\n**Formato recomendado:** Reels\n\n**Por que esse formato:** O tema \u00e9 comportamental e emocional \u2014 \"eu quero mas tenho medo\" \u00e9 exatamente o territ\u00f3rio onde Reels em primeira pessoa ou com depoimento performa melhor que carrossel.\n\n**Urg\u00eancia:** Evergreen com timing perfeito \u2014 o dado \u00e9 recente e o perfil de p\u00fablico bate exatamente no seguidor que voc\u00ea quer converter.\n\n**Sugest\u00e3o de gancho:** *\"59% dos jovens querem comprar im\u00f3vel. Mas a maioria n\u00e3o deu nem o primeiro passo. Por qu\u00ea?\"*\n\n---\n\n## 4. FGTS Mudou: Quem Financiou Entre 2021 e 2025 Pode Usar o Fundo Agora\n\n**Por que est\u00e1 em alta:** O Conselho Curador do FGTS aprovou medida permitindo que quem financiou im\u00f3vel entre 2021 e 2025 use o FGTS para amortizar, comprar ou abater parcelas \u2014 v\u00e1lido para im\u00f3veis de at\u00e9 R$ 2,25 milh\u00f5es. Essa \u00e9 uma novidade pouco divulgada e com impacto direto no bolso.\n\n**\u00c2ngulo imobili\u00e1rio:** Dupla audi\u00eancia: quem j\u00e1 comprou (pode amortizar o financiamento) e quem est\u00e1 comprando agora (entende melhor como usar o FGTS). Para o p\u00fablico de primeira viagem, esclarecer as regras do FGTS \u00e9 sempre conte\u00fado de alta performance \u2014 \u00e9 um dos temas mais buscados antes da decis\u00e3o de compra.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** Regras e requisitos pedem estrutura \u2014 lista de condi\u00e7\u00f5es, exemplos pr\u00e1ticos, passo a passo. \u00c9 conte\u00fado educativo que as pessoas salvam para consultar depois.\n\n**Urg\u00eancia:** Postar essa semana \u2014 a mudan\u00e7a \u00e9 recente e ainda gera d\u00favidas.\n\n**Sugest\u00e3o de gancho:** *\"Voc\u00ea sabia que pode usar o FGTS para abater o financiamento que fez nos \u00faltimos 4 anos? A maioria dos compradores n\u00e3o sabe disso.\"*\n\n---\n\n## 5. Studios e Compactos Dominam os Lan\u00e7amentos \u2014 E N\u00e3o \u00c9 Coincid\u00eancia\n\n**Por que est\u00e1 em alta:** Quase 70% dos lan\u00e7amentos imobili\u00e1rios em Curitiba no 1\u00ba tri de 2026 foram studios ou compactos. Em SP, \u00e9 o segmento mais vendido. Pre\u00e7os partem de R$ 280 mil em SP e R$ 350 mil em Campinas. O dado \u00e9 concreto e conta uma hist\u00f3ria sobre o mercado.\n\n**\u00c2ngulo imobili\u00e1rio:** Para o comprador de primeira viagem, o studio \u00e9 a porta de entrada mais acess\u00edvel \u2014 menor pre\u00e7o, maior liquidez, localiza\u00e7\u00e3o melhor. Mas existe muito preconceito com \"apartamento pequeno\". Um post que reconstr\u00f3i a narrativa (\"n\u00e3o \u00e9 pequeno \u2014 \u00e9 inteligente\") tem \u00f3timo potencial de engajamento.\n\n**Formato recomendado:** Reels\n\n**Por que esse formato:** O argumento \u00e9 visual e comportamental \u2014 mostrar como um studio bem projetado pode ter mais qualidade de vida do que um ap\u00ea grande mal localizado \u00e9 um gancho que pede imagem/v\u00eddeo, n\u00e3o texto.\n\n**Urg\u00eancia:** Evergreen \u2014 mas com dado atual (70% dos lan\u00e7amentos) que ancora a narrativa no presente.\n\n**Sugest\u00e3o de gancho:** *\"Quase 70% dos im\u00f3veis lan\u00e7ados agora s\u00e3o studios. Isso n\u00e3o \u00e9 por acaso \u2014 \u00e9 o mercado te dizendo algo.\"*\n\n---\n\n## 6. Selic a 14,75% \u2014 Mas o Ciclo de Corte Come\u00e7ou. E Agora?\n\n**Por que est\u00e1 em alta:** A Selic segue alta, mas o in\u00edcio do ciclo de cortes \u00e9 o sinal que o mercado estava esperando. Taxas de financiamento imobili\u00e1rio ainda operam entre 11% e 12% ao ano pelo SBPE \u2014 mas a perspectiva de queda j\u00e1 muda o c\u00e1lculo.\n\n**\u00c2ngulo imobili\u00e1rio:** O comprador de primeira viagem frequentemente usa os juros altos como justificativa para adiar a compra (\"vou esperar a Selic cair\"). Esse post fura essa bolha com um argumento estrat\u00e9gico: o momento de entrar no mercado \u00e9 antes da queda dos juros, n\u00e3o depois \u2014 porque os pre\u00e7os sobem junto. \u00c9 um post de posicionamento que gera debate.\n\n**Formato recomendado:** Post \u00fanico ou Carrossel\n\n**Por que esse formato:** Post \u00fanico funciona como provoca\u00e7\u00e3o direta (\"esperar os juros ca\u00edrem pode sair mais caro do que voc\u00ea pensa\") e abre coment\u00e1rios. Carrossel se quiser construir o racioc\u00ednio passo a passo.\n\n**Urg\u00eancia:** Postar essa semana \u2014 o tema da Selic e cr\u00e9dito imobili\u00e1rio tem volume de busca consistente e o dado de 14,75% \u00e9 o contexto atual.\n\n**Sugest\u00e3o de gancho:** *\"Voc\u00ea est\u00e1 esperando os juros ca\u00edrem para comprar im\u00f3vel. Esse racioc\u00ednio pode estar te custando caro.\"*\n\n---\n\n## 7. Apartamento Ou Aluguel em 2026? O C\u00e1lculo Mudou\n\n**Por que est\u00e1 em alta:** A principal motiva\u00e7\u00e3o de compra para jovens em 2026 \u00e9 \"parar de pagar aluguel\". Com alugu\u00e9is subindo nas capitais e o MCMV com taxas a partir de 4% ao ano, o comparativo financeiro ficou mais favor\u00e1vel \u00e0 compra \u2014 especialmente nas faixas subsidiadas.\n\n**\u00c2ngulo imobili\u00e1rio:** \u00c9 o post mais cl\u00e1ssico do segmento, mas com dados frescos de 2026 ele ganha nova vida. A virada \u00e9 mostrar o c\u00e1lculo real: em algumas cidades e faixas do MCMV, a parcela j\u00e1 \u00e9 igual ou menor que o aluguel de im\u00f3vel equivalente.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** O comparativo num\u00e9rico (parcela vs. aluguel, com exemplos de cidade e faixa de renda) pede estrutura de slides. \u00c9 o tipo de conte\u00fado que gera \"manda pro meu esposo/esposa\" nos coment\u00e1rios.\n\n**Urg\u00eancia:** Evergreen \u2014 mas com contexto 2026 (MCMV atualizado, novos tetos) que o torna relevante agora.\n\n**Sugest\u00e3o de gancho:** *\"Parcela do financiamento vs. aluguel em 2026: fiz a conta. O resultado vai te surpreender.\"*\n\n---\n\n## Resumo Executivo \u2014 Ordem de Prioridade\n\n| # | Assunto | Urg\u00eancia | Formato |\n|---|---------|----------|---------|\n| 1 | MCMV \u2014 novas regras junho 2026 | Esta semana | Carrossel |\n| 2 | Isen\u00e7\u00e3o IR \u2192 entrada de im\u00f3vel | Esta semana | Carrossel / Reels |\n| 3 | FGTS: quem financiou 2021\u20132025 | Esta semana | Carrossel |\n| 4 | Selic em corte \u2014 momento de comprar? | Esta semana | Post \u00fanico |\n| 5 | Gen Z quer comprar mas n\u00e3o age | Evergreen atual | Reels |\n| 6 | Studios dominam lan\u00e7amentos | Evergreen atual | Reels |\n| 7 | Parcela vs. aluguel 2026 | Evergreen | Carrossel |\n\n---\n\n*Briefing gerado em 19/06/2026. Fontes: Minist\u00e9rio das Cidades, Quadragon, Tribuna do Norte, Terra, Portas.com.br, Circuito Arq+Decor, Ag\u00eancia Brasil, Fazenda.gov.br, \u00c2ncora Imobili\u00e1ria.*\n"}], "grading": {"eval_id": 1, "run_id": "trends-semanal-with_skill", "expectations": [{"text": "Entrega pelo menos 5 itens no briefing", "passed": true, "evidence": "Entregou 7 itens com estrutura completa"}, {"text": "Cada item tem formato recomendado (carrossel, reels, story ou post \u00fanico)", "passed": true, "evidence": "Todos os 7 itens t\u00eam 'Formato recomendado' e 'Por que esse formato'"}, {"text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo", "passed": true, "evidence": "Todos os itens t\u00eam 'Sugest\u00e3o de gancho' em it\u00e1lico"}, {"text": "Cada item tem \u00e2ngulo imobili\u00e1rio espec\u00edfico (n\u00e3o s\u00f3 'fale sobre im\u00f3veis')", "passed": true, "evidence": "Ex: item 2 conecta isen\u00e7\u00e3o de IR com reserva para entrada; item 4 explica FGTS para quem financiou 2021-2025"}, {"text": "Inclui pelo menos um tema de financiamento ou cr\u00e9dito imobili\u00e1rio", "passed": true, "evidence": "Item 4 (FGTS), item 6 (Selic e financiamento), item 7 (parcela vs. aluguel)"}, {"text": "N\u00e3o lista itens com conex\u00e3o fraca ou for\u00e7ada com im\u00f3veis", "passed": true, "evidence": "Todos os 7 itens t\u00eam conex\u00e3o direta e fundamentada com mercado imobili\u00e1rio"}]}}, {"id": "trends-semanal-without_skill", "prompt": "quais s\u00e3o os trends imobili\u00e1rios dessa semana? preciso planejar os posts do meu instagram de im\u00f3veis. sou corretor, p\u00fablico \u00e9 de compradores de primeira viagem e geral", "eval_id": 1, "outputs": [{"name": "briefing.md", "type": "text", "content": "# Briefing Semanal de Trends Imobili\u00e1rios\n**Semana de 16 a 22 de junho de 2026**\nPerfil: Corretor | Publico: compradores de primeira viagem e geral | Canal: Instagram\n\n---\n\n## Contexto do Mercado Esta Semana\n\n- Selic em 14,75% apos corte de 0,25 pp em marco/2026 \u2014 primeiro corte em quase dois anos\n- Bancos (Itau, Santander) ja reduziram taxas de financiamento, que operam entre 11% e 12% ao ano\n- Credito imobiliario deve crescer 16% em 2026 vs. ano anterior (ABECIP)\n- Minha Casa Minha Vida ganhou Faixa 4 (renda ate R$ 13.000) e teto de imovel subiu para R$ 600 mil\n- FGTS Futuro segue em vigor \u2014 permite usar depositos futuros para compor renda e aumentar credito aprovado\n- Imoveis compactos de 1 dormitorio lideram valorizacao (FipeZap)\n\n---\n\n## 7 Ideias de Post para a Semana\n\n### Post 1 \u2014 Segunda-feira | Educacao / Duvida Frequente\n**Formato:** Carrossel  \n**Titulo:** \"Voce sabe qual a diferenca entre juros FGTS e juros do banco? Muita gente confunde\"  \n**Por que funciona:** Duvida classica do comprador de primeira viagem; gera salvamento e compartilhamento  \n**Roteiro sugerido:**\n- Slide 1 (gancho): \"Se voce vai financiar um imovel em 2026, precisa entender isso antes\"\n- Slide 2: O que e o financiamento pelo FGTS (Minha Casa Minha Vida) \u2014 taxas a partir de 4,5% a.a.\n- Slide 3: O que e o financiamento bancario tradicional \u2014 taxas entre 11% e 12% a.a.\n- Slide 4: Quem pode usar o FGTS? Requisito dos 3 anos + sem outro imovel no SFH\n- Slide 5: FGTS Futuro \u2014 a novidade que poucos conhecem\n- Slide 6 (CTA): \"Manda DM que te explico qual opcao cabe no seu bolso\"\n\n---\n\n### Post 2 \u2014 Terca-feira | Bastidores / Humanizacao\n**Formato:** Reels (30-45 seg)  \n**Titulo:** \"Um dia na rotina de um corretor: o que voce nao ve por tras da venda\"  \n**Por que funciona:** Algoritmo privilegia autenticidade; constroi marca pessoal \u2014 tendencia numero 1 do Instagram imobiliario em 2026  \n**Roteiro sugerido:**\n- Primeiros 2 seg (gancho): \"7h da manha, cafezinho e ja tem visita marcada \u2014 vem comigo\"\n- Bastidores: preparo do imovel, checklist de documentos, conversa com o cliente\n- Final: \"Ser corretor e ser consultor de vida, nao so de imovel\"\n- Legenda: historia de como voce ajudou um cliente de primeira viagem a realizar o sonho\n\n---\n\n### Post 3 \u2014 Quarta-feira | Noticia / Mercado\n**Formato:** Reels curto (15-20 seg) ou Story com enquete  \n**Titulo:** \"Selic caiu. Isso muda alguma coisa pra quem quer comprar imovel?\"  \n**Por que funciona:** Noticia quente do momento; posiciona voce como especialista  \n**Roteiro sugerido:**\n- \"A Selic caiu pra 14,75% e os bancos ja reduziram os juros do financiamento\"\n- \"Isso significa que sua parcela pode ficar [X] reais mais barata por cada R$ 100 mil financiados\"\n- \"Mas o melhor momento de comprar nao e quando os juros chegam no fundo \u2014 e quando voce esta pronto\"\n- CTA: \"Descubra se voce esta pronto \u2014 link na bio ou manda um oi\"\n- Story complementar: enquete \"Voce esperaria os juros ca\u00edrem mais ou compraria agora?\"\n\n---\n\n### Post 4 \u2014 Quinta-feira | Educacao / Checklist\n**Formato:** Carrossel  \n**Titulo:** \"Checklist do primeiro imovel: 8 coisas que voce precisa verificar antes de assinar\"  \n**Por que funciona:** Conteudo util que o publico de primeira viagem vai salvar; alta intencao de compra implica em seguir corretores de autoridade  \n**Roteiro sugerido:**\n- Slide 1 (gancho): \"Vai comprar seu primeiro imovel? Nao assine nada sem ver essa lista\"\n- Slide 2: Score de credito e capacidade de endividamento (limite: 30% da renda)\n- Slide 3: Valor de entrada (20-30%) + custos extras (ITBI + cartorio = 5% a 8% do valor)\n- Slide 4: Documentacao \u2014 RG, CPF, comprovante de renda, IR, extrato FGTS, certidoes negativas\n- Slide 5: Verificar escritura, registro e pendencias do imovel\n- Slide 6: Localizacao \u2014 seguranca, infraestrutura, mobilidade, valorizacao\n- Slide 7: Tipo de financiamento mais adequado ao seu perfil\n- Slide 8: Vistoria tecnica antes de fechar\n- Slide 9 (CTA): \"Salva esse post e manda pra quem precisa\"\n\n---\n\n### Post 5 \u2014 Sexta-feira | Trend / Entretenimento\n**Formato:** Reels (usar audio em alta)  \n**Titulo:** \"Quando meu cliente descobre que pode usar o FGTS Futuro\" (reacao / meme)  \n**Por que funciona:** Formato de reacao humana cola no algoritmo; audio em alta amplia alcance organico  \n**Roteiro sugerido:**\n- Adaptar um audio trending (surpresa ou comemoracao) para o momento em que o cliente descobre que tem mais credito do que imaginava\n- Legenda explica o FGTS Futuro em 2-3 linhas com CTA para DM\n- Hashtags: #FGTSFuturo #PrimeiroImovel #MinhaCasaMinhaVida #CorretorDeImoveis #ImoveisJunho2026\n\n---\n\n### Post 6 \u2014 Sabado | Imovel em Destaque / Tour\n**Formato:** Reels tour rapido (30-60 seg)  \n**Titulo:** \"Tour rapido: apartamento compacto de 1 dorm que esta valorizando mais em [sua cidade]\"  \n**Por que funciona:** Imoveis de 1 dormitorio lideram valorizacao segundo FipeZap; conteudo de produto com contexto de mercado converte melhor do que anuncio isolado  \n**Roteiro sugerido:**\n- Abrir com numero impactante: \"Esse tipo de imovel valorizou [X]% nos ultimos 12 meses\"\n- Tour rapido com narra\u00e7\u00e3o dos diferenciais: planta multifuncional, espaco compartilhado, tecnologia\n- Encerrar com preco e condicoes de financiamento estimadas\n- CTA: \"Quer ver mais opcoes assim? Manda mensagem\"\n\n---\n\n### Post 7 \u2014 Domingo | Inspiracao / Conexao\n**Formato:** Imagem ou Reels curto com depoimento  \n**Titulo:** \"A chave do primeiro imovel: historia real de um cliente que achava impossivel\"  \n**Por que funciona:** Prova social e emocao geram compartilhamento; domingo e dia de reflexao \u2014 publico receptivo a conteudo motivacional  \n**Roteiro sugerido:**\n- Contar (com permissao) a historia de um cliente: renda, desafio, solucao encontrada\n- Mostrar o momento da entrega das chaves ou a assinatura\n- Legenda: \"Muita gente acha que comprar o primeiro imovel e impossivel. [Nome do cliente] tambem achava. Hoje tem as chaves na mao.\"\n- CTA suave: \"Se voce tem uma historia assim guardada, me conta nos comentarios\"\n\n---\n\n## Hashtags da Semana\n\n```\n#PrimeiroImovel #ComprarImovel2026 #MinhaCasaMinhaVida #FGTS #FGTSFuturo\n#CorretorDeImoveis #MercadoImobiliario #FinanciamentoImobiliario #SonhoDaCasaPropria\n#ImoveisCompactos #TipsDeImovel #CorretorDicas #ImoveisBrasil #RealizacaoDesonho\n```\n\n---\n\n## Formatos por Dia (Resumo)\n\n| Dia       | Formato     | Objetivo                      |\n|-----------|-------------|-------------------------------|\n| Segunda   | Carrossel   | Educacao \u2014 diferenca de juros |\n| Terca     | Reels       | Humanizacao \u2014 bastidores      |\n| Quarta    | Reels curto | Noticia \u2014 Selic e mercado     |\n| Quinta    | Carrossel   | Checklist \u2014 primeira compra   |\n| Sexta     | Reels trend | Entretenimento \u2014 FGTS Futuro  |\n| Sabado    | Reels tour  | Produto com contexto          |\n| Domingo   | Imagem/Reels| Inspiracao \u2014 depoimento       |\n\n---\n\n## Insights Estrat\u00e9gicos da Semana\n\n1. **Audio > Producao perfeita**: Reels simples e espontaneos performam melhor que videos altamente produzidos em 2026. Use o celular, seja natural.\n\n2. **Primeiros 2 segundos decidem tudo**: Todo Reels precisa de um gancho forte logo na abertura \u2014 numero, pergunta ou afirmacao inesperada.\n\n3. **Series vencem conteudos isolados**: Considere criar uma mini-serie de 3 a 6 Reels sobre \"O caminho do primeiro imovel\". Isso aumenta retencao de seguidores e visitas ao perfil.\n\n4. **Comprador de primeira viagem quer seguranca**: O publico iniciante nao precisa de hype \u2014 precisa de clareza. Posts educativos com linguagem simples geram mais DMs e leads qualificados.\n\n5. **Marca pessoal e o diferencial de 2026**: O cliente compra do corretor, nao da imobiliaria. Apare\u00e7a, conte historias, mostre a rotina.\n\n---\n\n## Fontes Consultadas\n\n- [Tendencias do mercado imobiliario em 2026 \u2014 QuintoAndar](https://www.quintoandar.com.br/guias/manual-imobiliario/tendencias-do-mercado-imobiliario/)\n- [5 tendencias que definem o mercado imobiliario no Brasil em 2026 \u2014 NegociosSC](https://www.negociossc.com.br/blog/5-tendencias-que-definem-o-mercado-imobiliario-no-brasil-em-2026/)\n- [Mercado imobiliario Brasil junho 2026: Selic e financiamento \u2014 Quadragon](https://quadragon.com.br/mercado-imobiliario-brasil-junho-2026-selic-1475-financiamento-e-crescimento-em-foco/)\n- [Minha Casa Minha Vida 2026 \u2014 Tenda](https://www.tenda.com/blog/minha-casa-minha-vida/minha-casa-minha-vida-2026)\n- [Minha Casa Minha Vida 2026: faixas, taxas \u2014 Regente Imoveis](https://regenteimoveis.com.br/guia/compra-de-imoveis/minha-casa-minha-vida-2026-faixas-taxas/)\n- [Bancos reduzem juros do financiamento imobiliario em 2026 \u2014 ImobConecta](https://imobconecta.com.br/artigo/mercado-imobiliario/bancos-reduzem-juros-imobiliario-em-2026)\n- [11 tendencias de marketing imobiliario para corretores em 2026 \u2014 Publicidade Imobiliaria](https://publicidadeimobiliaria.com/11-tendencias-de-marketing-imobiliario-para-corretores-e-imobiliarias-em-2026/)\n- [15 tendencias de marketing digital para o mercado imobiliario em 2026 \u2014 Rafael Terra](https://rafaelterra.com.br/15-tendencias-marketing-digital-mercado-imobiliario-2026/)\n- [Como viralizar Reels em 2026 \u2014 Rafael Terra](https://rafaelterra.com.br/como-viralizar-reels-em-2026/)\n- [Checklist para quem quer comprar imovel em 2026 \u2014 Brasil Imoveis](https://brasilimoveis.blog/2025/12/30/checklist-comprar-imovel-2026/)\n- [Como se organizar para comprar um imovel em 2026 \u2014 Caixa Noticias](https://caixanoticias.caixa.gov.br/Paginas/Not%C3%ADcias/2026/02-FEVEREIRO/Como-se-organizar-para-comprar-um-im%C3%B3vel-em-2026.aspx)\n"}], "grading": {"eval_id": 1, "run_id": "trends-semanal-without_skill", "expectations": [{"text": "Entrega pelo menos 5 itens no briefing", "passed": true, "evidence": "Entregou 7 posts com estrutura de calend\u00e1rio semanal"}, {"text": "Cada item tem formato recomendado (carrossel, reels, story ou post \u00fanico)", "passed": true, "evidence": "Todos os posts t\u00eam formato definido"}, {"text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo", "passed": true, "evidence": "Todos t\u00eam t\u00edtulo e roteiro com abertura de gancho"}, {"text": "Cada item tem \u00e2ngulo imobili\u00e1rio espec\u00edfico (n\u00e3o s\u00f3 'fale sobre im\u00f3veis')", "passed": false, "evidence": "Post 2 (bastidores do corretor) e Post 7 (depoimento) s\u00e3o sobre marca pessoal, n\u00e3o sobre tend\u00eancia imobili\u00e1ria. N\u00e3o cruzam trends gerais com im\u00f3veis \u2014 foca s\u00f3 em marketing do corretor"}, {"text": "Inclui pelo menos um tema de financiamento ou cr\u00e9dito imobili\u00e1rio", "passed": true, "evidence": "Post 1 (FGTS/juros), Post 3 (Selic), Post 5 (FGTS Futuro)"}, {"text": "N\u00e3o lista itens com conex\u00e3o fraca ou for\u00e7ada com im\u00f3veis", "passed": false, "evidence": "Post 6 (tour de im\u00f3vel de 1 dorm) e Post 7 (inspira\u00e7\u00e3o/depoimento) s\u00e3o conte\u00fado gen\u00e9rico de corretor, n\u00e3o t\u00eam origem em trend pesquisado \u2014 n\u00e3o cumprem a proposta de cruzar trends com im\u00f3veis"}]}}, {"id": "eval-2-with_skill-run-1", "prompt": "vi que o pessoal t\u00e1 falando muito de intelig\u00eancia artificial e automa\u00e7\u00e3o de empregos. tem como usar isso no instagram de im\u00f3veis? meu foco \u00e9 em compradores de primeira viagem e p\u00fablico geral", "eval_id": 2, "outputs": [{"name": "briefing.md", "type": "text", "content": "# Briefing de Conte\u00fado \u2014 Instagram Imobili\u00e1rio\n**Foco:** Compradores de primeira viagem / p\u00fablico geral  \n**Semana:** 19 de junho de 2026  \n**Contexto de origem:** Trend de IA e automa\u00e7\u00e3o de empregos \u2014 como usar isso no Instagram de im\u00f3veis\n\n---\n\n## Avalia\u00e7\u00e3o do trend de IA/automa\u00e7\u00e3o\n\n**Confirmado como trend real:**  \nA discuss\u00e3o sobre intelig\u00eancia artificial e medo de perder emprego est\u00e1 genuinamente em alta no Brasil em 2026. A busca por profissionais com conhecimento em IA cresceu 306% no \u00faltimo ano, a McKinsey estima que at\u00e9 16 milh\u00f5es de postos podem ser impactados no Brasil at\u00e9 2030, e o assunto est\u00e1 circulando em ve\u00edculos como Terra, Fast Company Brasil e Infomoney. N\u00e3o \u00e9 hype passageiro \u2014 \u00e9 conversa de mesa de jantar.\n\n**Conex\u00e3o com im\u00f3veis para primeira compra:** genu\u00edna e forte.  \nO racioc\u00ednio \u00e9 direto: quem tem medo de perder o emprego ou incerteza sobre renda futura adia decis\u00f5es financeiras grandes \u2014 inclusive a compra do primeiro im\u00f3vel. Esse \u00e9 o travamento emocional mais comum do comprador de primeira viagem. O conte\u00fado que nomeia esse medo e oferece um \u00e2ngulo de clareza vai parar o scroll e gerar salvamentos.\n\n---\n\n## 1. \"A IA vai pegar meu emprego. Ent\u00e3o \u00e9 hora certa de comprar um im\u00f3vel?\"\n\n**Por que est\u00e1 em alta:** O medo de automa\u00e7\u00e3o virou pauta dominante no Brasil \u2014 40% dos empregos globais em risco segundo a ONU, e at\u00e9 16 milh\u00f5es de vagas brasileiras impactadas at\u00e9 2030 conforme McKinsey. A discuss\u00e3o invadiu as redes sociais e quem est\u00e1 na faixa de compra do primeiro im\u00f3vel est\u00e1 sentindo isso diretamente.\n\n**\u00c2ngulo imobili\u00e1rio:** A incerteza sobre emprego \u00e9 a principal raz\u00e3o pela qual compradores de primeira viagem travam na hora de financiar. Este post n\u00e3o ignora o medo \u2014 ele o nomeia e depois inverte: im\u00f3vel quitado (ou financiado com parcela fixa) \u00e9 exatamente o ativo que protege quem tem medo de varia\u00e7\u00e3o de renda. Parcela previs\u00edvel vs. aluguel que pode subir a qualquer hora.\n\n**Formato recomendado:** Reels  \n**Por que esse formato:** O tema \u00e9 emocional e comportamental \u2014 funciona melhor em v\u00eddeo com fala direta para c\u00e2mera, no estilo \"vou te falar uma coisa que ningu\u00e9m comenta\".  \n**Urg\u00eancia:** Postar essa semana  \n**Sugest\u00e3o de gancho:** *\"Todo mundo tem medo que a IA roube o emprego. Mas tem uma pergunta que ningu\u00e9m est\u00e1 fazendo: e a\u00ed, \u00e9 hora de comprar ou de travar?\"*\n\n---\n\n## 2. Minha Casa Minha Vida ficou maior \u2014 e sua renda talvez agora caiba\n\n**Por que est\u00e1 em alta:** Em abril de 2026, o governo ampliou as faixas de renda do MCMV: a Faixa 3 agora vai at\u00e9 R$ 9.600/m\u00eas (era menor), a Faixa 4 chegou at\u00e9 R$ 13.000/m\u00eas, e o teto dos im\u00f3veis subiu para R$ 400 mil (Faixa 3) e R$ 600 mil (Faixa 4). S\u00e3o novas regras em vigor h\u00e1 menos de dois meses \u2014 muita gente n\u00e3o sabe que se enquadra.\n\n**\u00c2ngulo imobili\u00e1rio:** Diret\u00edssimo para o comprador de primeira viagem. Muita gente descartou o MCMV achando que \"ganho demais para ser enquadrado\" \u2014 esse post desfaz esse mito com n\u00fameros concretos. O gancho \u00e9 a surpresa: \"voc\u00ea pode estar se enquadrando e n\u00e3o sabe\".\n\n**Formato recomendado:** Carrossel  \n**Por que esse formato:** Dados comparativos (antes x depois, faixa x teto) pedem slides \u2014 facilita o salvamento e o compartilhamento (\"manda pra quem precisa saber\").  \n**Urg\u00eancia:** Postar essa semana \u2014 regras s\u00e3o recentes e a janela de novidade ainda est\u00e1 aberta.  \n**Sugest\u00e3o de gancho:** *\"Voc\u00ea acha que n\u00e3o se encaixa no Minha Casa Minha Vida? V\u00ea as novas faixas antes de ter certeza.\"*\n\n---\n\n## 3. A Selic caiu. O que isso muda de verdade no seu financiamento?\n\n**Por que est\u00e1 em alta:** O COPOM reduziu a Selic de 15% para 14,75% em mar\u00e7o de 2026, com proje\u00e7\u00e3o de queda para at\u00e9 12,5% at\u00e9 dezembro. O mercado financeiro est\u00e1 acompanhando de perto, e o impacto no cr\u00e9dito imobili\u00e1rio \u00e9 concreto: cada 1 ponto de queda inclui ~160 mil novas fam\u00edlias no mercado de financiamento.\n\n**\u00c2ngulo imobili\u00e1rio:** O comprador de primeira viagem sempre ouve \"espera os juros ca\u00edrem\". Este post responde de forma pr\u00e1tica: quanto voc\u00ea economiza de fato com cada 0,5% de queda? Qual \u00e9 o risco de esperar (pre\u00e7os sobem com demanda maior)? Desmistifica a espera eterna e ajuda a tomar decis\u00e3o.\n\n**Formato recomendado:** Carrossel  \n**Por que esse formato:** A l\u00f3gica precisa de pelo menos 3-4 slides para desenvolver o argumento sem parecer superficial \u2014 e dado financeiro com n\u00famero concreto vira print e salvamento.  \n**Urg\u00eancia:** Postar essa semana \u2014 o tema Selic est\u00e1 quente e h\u00e1 expectativa de nova decis\u00e3o do COPOM em breve.  \n**Sugest\u00e3o de gancho:** *\"A Selic caiu. Mas o que isso significa pro seu financiamento na pr\u00e1tica? (a resposta vai te surpreender)\"*\n\n---\n\n## 4. O apartamento ideal pra quem trabalha com IA (e por que isso mudou o que as pessoas buscam)\n\n**Por que est\u00e1 em alta:** Em 2026, cerca de 8 milh\u00f5es de brasileiros trabalham de casa, e a IA virou ferramenta de rotina no home office \u2014 assistentes virtuais, automa\u00e7\u00f5es, reuni\u00f5es resumidas por IA. O trabalhador remoto de 2026 n\u00e3o \u00e9 mais quem \"tenta se virar em casa\", \u00e9 quem exige um espa\u00e7o de trabalho de verdade no im\u00f3vel.\n\n**\u00c2ngulo imobili\u00e1rio:** A IA n\u00e3o apenas amea\u00e7a empregos \u2014 ela tamb\u00e9m criou um novo perfil de trabalhador que trabalha diferente, de onde quer. Isso mudou o que o comprador de primeira viagem prioriza num im\u00f3vel: quarto extra para escrit\u00f3rio, fibra de qualidade, sil\u00eancio ac\u00fastico, varanda para descompress\u00e3o. Post que lista o que olhar num im\u00f3vel pensando em trabalho remoto + IA.\n\n**Formato recomendado:** Carrossel  \n**Por que esse formato:** Lista de itens para verificar no im\u00f3vel funciona naturalmente em slides \u2014 e \u00e9 o tipo de conte\u00fado que vira \"checklist salvo antes de visitar um apartamento\".  \n**Urg\u00eancia:** Evergreen com timing perfeito agora \u2014 pode usar quando quiser, mas o momento atual potencializa.  \n**Sugest\u00e3o de gancho:** *\"O home office mudou. O apartamento que voc\u00ea procura tamb\u00e9m deveria ter mudado \u2014 voc\u00ea est\u00e1 olhando para as coisas certas?\"*\n\n---\n\n## 5. FGTS: o dinheiro que voc\u00ea esqueceu que tem para entrar no primeiro im\u00f3vel\n\n**Por que est\u00e1 em alta:** As regras de uso do FGTS foram atualizadas em 2026 \u2014 o teto de im\u00f3vel para uso do FGTS subiu de R$ 1,5 milh\u00e3o para R$ 2,25 milh\u00f5es, e o financiamento agora cobre at\u00e9 80% do valor do im\u00f3vel pela Caixa. Muita gente n\u00e3o sabe o que mudou e continua com a percep\u00e7\u00e3o desatualizada de que \"FGTS \u00e9 dif\u00edcil de usar\".\n\n**\u00c2ngulo imobili\u00e1rio:** Para o comprador de primeira viagem, o FGTS costuma ser a solu\u00e7\u00e3o para viabilizar a entrada \u2014 mas a maioria n\u00e3o sabe exatamente quais s\u00e3o os requisitos (3 anos de carteira assinada, n\u00e3o ter financiamento ativo no SFH, usar como moradia). Post que explica de forma direta, sem juridiqu\u00eas.\n\n**Formato recomendado:** Carrossel  \n**Por que esse formato:** Passo a passo + requisitos + regras novas = conte\u00fado que vira refer\u00eancia salva. Quem est\u00e1 pesquisando primeira compra vai guardar esse carrossel.  \n**Urg\u00eancia:** Evergreen \u2014 pode usar a qualquer momento, mas com timing \u00f3timo agora dado as mudan\u00e7as recentes.  \n**Sugest\u00e3o de gancho:** *\"Voc\u00ea tem FGTS parado e provavelmente pode usar para comprar seu primeiro im\u00f3vel. As regras mudaram \u2014 vai que voc\u00ea se encaixa agora.\"*\n\n---\n\n## 6. \"Mas e se eu perder o emprego depois de financiar?\" \u2014 A pergunta que todo mundo tem medo de fazer\n\n**Por que est\u00e1 em alta:** Com a discuss\u00e3o de IA e automa\u00e7\u00e3o no topo das buscas e das conversas, o medo de varia\u00e7\u00e3o de renda est\u00e1 mais alto do que em anos anteriores entre trabalhadores de 25 a 40 anos \u2014 exatamente o p\u00fablico de primeira compra. Esse receio espec\u00edfico (e se eu financiar e perder o emprego?) \u00e9 o principal bloqueador emocional da decis\u00e3o de compra.\n\n**\u00c2ngulo imobili\u00e1rio:** Post educativo que explica o que acontece de verdade em caso de perda de emprego durante o financiamento: seguros obrigat\u00f3rios do financiamento imobili\u00e1rio (MIP \u2014 Morte e Invalidez Permanente), possibilidade de usar FGTS para abater parcelas, car\u00eancia em renegocia\u00e7\u00e3o pela CEF. Informa\u00e7\u00e3o que desfaz o medo com dado real.\n\n**Formato recomendado:** Reels  \n**Por que esse formato:** Pergunta emocional + resposta direta \u00e9 linguagem de v\u00eddeo curto \u2014 \"vou responder essa pergunta que todo mundo tem mas ningu\u00e9m faz\" gera engajamento alto.  \n**Urg\u00eancia:** Postar essa semana \u2014 o contexto de IA e medo de emprego est\u00e1 quente e cria abertura perfeita para essa conversa.  \n**Sugest\u00e3o de gancho:** *\"'E se eu financiar e perder o emprego por causa da IA?' \u2014 \u00c9 a pergunta que a maioria n\u00e3o faz. Deixa eu te responder com honestidade.\"*\n\n---\n\n## Ordem de publica\u00e7\u00e3o sugerida\n\n| Dia | Post | Formato | Urg\u00eancia |\n|---|---|---|---|\n| Segunda | Post 6 \u2014 medo de perder emprego + financiamento | Reels | Alta \u2014 aproveita a onda de IA |\n| Ter\u00e7a | Post 2 \u2014 novas faixas MCMV | Carrossel | Alta \u2014 regras recentes |\n| Quinta | Post 1 \u2014 IA e hora de comprar? | Reels | Alta |\n| S\u00e1bado | Post 3 \u2014 Selic e financiamento na pr\u00e1tica | Carrossel | Alta |\n| Domingo/semana seguinte | Post 5 \u2014 FGTS atualizado | Carrossel | Evergreen |\n| Semana seguinte | Post 4 \u2014 apartamento para trabalho com IA | Carrossel | Evergreen |\n\n---\n\n## Nota estrat\u00e9gica\n\nO trend de IA tem conex\u00e3o genu\u00edna com o p\u00fablico de primeira compra \u2014 n\u00e3o porque eles v\u00e3o usar IA para comprar im\u00f3vel, mas porque o medo da IA \u00e9 o mesmo medo que paralisa a decis\u00e3o de compra: incerteza sobre renda futura. O conte\u00fado que nomeia esse medo diretamente e oferece informa\u00e7\u00e3o concreta (seguros, FGTS, regras de financiamento) vai performar bem porque resolve uma ansiedade real. Evite \u00e2ngulos de \"IA vai transformar o mercado imobili\u00e1rio\" \u2014 isso \u00e9 gen\u00e9rico e distante da realidade do comprador de primeira viagem. O \u00e2ngulo que funciona \u00e9 humano: medo, decis\u00e3o, prote\u00e7\u00e3o.\n\n---\n\n*Fontes consultadas: Ag\u00eancia Brasil, CNN Brasil, Infomoney, Terra, Fast Company Brasil, McKinsey, Quadragon, Portas.com.br, Pafil, Tenda, Fiori Empreendimentos, SPImovel, Imobibrasil \u2014 junho 2026.*\n"}], "grading": {"eval_id": 2, "run_id": "ia-adaptada-imoveis-with_skill", "expectations": [{"text": "Avalia honestamente se a conex\u00e3o IA \u2192 im\u00f3veis \u00e9 forte ou fraca", "passed": true, "evidence": "Se\u00e7\u00e3o expl\u00edcita de avalia\u00e7\u00e3o: 'Conex\u00e3o com im\u00f3veis para primeira compra: genu\u00edna e forte' com justificativa clara"}, {"text": "Se recomendar o tema, apresenta \u00e2ngulo concreto (n\u00e3o gen\u00e9rico)", "passed": true, "evidence": "6 posts com \u00e2ngulos distintos: medo de perder emprego \u2192 financiamento; MCMV novas faixas; Selic e simula\u00e7\u00e3o; apartamento para home office+IA; FGTS atualizado; 'e se perder emprego depois de financiar?'"}, {"text": "Se descartar, explica por que e sugere alternativa melhor", "passed": true, "evidence": "N\u00e3o descartou (conex\u00e3o genu\u00edna), mas a 'Nota estrat\u00e9gica' alerta para evitar o \u00e2ngulo gen\u00e9rico 'IA vai transformar o mercado imobili\u00e1rio'"}, {"text": "Tem sugest\u00e3o de gancho se recomendar o post", "passed": true, "evidence": "Todos os 6 posts t\u00eam 'Sugest\u00e3o de gancho' espec\u00edfico"}, {"text": "Tem formato recomendado com justificativa", "passed": true, "evidence": "Todos os 6 posts t\u00eam formato + 'Por que esse formato'"}], "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}}}, {"id": "eval-2-without_skill-run-1", "prompt": "vi que o pessoal t\u00e1 falando muito de intelig\u00eancia artificial e automa\u00e7\u00e3o de empregos. tem como usar isso no instagram de im\u00f3veis? meu foco \u00e9 em compradores de primeira viagem e p\u00fablico geral", "eval_id": 2, "outputs": [{"name": "briefing.md", "type": "text", "content": "# Briefing de Conte\u00fado: Tend\u00eancia IA + Automa\u00e7\u00e3o x Mercado Imobili\u00e1rio\n**P\u00fablico-alvo:** Compradores de primeira viagem e p\u00fablico geral\n**Plataforma:** Instagram\n**Data:** 19/06/2026\n\n---\n\n## O que est\u00e1 bombando\n\nO debate sobre intelig\u00eancia artificial e automa\u00e7\u00e3o de empregos est\u00e1 em alta nas redes. As pessoas est\u00e3o com medo de perder o emprego para m\u00e1quinas, questionando onde colocar o dinheiro com seguran\u00e7a e repensando prioridades financeiras. Esse clima de incerteza e busca por seguran\u00e7a \u00e9 o gancho perfeito para o mercado imobili\u00e1rio.\n\n---\n\n## \u00c2ngulo estrat\u00e9gico: da ansiedade para a a\u00e7\u00e3o\n\nO erro seria ignorar o assunto ou for\u00e7ar uma conex\u00e3o irrelevante. O caminho certo \u00e9 **entrar na conversa onde ela j\u00e1 est\u00e1 acontecendo** e redirecionar para o im\u00f3vel como resposta concreta \u00e0 inseguran\u00e7a que a galera est\u00e1 sentindo.\n\n---\n\n## 5 Ideias de Post Prontas para Usar\n\n---\n\n### POST 1 \u2014 Reels / Carrossel\n**Gancho:** \"A IA pode tomar o seu emprego. Mas ela n\u00e3o vai tomar o seu apartamento.\"\n\n**Desenvolvimento:**\n- Todo mundo est\u00e1 falando que a automa\u00e7\u00e3o vai substituir profiss\u00f5es\n- A renda pode ser incerta. O im\u00f3vel, n\u00e3o.\n- Enquanto o mundo muda r\u00e1pido, o tijolo continua valorizando\n- Quem comprou im\u00f3vel nos \u00faltimos 5 anos n\u00e3o se arrependeu\n- Sua primeira conquista pode ser a mais segura que voc\u00ea vai fazer\n\n**CTA:** \"Salva esse post e me chama no direct. Vamos ver o que cabe no seu bolso hoje.\"\n\n**Formato sugerido:** Reels com texto animado, fundo escuro, letras grandes. Vibe de alerta mas com solu\u00e7\u00e3o.\n\n---\n\n### POST 2 \u2014 Carrossel educativo\n**Gancho:** \"Todo mundo com medo da IA. E voc\u00ea ainda nem tem a chave do primeiro ap\u00ea.\"\n\n**Desenvolvimento (slides):**\n1. A conversa do momento: IA vai mudar o mercado de trabalho\n2. Mas tem uma coisa que rob\u00f4 nenhum substitui: patrim\u00f4nio real\n3. Im\u00f3vel \u00e9 um dos poucos ativos que valoriza independente da tecnologia\n4. E o financiamento habitacional est\u00e1 mais acess\u00edvel do que voc\u00ea imagina\n5. Primeiro passo: entender o que voc\u00ea pode pagar hoje\n6. [Slide final] Me chama. A gente faz as contas juntos.\n\n**Tom:** informativo, sem alarmismo, com solu\u00e7\u00e3o pr\u00e1tica no final.\n\n---\n\n### POST 3 \u2014 Story interativo\n**Gancho:** \"Voc\u00ea est\u00e1 preocupado com IA no mercado de trabalho?\" (enquete Sim/N\u00e3o)\n\n**Sequ\u00eancia:**\n- Story 1: Enquete \u2014 \"Voc\u00ea est\u00e1 preocupado com IA no mercado de trabalho?\"\n- Story 2: \"Se voc\u00ea votou SIM, voc\u00ea precisa ver isso \ud83d\udc47\"\n- Story 3: \"Uma coisa que a IA n\u00e3o consegue fazer: comprar um im\u00f3vel pra voc\u00ea. Essa decis\u00e3o \u00e9 sua.\"\n- Story 4: \"E nunca foi t\u00e3o f\u00e1cil dar o primeiro passo. Me manda mensagem, te explico como funciona.\"\n\n**Por que funciona:** Stories com enquete t\u00eam alt\u00edssima taxa de engajamento. Entra na conversa do momento sem soar for\u00e7ado.\n\n---\n\n### POST 4 \u2014 Post de texto (estilo reflex\u00e3o)\n**Gancho:** \"A galera preocupada com IA. Eu entendo.\"\n\n**Texto:**\n\"A galera preocupada com IA. Eu entendo.\n\nMas sabe o que me chama aten\u00e7\u00e3o? As mesmas pessoas que est\u00e3o assustadas com o futuro do emprego ainda n\u00e3o deram o passo mais seguro que existe: comprar o primeiro im\u00f3vel.\n\nN\u00e3o porque n\u00e3o querem. Mas porque acham que ainda n\u00e3o \u00e9 a hora, que o sal\u00e1rio n\u00e3o \u00e9 suficiente, que \u00e9 complicado demais.\n\nEnquanto o mundo muda em velocidade recorde, ter um im\u00f3vel no seu nome continua sendo uma das formas mais s\u00f3lidas de construir seguran\u00e7a.\n\nN\u00e3o estou dizendo pra ignorar o que est\u00e1 acontecendo. Estou dizendo: use esse momento pra pensar no longo prazo.\n\nMe conta: voc\u00ea j\u00e1 pensou em comprar seu primeiro im\u00f3vel?\"\n\n**Tom:** reflexivo, sem vender diretamente, convida para conversa.\n\n---\n\n### POST 5 \u2014 Carrossel comparativo\n**Gancho:** \"O que a IA pode e o que ela n\u00e3o pode fazer por voc\u00ea\"\n\n**Slides:**\n1. IA pode: escrever textos, criar imagens, analisar dados\n2. IA n\u00e3o pode: pagar seu aluguel no final do m\u00eas\n3. IA pode: substituir fun\u00e7\u00f5es em empresas\n4. IA n\u00e3o pode: ser seu patrim\u00f4nio\n5. IA pode: mudar o mercado de trabalho\n6. IA n\u00e3o pode: tirar de voc\u00ea um im\u00f3vel que \u00e9 seu\n7. Sua primeira conquista n\u00e3o precisa esperar. Me chama.\n\n**Formato:** Carrossel simples, contraste visual, fonte grande. F\u00e1cil de salvar e compartilhar.\n\n---\n\n## Tom geral recomendado\n\n- Emp\u00e1tico, n\u00e3o oportunista. A galera est\u00e1 com medo real. N\u00e3o use isso pra assustar mais.\n- Pr\u00e1tico e acess\u00edvel. Fale com quem est\u00e1 comprando o PRIMEIRO im\u00f3vel, n\u00e3o com investidor.\n- Sem jarg\u00e3o. Evite termos como \"ativo real\", \"hedge inflacion\u00e1rio\", \"reserva de valor\". Use: \"seguran\u00e7a\", \"conquista\", \"algo que \u00e9 seu\".\n- Com CTA claro. Sempre convide para o direct. Esse p\u00fablico precisa de apoio para tomar a decis\u00e3o.\n\n---\n\n## Hashtags sugeridas\n\n```\n#primeiroiMovel #inteligenciaartificial #mercadoimobiliario #comprarim\u00f3vel #financiamentohabitacional #sonhodacasamropia #imoveisbrasil #dinheirointeligente #vidafinanceira #realizacoes\n```\n\n---\n\n## Melhor momento para postar\n\n- Reels: ter\u00e7a a quinta, entre 19h e 21h\n- Carrossel educativo: segunda ou quarta cedo (7h\u20139h), quando o p\u00fablico est\u00e1 no modo \"aprendizado\"\n- Stories interativos: qualquer dia \u00fatil, hor\u00e1rio de almo\u00e7o (12h\u201313h)\n\n---\n\n## Observa\u00e7\u00e3o estrat\u00e9gica\n\nEsse gancho tem vida \u00fatil. Enquanto o debate sobre IA e emprego estiver em alta (e est\u00e1), ele performa. Use agora, nos pr\u00f3ximos 15 a 30 dias, e depois migre o enquadramento para outros medos do comprador de primeira viagem (infla\u00e7\u00e3o, juros, burocracia). A l\u00f3gica \u00e9 a mesma: entrar onde a conversa j\u00e1 est\u00e1 e oferecer o im\u00f3vel como resposta concreta.\n"}], "grading": {"eval_id": 2, "run_id": "ia-adaptada-imoveis-without_skill", "expectations": [{"text": "Avalia honestamente se a conex\u00e3o IA \u2192 im\u00f3veis \u00e9 forte ou fraca", "passed": true, "evidence": "Confirmou conex\u00e3o genu\u00edna: 'O erro seria ignorar o assunto ou for\u00e7ar uma conex\u00e3o irrelevante'"}, {"text": "Se recomendar o tema, apresenta \u00e2ngulo concreto (n\u00e3o gen\u00e9rico)", "passed": false, "evidence": "Os 5 posts t\u00eam \u00e2ngulos mas sem dados concretos: n\u00e3o menciona MCMV atualizado, Selic 14,75%, FGTS com teto de R$2,25M \u2014 apenas racioc\u00ednio emocional gen\u00e9rico ('im\u00f3vel \u00e9 seguran\u00e7a')"}, {"text": "Se descartar, explica por que e sugere alternativa melhor", "passed": true, "evidence": "N\u00e3o descartou \u2014 acertou ao identificar a conex\u00e3o como v\u00e1lida"}, {"text": "Tem sugest\u00e3o de gancho se recomendar o post", "passed": true, "evidence": "Todos os 5 posts t\u00eam gancho sugerido"}, {"text": "Tem formato recomendado com justificativa", "passed": false, "evidence": "Post 3 (Story interativo) e Post 4 (texto) t\u00eam justificativa, mas Posts 1, 2, 5 t\u00eam formato sem explicar o porqu\u00ea da escolha"}], "summary": {"passed": 3, "failed": 2, "total": 5, "pass_rate": 0.6}}}, {"id": "ia-adaptada-imoveis-with_skill", "prompt": "vi que o pessoal t\u00e1 falando muito de intelig\u00eancia artificial e automa\u00e7\u00e3o de empregos. tem como usar isso no instagram de im\u00f3veis? meu foco \u00e9 em compradores de primeira viagem e p\u00fablico geral", "eval_id": 2, "outputs": [{"name": "briefing.md", "type": "text", "content": "# Briefing de Conte\u00fado \u2014 Instagram Imobili\u00e1rio\n**Foco:** Compradores de primeira viagem / p\u00fablico geral  \n**Semana:** 19 de junho de 2026  \n**Contexto de origem:** Trend de IA e automa\u00e7\u00e3o de empregos \u2014 como usar isso no Instagram de im\u00f3veis\n\n---\n\n## Avalia\u00e7\u00e3o do trend de IA/automa\u00e7\u00e3o\n\n**Confirmado como trend real:**  \nA discuss\u00e3o sobre intelig\u00eancia artificial e medo de perder emprego est\u00e1 genuinamente em alta no Brasil em 2026. A busca por profissionais com conhecimento em IA cresceu 306% no \u00faltimo ano, a McKinsey estima que at\u00e9 16 milh\u00f5es de postos podem ser impactados no Brasil at\u00e9 2030, e o assunto est\u00e1 circulando em ve\u00edculos como Terra, Fast Company Brasil e Infomoney. N\u00e3o \u00e9 hype passageiro \u2014 \u00e9 conversa de mesa de jantar.\n\n**Conex\u00e3o com im\u00f3veis para primeira compra:** genu\u00edna e forte.  \nO racioc\u00ednio \u00e9 direto: quem tem medo de perder o emprego ou incerteza sobre renda futura adia decis\u00f5es financeiras grandes \u2014 inclusive a compra do primeiro im\u00f3vel. Esse \u00e9 o travamento emocional mais comum do comprador de primeira viagem. O conte\u00fado que nomeia esse medo e oferece um \u00e2ngulo de clareza vai parar o scroll e gerar salvamentos.\n\n---\n\n## 1. \"A IA vai pegar meu emprego. Ent\u00e3o \u00e9 hora certa de comprar um im\u00f3vel?\"\n\n**Por que est\u00e1 em alta:** O medo de automa\u00e7\u00e3o virou pauta dominante no Brasil \u2014 40% dos empregos globais em risco segundo a ONU, e at\u00e9 16 milh\u00f5es de vagas brasileiras impactadas at\u00e9 2030 conforme McKinsey. A discuss\u00e3o invadiu as redes sociais e quem est\u00e1 na faixa de compra do primeiro im\u00f3vel est\u00e1 sentindo isso diretamente.\n\n**\u00c2ngulo imobili\u00e1rio:** A incerteza sobre emprego \u00e9 a principal raz\u00e3o pela qual compradores de primeira viagem travam na hora de financiar. Este post n\u00e3o ignora o medo \u2014 ele o nomeia e depois inverte: im\u00f3vel quitado (ou financiado com parcela fixa) \u00e9 exatamente o ativo que protege quem tem medo de varia\u00e7\u00e3o de renda. Parcela previs\u00edvel vs. aluguel que pode subir a qualquer hora.\n\n**Formato recomendado:** Reels  \n**Por que esse formato:** O tema \u00e9 emocional e comportamental \u2014 funciona melhor em v\u00eddeo com fala direta para c\u00e2mera, no estilo \"vou te falar uma coisa que ningu\u00e9m comenta\".  \n**Urg\u00eancia:** Postar essa semana  \n**Sugest\u00e3o de gancho:** *\"Todo mundo tem medo que a IA roube o emprego. Mas tem uma pergunta que ningu\u00e9m est\u00e1 fazendo: e a\u00ed, \u00e9 hora de comprar ou de travar?\"*\n\n---\n\n## 2. Minha Casa Minha Vida ficou maior \u2014 e sua renda talvez agora caiba\n\n**Por que est\u00e1 em alta:** Em abril de 2026, o governo ampliou as faixas de renda do MCMV: a Faixa 3 agora vai at\u00e9 R$ 9.600/m\u00eas (era menor), a Faixa 4 chegou at\u00e9 R$ 13.000/m\u00eas, e o teto dos im\u00f3veis subiu para R$ 400 mil (Faixa 3) e R$ 600 mil (Faixa 4). S\u00e3o novas regras em vigor h\u00e1 menos de dois meses \u2014 muita gente n\u00e3o sabe que se enquadra.\n\n**\u00c2ngulo imobili\u00e1rio:** Diret\u00edssimo para o comprador de primeira viagem. Muita gente descartou o MCMV achando que \"ganho demais para ser enquadrado\" \u2014 esse post desfaz esse mito com n\u00fameros concretos. O gancho \u00e9 a surpresa: \"voc\u00ea pode estar se enquadrando e n\u00e3o sabe\".\n\n**Formato recomendado:** Carrossel  \n**Por que esse formato:** Dados comparativos (antes x depois, faixa x teto) pedem slides \u2014 facilita o salvamento e o compartilhamento (\"manda pra quem precisa saber\").  \n**Urg\u00eancia:** Postar essa semana \u2014 regras s\u00e3o recentes e a janela de novidade ainda est\u00e1 aberta.  \n**Sugest\u00e3o de gancho:** *\"Voc\u00ea acha que n\u00e3o se encaixa no Minha Casa Minha Vida? V\u00ea as novas faixas antes de ter certeza.\"*\n\n---\n\n## 3. A Selic caiu. O que isso muda de verdade no seu financiamento?\n\n**Por que est\u00e1 em alta:** O COPOM reduziu a Selic de 15% para 14,75% em mar\u00e7o de 2026, com proje\u00e7\u00e3o de queda para at\u00e9 12,5% at\u00e9 dezembro. O mercado financeiro est\u00e1 acompanhando de perto, e o impacto no cr\u00e9dito imobili\u00e1rio \u00e9 concreto: cada 1 ponto de queda inclui ~160 mil novas fam\u00edlias no mercado de financiamento.\n\n**\u00c2ngulo imobili\u00e1rio:** O comprador de primeira viagem sempre ouve \"espera os juros ca\u00edrem\". Este post responde de forma pr\u00e1tica: quanto voc\u00ea economiza de fato com cada 0,5% de queda? Qual \u00e9 o risco de esperar (pre\u00e7os sobem com demanda maior)? Desmistifica a espera eterna e ajuda a tomar decis\u00e3o.\n\n**Formato recomendado:** Carrossel  \n**Por que esse formato:** A l\u00f3gica precisa de pelo menos 3-4 slides para desenvolver o argumento sem parecer superficial \u2014 e dado financeiro com n\u00famero concreto vira print e salvamento.  \n**Urg\u00eancia:** Postar essa semana \u2014 o tema Selic est\u00e1 quente e h\u00e1 expectativa de nova decis\u00e3o do COPOM em breve.  \n**Sugest\u00e3o de gancho:** *\"A Selic caiu. Mas o que isso significa pro seu financiamento na pr\u00e1tica? (a resposta vai te surpreender)\"*\n\n---\n\n## 4. O apartamento ideal pra quem trabalha com IA (e por que isso mudou o que as pessoas buscam)\n\n**Por que est\u00e1 em alta:** Em 2026, cerca de 8 milh\u00f5es de brasileiros trabalham de casa, e a IA virou ferramenta de rotina no home office \u2014 assistentes virtuais, automa\u00e7\u00f5es, reuni\u00f5es resumidas por IA. O trabalhador remoto de 2026 n\u00e3o \u00e9 mais quem \"tenta se virar em casa\", \u00e9 quem exige um espa\u00e7o de trabalho de verdade no im\u00f3vel.\n\n**\u00c2ngulo imobili\u00e1rio:** A IA n\u00e3o apenas amea\u00e7a empregos \u2014 ela tamb\u00e9m criou um novo perfil de trabalhador que trabalha diferente, de onde quer. Isso mudou o que o comprador de primeira viagem prioriza num im\u00f3vel: quarto extra para escrit\u00f3rio, fibra de qualidade, sil\u00eancio ac\u00fastico, varanda para descompress\u00e3o. Post que lista o que olhar num im\u00f3vel pensando em trabalho remoto + IA.\n\n**Formato recomendado:** Carrossel  \n**Por que esse formato:** Lista de itens para verificar no im\u00f3vel funciona naturalmente em slides \u2014 e \u00e9 o tipo de conte\u00fado que vira \"checklist salvo antes de visitar um apartamento\".  \n**Urg\u00eancia:** Evergreen com timing perfeito agora \u2014 pode usar quando quiser, mas o momento atual potencializa.  \n**Sugest\u00e3o de gancho:** *\"O home office mudou. O apartamento que voc\u00ea procura tamb\u00e9m deveria ter mudado \u2014 voc\u00ea est\u00e1 olhando para as coisas certas?\"*\n\n---\n\n## 5. FGTS: o dinheiro que voc\u00ea esqueceu que tem para entrar no primeiro im\u00f3vel\n\n**Por que est\u00e1 em alta:** As regras de uso do FGTS foram atualizadas em 2026 \u2014 o teto de im\u00f3vel para uso do FGTS subiu de R$ 1,5 milh\u00e3o para R$ 2,25 milh\u00f5es, e o financiamento agora cobre at\u00e9 80% do valor do im\u00f3vel pela Caixa. Muita gente n\u00e3o sabe o que mudou e continua com a percep\u00e7\u00e3o desatualizada de que \"FGTS \u00e9 dif\u00edcil de usar\".\n\n**\u00c2ngulo imobili\u00e1rio:** Para o comprador de primeira viagem, o FGTS costuma ser a solu\u00e7\u00e3o para viabilizar a entrada \u2014 mas a maioria n\u00e3o sabe exatamente quais s\u00e3o os requisitos (3 anos de carteira assinada, n\u00e3o ter financiamento ativo no SFH, usar como moradia). Post que explica de forma direta, sem juridiqu\u00eas.\n\n**Formato recomendado:** Carrossel  \n**Por que esse formato:** Passo a passo + requisitos + regras novas = conte\u00fado que vira refer\u00eancia salva. Quem est\u00e1 pesquisando primeira compra vai guardar esse carrossel.  \n**Urg\u00eancia:** Evergreen \u2014 pode usar a qualquer momento, mas com timing \u00f3timo agora dado as mudan\u00e7as recentes.  \n**Sugest\u00e3o de gancho:** *\"Voc\u00ea tem FGTS parado e provavelmente pode usar para comprar seu primeiro im\u00f3vel. As regras mudaram \u2014 vai que voc\u00ea se encaixa agora.\"*\n\n---\n\n## 6. \"Mas e se eu perder o emprego depois de financiar?\" \u2014 A pergunta que todo mundo tem medo de fazer\n\n**Por que est\u00e1 em alta:** Com a discuss\u00e3o de IA e automa\u00e7\u00e3o no topo das buscas e das conversas, o medo de varia\u00e7\u00e3o de renda est\u00e1 mais alto do que em anos anteriores entre trabalhadores de 25 a 40 anos \u2014 exatamente o p\u00fablico de primeira compra. Esse receio espec\u00edfico (e se eu financiar e perder o emprego?) \u00e9 o principal bloqueador emocional da decis\u00e3o de compra.\n\n**\u00c2ngulo imobili\u00e1rio:** Post educativo que explica o que acontece de verdade em caso de perda de emprego durante o financiamento: seguros obrigat\u00f3rios do financiamento imobili\u00e1rio (MIP \u2014 Morte e Invalidez Permanente), possibilidade de usar FGTS para abater parcelas, car\u00eancia em renegocia\u00e7\u00e3o pela CEF. Informa\u00e7\u00e3o que desfaz o medo com dado real.\n\n**Formato recomendado:** Reels  \n**Por que esse formato:** Pergunta emocional + resposta direta \u00e9 linguagem de v\u00eddeo curto \u2014 \"vou responder essa pergunta que todo mundo tem mas ningu\u00e9m faz\" gera engajamento alto.  \n**Urg\u00eancia:** Postar essa semana \u2014 o contexto de IA e medo de emprego est\u00e1 quente e cria abertura perfeita para essa conversa.  \n**Sugest\u00e3o de gancho:** *\"'E se eu financiar e perder o emprego por causa da IA?' \u2014 \u00c9 a pergunta que a maioria n\u00e3o faz. Deixa eu te responder com honestidade.\"*\n\n---\n\n## Ordem de publica\u00e7\u00e3o sugerida\n\n| Dia | Post | Formato | Urg\u00eancia |\n|---|---|---|---|\n| Segunda | Post 6 \u2014 medo de perder emprego + financiamento | Reels | Alta \u2014 aproveita a onda de IA |\n| Ter\u00e7a | Post 2 \u2014 novas faixas MCMV | Carrossel | Alta \u2014 regras recentes |\n| Quinta | Post 1 \u2014 IA e hora de comprar? | Reels | Alta |\n| S\u00e1bado | Post 3 \u2014 Selic e financiamento na pr\u00e1tica | Carrossel | Alta |\n| Domingo/semana seguinte | Post 5 \u2014 FGTS atualizado | Carrossel | Evergreen |\n| Semana seguinte | Post 4 \u2014 apartamento para trabalho com IA | Carrossel | Evergreen |\n\n---\n\n## Nota estrat\u00e9gica\n\nO trend de IA tem conex\u00e3o genu\u00edna com o p\u00fablico de primeira compra \u2014 n\u00e3o porque eles v\u00e3o usar IA para comprar im\u00f3vel, mas porque o medo da IA \u00e9 o mesmo medo que paralisa a decis\u00e3o de compra: incerteza sobre renda futura. O conte\u00fado que nomeia esse medo diretamente e oferece informa\u00e7\u00e3o concreta (seguros, FGTS, regras de financiamento) vai performar bem porque resolve uma ansiedade real. Evite \u00e2ngulos de \"IA vai transformar o mercado imobili\u00e1rio\" \u2014 isso \u00e9 gen\u00e9rico e distante da realidade do comprador de primeira viagem. O \u00e2ngulo que funciona \u00e9 humano: medo, decis\u00e3o, prote\u00e7\u00e3o.\n\n---\n\n*Fontes consultadas: Ag\u00eancia Brasil, CNN Brasil, Infomoney, Terra, Fast Company Brasil, McKinsey, Quadragon, Portas.com.br, Pafil, Tenda, Fiori Empreendimentos, SPImovel, Imobibrasil \u2014 junho 2026.*\n"}], "grading": {"eval_id": 2, "run_id": "ia-adaptada-imoveis-with_skill", "expectations": [{"text": "Avalia honestamente se a conex\u00e3o IA \u2192 im\u00f3veis \u00e9 forte ou fraca", "passed": true, "evidence": "Se\u00e7\u00e3o expl\u00edcita de avalia\u00e7\u00e3o: 'Conex\u00e3o com im\u00f3veis para primeira compra: genu\u00edna e forte' com justificativa clara"}, {"text": "Se recomendar o tema, apresenta \u00e2ngulo concreto (n\u00e3o gen\u00e9rico)", "passed": true, "evidence": "6 posts com \u00e2ngulos distintos: medo de perder emprego \u2192 financiamento; MCMV novas faixas; Selic e simula\u00e7\u00e3o; apartamento para home office+IA; FGTS atualizado; 'e se perder emprego depois de financiar?'"}, {"text": "Se descartar, explica por que e sugere alternativa melhor", "passed": true, "evidence": "N\u00e3o descartou (conex\u00e3o genu\u00edna), mas a 'Nota estrat\u00e9gica' alerta para evitar o \u00e2ngulo gen\u00e9rico 'IA vai transformar o mercado imobili\u00e1rio'"}, {"text": "Tem sugest\u00e3o de gancho se recomendar o post", "passed": true, "evidence": "Todos os 6 posts t\u00eam 'Sugest\u00e3o de gancho' espec\u00edfico"}, {"text": "Tem formato recomendado com justificativa", "passed": true, "evidence": "Todos os 6 posts t\u00eam formato + 'Por que esse formato'"}]}}, {"id": "ia-adaptada-imoveis-without_skill", "prompt": "vi que o pessoal t\u00e1 falando muito de intelig\u00eancia artificial e automa\u00e7\u00e3o de empregos. tem como usar isso no instagram de im\u00f3veis? meu foco \u00e9 em compradores de primeira viagem e p\u00fablico geral", "eval_id": 2, "outputs": [{"name": "briefing.md", "type": "text", "content": "# Briefing de Conte\u00fado: Tend\u00eancia IA + Automa\u00e7\u00e3o x Mercado Imobili\u00e1rio\n**P\u00fablico-alvo:** Compradores de primeira viagem e p\u00fablico geral\n**Plataforma:** Instagram\n**Data:** 19/06/2026\n\n---\n\n## O que est\u00e1 bombando\n\nO debate sobre intelig\u00eancia artificial e automa\u00e7\u00e3o de empregos est\u00e1 em alta nas redes. As pessoas est\u00e3o com medo de perder o emprego para m\u00e1quinas, questionando onde colocar o dinheiro com seguran\u00e7a e repensando prioridades financeiras. Esse clima de incerteza e busca por seguran\u00e7a \u00e9 o gancho perfeito para o mercado imobili\u00e1rio.\n\n---\n\n## \u00c2ngulo estrat\u00e9gico: da ansiedade para a a\u00e7\u00e3o\n\nO erro seria ignorar o assunto ou for\u00e7ar uma conex\u00e3o irrelevante. O caminho certo \u00e9 **entrar na conversa onde ela j\u00e1 est\u00e1 acontecendo** e redirecionar para o im\u00f3vel como resposta concreta \u00e0 inseguran\u00e7a que a galera est\u00e1 sentindo.\n\n---\n\n## 5 Ideias de Post Prontas para Usar\n\n---\n\n### POST 1 \u2014 Reels / Carrossel\n**Gancho:** \"A IA pode tomar o seu emprego. Mas ela n\u00e3o vai tomar o seu apartamento.\"\n\n**Desenvolvimento:**\n- Todo mundo est\u00e1 falando que a automa\u00e7\u00e3o vai substituir profiss\u00f5es\n- A renda pode ser incerta. O im\u00f3vel, n\u00e3o.\n- Enquanto o mundo muda r\u00e1pido, o tijolo continua valorizando\n- Quem comprou im\u00f3vel nos \u00faltimos 5 anos n\u00e3o se arrependeu\n- Sua primeira conquista pode ser a mais segura que voc\u00ea vai fazer\n\n**CTA:** \"Salva esse post e me chama no direct. Vamos ver o que cabe no seu bolso hoje.\"\n\n**Formato sugerido:** Reels com texto animado, fundo escuro, letras grandes. Vibe de alerta mas com solu\u00e7\u00e3o.\n\n---\n\n### POST 2 \u2014 Carrossel educativo\n**Gancho:** \"Todo mundo com medo da IA. E voc\u00ea ainda nem tem a chave do primeiro ap\u00ea.\"\n\n**Desenvolvimento (slides):**\n1. A conversa do momento: IA vai mudar o mercado de trabalho\n2. Mas tem uma coisa que rob\u00f4 nenhum substitui: patrim\u00f4nio real\n3. Im\u00f3vel \u00e9 um dos poucos ativos que valoriza independente da tecnologia\n4. E o financiamento habitacional est\u00e1 mais acess\u00edvel do que voc\u00ea imagina\n5. Primeiro passo: entender o que voc\u00ea pode pagar hoje\n6. [Slide final] Me chama. A gente faz as contas juntos.\n\n**Tom:** informativo, sem alarmismo, com solu\u00e7\u00e3o pr\u00e1tica no final.\n\n---\n\n### POST 3 \u2014 Story interativo\n**Gancho:** \"Voc\u00ea est\u00e1 preocupado com IA no mercado de trabalho?\" (enquete Sim/N\u00e3o)\n\n**Sequ\u00eancia:**\n- Story 1: Enquete \u2014 \"Voc\u00ea est\u00e1 preocupado com IA no mercado de trabalho?\"\n- Story 2: \"Se voc\u00ea votou SIM, voc\u00ea precisa ver isso \ud83d\udc47\"\n- Story 3: \"Uma coisa que a IA n\u00e3o consegue fazer: comprar um im\u00f3vel pra voc\u00ea. Essa decis\u00e3o \u00e9 sua.\"\n- Story 4: \"E nunca foi t\u00e3o f\u00e1cil dar o primeiro passo. Me manda mensagem, te explico como funciona.\"\n\n**Por que funciona:** Stories com enquete t\u00eam alt\u00edssima taxa de engajamento. Entra na conversa do momento sem soar for\u00e7ado.\n\n---\n\n### POST 4 \u2014 Post de texto (estilo reflex\u00e3o)\n**Gancho:** \"A galera preocupada com IA. Eu entendo.\"\n\n**Texto:**\n\"A galera preocupada com IA. Eu entendo.\n\nMas sabe o que me chama aten\u00e7\u00e3o? As mesmas pessoas que est\u00e3o assustadas com o futuro do emprego ainda n\u00e3o deram o passo mais seguro que existe: comprar o primeiro im\u00f3vel.\n\nN\u00e3o porque n\u00e3o querem. Mas porque acham que ainda n\u00e3o \u00e9 a hora, que o sal\u00e1rio n\u00e3o \u00e9 suficiente, que \u00e9 complicado demais.\n\nEnquanto o mundo muda em velocidade recorde, ter um im\u00f3vel no seu nome continua sendo uma das formas mais s\u00f3lidas de construir seguran\u00e7a.\n\nN\u00e3o estou dizendo pra ignorar o que est\u00e1 acontecendo. Estou dizendo: use esse momento pra pensar no longo prazo.\n\nMe conta: voc\u00ea j\u00e1 pensou em comprar seu primeiro im\u00f3vel?\"\n\n**Tom:** reflexivo, sem vender diretamente, convida para conversa.\n\n---\n\n### POST 5 \u2014 Carrossel comparativo\n**Gancho:** \"O que a IA pode e o que ela n\u00e3o pode fazer por voc\u00ea\"\n\n**Slides:**\n1. IA pode: escrever textos, criar imagens, analisar dados\n2. IA n\u00e3o pode: pagar seu aluguel no final do m\u00eas\n3. IA pode: substituir fun\u00e7\u00f5es em empresas\n4. IA n\u00e3o pode: ser seu patrim\u00f4nio\n5. IA pode: mudar o mercado de trabalho\n6. IA n\u00e3o pode: tirar de voc\u00ea um im\u00f3vel que \u00e9 seu\n7. Sua primeira conquista n\u00e3o precisa esperar. Me chama.\n\n**Formato:** Carrossel simples, contraste visual, fonte grande. F\u00e1cil de salvar e compartilhar.\n\n---\n\n## Tom geral recomendado\n\n- Emp\u00e1tico, n\u00e3o oportunista. A galera est\u00e1 com medo real. N\u00e3o use isso pra assustar mais.\n- Pr\u00e1tico e acess\u00edvel. Fale com quem est\u00e1 comprando o PRIMEIRO im\u00f3vel, n\u00e3o com investidor.\n- Sem jarg\u00e3o. Evite termos como \"ativo real\", \"hedge inflacion\u00e1rio\", \"reserva de valor\". Use: \"seguran\u00e7a\", \"conquista\", \"algo que \u00e9 seu\".\n- Com CTA claro. Sempre convide para o direct. Esse p\u00fablico precisa de apoio para tomar a decis\u00e3o.\n\n---\n\n## Hashtags sugeridas\n\n```\n#primeiroiMovel #inteligenciaartificial #mercadoimobiliario #comprarim\u00f3vel #financiamentohabitacional #sonhodacasamropia #imoveisbrasil #dinheirointeligente #vidafinanceira #realizacoes\n```\n\n---\n\n## Melhor momento para postar\n\n- Reels: ter\u00e7a a quinta, entre 19h e 21h\n- Carrossel educativo: segunda ou quarta cedo (7h\u20139h), quando o p\u00fablico est\u00e1 no modo \"aprendizado\"\n- Stories interativos: qualquer dia \u00fatil, hor\u00e1rio de almo\u00e7o (12h\u201313h)\n\n---\n\n## Observa\u00e7\u00e3o estrat\u00e9gica\n\nEsse gancho tem vida \u00fatil. Enquanto o debate sobre IA e emprego estiver em alta (e est\u00e1), ele performa. Use agora, nos pr\u00f3ximos 15 a 30 dias, e depois migre o enquadramento para outros medos do comprador de primeira viagem (infla\u00e7\u00e3o, juros, burocracia). A l\u00f3gica \u00e9 a mesma: entrar onde a conversa j\u00e1 est\u00e1 e oferecer o im\u00f3vel como resposta concreta.\n"}], "grading": {"eval_id": 2, "run_id": "ia-adaptada-imoveis-without_skill", "expectations": [{"text": "Avalia honestamente se a conex\u00e3o IA \u2192 im\u00f3veis \u00e9 forte ou fraca", "passed": true, "evidence": "Confirmou conex\u00e3o genu\u00edna: 'O erro seria ignorar o assunto ou for\u00e7ar uma conex\u00e3o irrelevante'"}, {"text": "Se recomendar o tema, apresenta \u00e2ngulo concreto (n\u00e3o gen\u00e9rico)", "passed": false, "evidence": "Os 5 posts t\u00eam \u00e2ngulos mas sem dados concretos: n\u00e3o menciona MCMV atualizado, Selic 14,75%, FGTS com teto de R$2,25M \u2014 apenas racioc\u00ednio emocional gen\u00e9rico ('im\u00f3vel \u00e9 seguran\u00e7a')"}, {"text": "Se descartar, explica por que e sugere alternativa melhor", "passed": true, "evidence": "N\u00e3o descartou \u2014 acertou ao identificar a conex\u00e3o como v\u00e1lida"}, {"text": "Tem sugest\u00e3o de gancho se recomendar o post", "passed": true, "evidence": "Todos os 5 posts t\u00eam gancho sugerido"}, {"text": "Tem formato recomendado com justificativa", "passed": false, "evidence": "Post 3 (Story interativo) e Post 4 (texto) t\u00eam justificativa, mas Posts 1, 2, 5 t\u00eam formato sem explicar o porqu\u00ea da escolha"}]}}, {"id": "eval-3-with_skill-run-1", "prompt": "me d\u00e1 5 ideias de post pra essa semana. sou corretor e produtor de conte\u00fado, compro e vendo im\u00f3veis em SP. p\u00fablico \u00e9 de compradores de primeira viagem, faixa de 300 a 500 mil", "eval_id": 3, "outputs": [{"name": "briefing.md", "type": "text", "content": "# Briefing Semanal \u2014 Corretor SP | Compradores de Primeira Viagem (R$ 300\u2013500k)\n**Semana de 19/06/2026**\n\n---\n\n## 1. Minha Casa Minha Vida subiu o teto para R$ 600k \u2014 seu cliente pode n\u00e3o saber disso\n\n**Por que est\u00e1 em alta:** Em abril de 2026, o governo atualizou as faixas do MCMV com nova publica\u00e7\u00e3o em 08/06/2026. A faixa 4 passou de R$ 500k para R$ 600k, e a faixa 3 subiu de R$ 350k para R$ 400k. S\u00e3o 31 mil novas fam\u00edlias eleg\u00edveis na faixa 3.\n\n**\u00c2ngulo imobili\u00e1rio:** Quem achava que n\u00e3o se enquadrava no MCMV pode estar errado. Para compradores de primeira viagem com renda entre R$ 5k e R$ 9,6k buscando im\u00f3veis entre R$ 300k e R$ 400k em SP, isso \u00e9 acesso a juros subsidiados que eles desconhecem.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** Comparativo antes/depois das faixas + simula\u00e7\u00e3o de parcela com e sem MCMV. Conte\u00fado que as pessoas salvam para consultar depois.\n\n**Urg\u00eancia:** Postar essa semana \u2014 not\u00edcia com menos de 2 semanas, alto potencial de alcance org\u00e2nico\n\n**Sugest\u00e3o de gancho:** \"O teto do Minha Casa Minha Vida subiu \u2014 e muita gente que l\u00ea isso agora pode comprar um apartamento com juro subsidiado sem saber.\"\n\n---\n\n## 2. A conta que ningu\u00e9m faz antes de financiar: ITBI, cart\u00f3rio e CET\n\n**Por que est\u00e1 em alta:** Pesquisas sobre financiamento imobili\u00e1rio de primeiro im\u00f3vel est\u00e3o em alta em SP. O dado recorrente nos f\u00f3runs e buscas: compradores de primeira viagem focam na parcela e se surpreendem com os custos de fechamento.\n\n**\u00c2ngulo imobili\u00e1rio:** Para um im\u00f3vel de R$ 400k em SP, ITBI (3%), registro em cart\u00f3rio e CET adicionam entre R$ 15k e R$ 25k que n\u00e3o estavam no or\u00e7amento do comprador. Esse gap entre \"quanto custa o ap\u00ea\" e \"quanto custa comprar o ap\u00ea\" \u00e9 exatamente a dor do p\u00fablico de primeira viagem.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** Lista de custos ocultos com valores reais e exemplos pr\u00e1ticos \u2014 conte\u00fado educativo de alto salvamento.\n\n**Urg\u00eancia:** Evergreen com execu\u00e7\u00e3o essa semana \u2014 t\u00f3pico perene que performa bem qualquer semana\n\n**Sugest\u00e3o de gancho:** \"Voc\u00ea juntou R$ 80 mil de entrada para um ap\u00ea de R$ 400 mil. Mas ningu\u00e9m te contou sobre os outros R$ 20 mil que v\u00eam junto.\"\n\n---\n\n## 3. Alugar ou comprar em 2026: a resposta honesta para quem ganha R$ 7k\n\n**Por que est\u00e1 em alta:** O debate \"aluguel vs. compra\" est\u00e1 entre os termos mais buscados no nicho imobili\u00e1rio em 2026, impulsionado pela Selic em 14,75% e pelo IGPM pressionando alugu\u00e9is. A CNN Brasil, Suno e m\u00faltiplos portais publicaram an\u00e1lises em junho.\n\n**\u00c2ngulo imobili\u00e1rio:** Com taxa de financiamento entre 9,39% e 10,99% ao ano (SBPE + TR) e aluguel de R$ 2k a R$ 3k para um im\u00f3vel de R$ 500k em SP, a conta n\u00e3o \u00e9 \u00f3bvia. Para o p\u00fablico de primeira viagem, o argumento emocional e patrimonial costuma ganhar do matem\u00e1tico puro \u2014 e o corretor pode usar isso.\n\n**Formato recomendado:** Reels\n\n**Por que esse formato:** Assunto polarizador e comportamental, ideal para v\u00eddeo com posicionamento claro e provoca\u00e7\u00e3o de coment\u00e1rios.\n\n**Urg\u00eancia:** Postar essa semana \u2014 assunto em alta nos portais agora\n\n**Sugest\u00e3o de gancho:** \"Todo mundo tem uma opini\u00e3o sobre alugar ou comprar. Eu tenho uma calculadora. E ela me diz uma coisa diferente dependendo do seu sal\u00e1rio.\"\n\n---\n\n## 4. FGTS: o dinheiro que est\u00e1 parado na sua conta e pode virar entrada\n\n**Por que est\u00e1 em alta:** Buscas por \"como usar FGTS para comprar im\u00f3vel 2026\" est\u00e3o consistentemente altas. O teto de avalia\u00e7\u00e3o do im\u00f3vel para uso do FGTS subiu de R$ 1,5M para R$ 2,25M em 2026 \u2014 mas o p\u00fablico de primeira viagem raramente sabe quanto tem acumulado ou como usar.\n\n**\u00c2ngulo imobili\u00e1rio:** Para quem est\u00e1 na faixa de R$ 300k a R$ 500k, o FGTS pode cobrir parte ou totalidade da entrada (que costuma ser 20% = R$ 60k a R$ 100k). Tr\u00eas anos de carteira assinada com sal\u00e1rio de R$ 5k = aproximadamente R$ 18k em FGTS \u2014 esse n\u00famero real, mostrado na tela, gera identifica\u00e7\u00e3o imediata.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** Passo a passo visual de como verificar o saldo, quais condi\u00e7\u00f5es permitem o uso, e como isso entra no financiamento. Conte\u00fado de alt\u00edssimo salvamento.\n\n**Urg\u00eancia:** Evergreen com alta relev\u00e2ncia agora \u2014 poste essa semana enquanto o tema est\u00e1 em alta\n\n**Sugest\u00e3o de gancho:** \"Voc\u00ea tem dinheiro parado que pode virar a entrada do seu apartamento. A maioria das pessoas n\u00e3o sabe quanto.\"\n\n---\n\n## 5. Quanto custa morar em SP pagando parcela de R$ 2.500 \u2014 bairro por bairro\n\n**Por que est\u00e1 em alta:** Lan\u00e7amentos no m\u00e9dio padr\u00e3o em SP recuaram 5% no 1\u00ba tri de 2026, mas o segmento popular segue aquecido. Comprador de primeira viagem com or\u00e7amento de R$ 300k a R$ 500k em SP est\u00e1 mapeando ativamente quais bairros cabem no seu bolso.\n\n**\u00c2ngulo imobili\u00e1rio:** Com financiamento de R$ 240k (entrada de R$ 60k em im\u00f3vel de R$ 300k), a parcela SAC inicial fica em torno de R$ 2.900. Mostrar quais bairros e regi\u00f5es de SP t\u00eam im\u00f3veis nessa faixa \u2014 com metragem, transporte e contexto de vida \u2014 \u00e9 exatamente o conte\u00fado que o comprador de primeira viagem salva e compartilha com o c\u00f4njuge.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** Comparativo visual de bairros com dados reais. Esse formato funciona como guia \u2014 as pessoas mandam para amigos e salvam para revisitar.\n\n**Urg\u00eancia:** Postar essa semana \u2014 aproveita o contexto de busca ativa de im\u00f3veis no meio do ano\n\n**Sugest\u00e3o de gancho:** \"Com parcela de R$ 2.500 voc\u00ea consegue comprar um apartamento em SP. Mas em qual bairro? Mapeei os melhores para quem est\u00e1 comprando o primeiro.\"\n\n---\n\n*Briefing gerado em 19/06/2026 | Perfil: Corretor SP | P\u00fablico: compradores de primeira viagem, R$ 300\u2013500k*\n\n*Fontes consultadas: Minist\u00e9rio das Cidades (gov.br), Ag\u00eancia Brasil, CNN Brasil, Portas.com.br, quadragon.com.br, spimovel.com.br, larya.com.br, Suno*\n"}], "grading": {"eval_id": 3, "run_id": "primeira-viagem-sp-with_skill", "expectations": [{"text": "Entrega exatamente 5 itens", "passed": true, "evidence": "Exatamente 5 itens entregues"}, {"text": "Ao menos um item menciona FGTS, financiamento, ou cr\u00e9dito imobili\u00e1rio", "passed": true, "evidence": "Item 2 (ITBI/custos), Item 3 (financiamento/Selic), Item 4 (FGTS com teto R$2,25M), Item 5 (parcela SAC)"}, {"text": "Ao menos um item \u00e9 espec\u00edfico para S\u00e3o Paulo (bairros, mercado local, etc.)", "passed": true, "evidence": "Item 5 explicitamente: 'Quanto custa morar em SP pagando parcela de R$ 2.500 \u2014 bairro por bairro'; Item 3 menciona taxas de financiamento com contexto SP"}, {"text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo", "passed": true, "evidence": "Todos os 5 t\u00eam 'Sugest\u00e3o de gancho' com frase espec\u00edfica"}, {"text": "Cada item tem formato recomendado", "passed": true, "evidence": "Todos os 5 t\u00eam 'Formato recomendado' e 'Por que esse formato'"}, {"text": "Nenhum item \u00e9 gen\u00e9rico demais (ex: 'fale sobre im\u00f3veis' sem contexto)", "passed": true, "evidence": "Todos t\u00eam dados espec\u00edficos: valores reais (R$400k + ITBI 3% = R$12k), taxas reais (9,39%-10,99% a.a.), teto FGTS (R$2,25M)"}], "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0}}}, {"id": "eval-3-without_skill-run-1", "prompt": "me d\u00e1 5 ideias de post pra essa semana. sou corretor e produtor de conte\u00fado, compro e vendo im\u00f3veis em SP. p\u00fablico \u00e9 de compradores de primeira viagem, faixa de 300 a 500 mil", "eval_id": 3, "outputs": [{"name": "briefing.md", "type": "text", "content": "# 5 Ideias de Post \u2014 Semana 23/06 a 29/06/2026\n**Perfil:** Corretor e produtor de conte\u00fado | Compra e venda em SP | P\u00fablico: compradores de primeira viagem | Faixa: R$ 300k \u2013 R$ 500k\n\n---\n\n## Post 1 \u2014 Educativo / Desmistificador\n**Formato:** Carrossel (6\u20138 slides)\n**T\u00edtulo/Gancho:** \"Voc\u00ea acha que n\u00e3o pode comprar um ap\u00ea em SP. Mas provavelmente pode.\"\n\n**Ideia:**\nMuita gente de primeira viagem descarta a ideia de comprar antes mesmo de pesquisar, achando que o mercado est\u00e1 fora do alcance. Mostre de forma direta que com a faixa de R$ 300k a R$ 500k \u00e9 poss\u00edvel comprar em bairros reais de SP \u2014 com exemplos de tipologia, metragem e localiza\u00e7\u00e3o.\n\n**Estrutura dos slides:**\n1. Gancho: \"Voc\u00ea desistiu de comprar antes de pesquisar?\"\n2. \"Com R$ 300k a R$ 500k voc\u00ea encontra...\"\n3. Exemplos: 2 dormit\u00f3rios em [bairro X], 48m\u00b2 + vaga\n4. Exemplos: Studio em [bairro Y], pr\u00f3ximo ao metr\u00f4\n5. \"Ah, e o FGTS pode entrar como entrada\"\n6. CTA: \"Me chama no direct pra eu te mostrar o que cabe no seu bolso\"\n\n**Legenda-gancho:** \"A maioria das pessoas acha que precisa de R$ 800k pra comprar em SP. Errado. Vou te mostrar o que d\u00e1 pra comprar de verdade com R$ 300k a R$ 500k \u2014 com exemplos reais.\"\n\n---\n\n## Post 2 \u2014 Financeiro / Pr\u00e1tico\n**Formato:** Reels (45\u201360 seg) ou carrossel\n**T\u00edtulo/Gancho:** \"Quanto voc\u00ea precisa ter guardado pra dar entrada num ap\u00ea de R$ 400k?\"\n\n**Ideia:**\nA d\u00favida n\u00famero 1 do comprador de primeira viagem \u00e9 sobre a entrada. Quebre o tabu com um c\u00e1lculo transparente e acess\u00edvel: entrada m\u00ednima, FGTS, custos de cart\u00f3rio, ITBI e despesas extras.\n\n**Roteiro (Reels):**\n- Abertura: \"Voc\u00ea quer comprar, mas n\u00e3o sabe quanto precisa ter guardado? Calma, vou te explicar.\"\n- Entrada m\u00ednima: 20% = R$ 80k (ou menos com Minha Casa Minha Vida)\n- FGTS pode abater: \"Se voc\u00ea trabalha com carteira, ele entra\"\n- Custos extras: ITBI (~2%), cart\u00f3rio (~1%), mudan\u00e7a\n- \"No total, prepare entre R$ 60k e R$ 100k fora do financiamento\"\n- CTA: \"Comenta aqui o valor do im\u00f3vel que voc\u00ea quer comprar e eu calculo pra voc\u00ea\"\n\n**Legenda-gancho:** \"Antes de desistir de comprar, me deixa te mostrar a conta real. Spoiler: pode ser menor do que voc\u00ea imagina.\"\n\n---\n\n## Post 3 \u2014 Prova Social / Storytelling\n**Formato:** Reels ou foto com legenda longa\n**T\u00edtulo/Gancho:** \"Ela tinha 28 anos, R$ 60k guardados e achava que nunca ia conseguir comprar. Hoje tem as chaves na m\u00e3o.\"\n\n**Ideia:**\nCase real (ou composto com dados reais de um cliente) de um comprador de primeira viagem que fechou neg\u00f3cio na faixa de R$ 300k\u2013R$ 500k em SP. Humaniza o processo e gera identifica\u00e7\u00e3o imediata.\n\n**Estrutura:**\n- Perfil do cliente: idade, situa\u00e7\u00e3o financeira, medo inicial\n- O que ela procurava vs. o que encontrou\n- Como usou o FGTS + financiamento\n- Quanto tempo levou do primeiro contato \u00e0 entrega das chaves\n- Sentimento no dia da escritura\n- CTA: \"Se voc\u00ea est\u00e1 na mesma situa\u00e7\u00e3o que ela estava, me chama. Vamos descobrir juntos se o seu momento chegou.\"\n\n**Legenda-gancho:** \"Ela chegou at\u00e9 mim dizendo: 'Acho que ainda n\u00e3o \u00e9 a minha hora.' Tr\u00eas meses depois eu entreguei as chaves pra ela.\"\n\n---\n\n## Post 4 \u2014 Comparativo / Provoca\u00e7\u00e3o\n**Formato:** Carrossel ou imagem est\u00e1tica com texto\n**T\u00edtulo/Gancho:** \"Alugar ou comprar? Fiz a conta pra voc\u00ea.\"\n\n**Ideia:**\nUm dos temas mais engajadores para o p\u00fablico de primeira viagem \u00e9 a d\u00favida entre continuar alugando ou comprar. Apresente um comparativo direto com n\u00fameros reais de SP: aluguel m\u00e9dio de 2 dormit\u00f3rios na cidade vs. parcela de financiamento de um im\u00f3vel similar.\n\n**Estrutura dos slides:**\n1. \"Voc\u00ea paga R$ 2.500/m\u00eas de aluguel faz quanto tempo?\"\n2. Aluguel de 2 dorms em SP: R$ 2.200 \u2013 R$ 3.500/m\u00eas\n3. Financiamento de im\u00f3vel R$ 380k (entrada de R$ 76k): ~R$ 2.800/m\u00eas\n4. \"Diferen\u00e7a: R$ 300/m\u00eas. Mas um constr\u00f3i patrim\u00f4nio, o outro n\u00e3o.\"\n5. \"Em 30 anos de aluguel voc\u00ea paga ~R$ 900k e n\u00e3o fica com nada.\"\n6. CTA: \"Me manda mensagem e eu te mostro quanto custaria a parcela do SEU im\u00f3vel.\"\n\n**Legenda-gancho:** \"Fiz essa conta com n\u00fameros reais de SP e quase n\u00e3o acreditei. Voc\u00ea vai querer ver isso.\"\n\n---\n\n## Post 5 \u2014 Localiza\u00e7\u00e3o / Descoberta\n**Formato:** Carrossel ou Reels de tour r\u00e1pido\n**T\u00edtulo/Gancho:** \"3 bairros em SP onde voc\u00ea ainda encontra im\u00f3vel bom entre R$ 300k e R$ 500k\"\n\n**Ideia:**\nConte\u00fado de descoberta de bairros acess\u00edveis mas com boa infraestrutura para o p\u00fablico de primeira viagem. Vai contra a narrativa de que SP s\u00f3 tem op\u00e7\u00f5es caras. Escolha 3 bairros reais com tipologias dispon\u00edveis na faixa \u2014 preferencialmente pr\u00f3ximos a metr\u00f4 ou corredor de \u00f4nibus.\n\n**Sugest\u00e3o de bairros (adapte \u00e0 sua carteira atual):**\n- Penha / Vila Prudente: bem servido de metr\u00f4, em valoriza\u00e7\u00e3o\n- Pirituba / Jaragu\u00e1: op\u00e7\u00f5es amplas, fam\u00edlias em busca de espa\u00e7o\n- Santo Andr\u00e9 / S\u00e3o Bernardo (Grande SP): \u00f3timo custo-benef\u00edcio, metr\u00f4/trem\n\n**Estrutura dos slides:**\n1. \"Voc\u00ea procura im\u00f3vel em SP e s\u00f3 encontra coisa cara? Olha esses bairros.\"\n2. Bairro 1: foto + dados (m\u00b2 m\u00e9dio, faixa de pre\u00e7o, pontos positivos)\n3. Bairro 2: foto + dados\n4. Bairro 3: foto + dados\n5. \"Todos esses bairros t\u00eam im\u00f3veis entre R$ 300k e R$ 500k AGORA\"\n6. CTA: \"Qual desses bairros voc\u00ea mora perto ou quer morar? Me conta nos coment\u00e1rios.\"\n\n**Legenda-gancho:** \"Quando falo que ainda d\u00e1 pra comprar bem em SP com at\u00e9 R$ 500k, as pessoas n\u00e3o acreditam. Ent\u00e3o resolvi mostrar com endere\u00e7o e tudo.\"\n\n---\n\n## Resumo da Semana\n\n| Dia sugerido | Post | Formato | Objetivo |\n|---|---|---|---|\n| Segunda | Post 1 \u2014 Desmistificador | Carrossel | Educa\u00e7\u00e3o / alcance |\n| Ter\u00e7a | Post 2 \u2014 Quanto guardar | Reels | Engajamento / DM |\n| Quarta | Post 3 \u2014 Case real | Reels ou foto | Prova social / confian\u00e7a |\n| Quinta | Post 4 \u2014 Alugar x comprar | Carrossel | Provoca\u00e7\u00e3o / compartilhamento |\n| S\u00e1bado | Post 5 \u2014 Bairros acess\u00edveis | Carrossel ou Reels | Descoberta / salvamentos |\n\n---\n\n*Gerado em 19/06/2026 \u2014 sem uso de skill especializada*\n"}], "grading": {"eval_id": 3, "run_id": "primeira-viagem-sp-without_skill", "expectations": [{"text": "Entrega exatamente 5 itens", "passed": true, "evidence": "Exatamente 5 posts"}, {"text": "Ao menos um item menciona FGTS, financiamento, ou cr\u00e9dito imobili\u00e1rio", "passed": true, "evidence": "Post 2 (quanto guardar/FGTS), Post 4 (simula\u00e7\u00e3o financiamento)"}, {"text": "Ao menos um item \u00e9 espec\u00edfico para S\u00e3o Paulo (bairros, mercado local, etc.)", "passed": true, "evidence": "Post 5: Penha, Pirituba, Santo Andr\u00e9/S\u00e3o Bernardo com contexto de metr\u00f4"}, {"text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo", "passed": true, "evidence": "Todos t\u00eam legenda-gancho"}, {"text": "Cada item tem formato recomendado", "passed": true, "evidence": "Todos t\u00eam formato, mas \u00e0s vezes alternativo ('Reels ou carrossel')"}, {"text": "Nenhum item \u00e9 gen\u00e9rico demais (ex: 'fale sobre im\u00f3veis' sem contexto)", "passed": false, "evidence": "Post 3 (case real) \u00e9 completamente inventado \u2014 'Ela tinha 28 anos...' sem dados de mercado atuais. Sem dados da Selic, MCMV atualizado de junho 2026, ou pesquisas recentes. Nenhuma men\u00e7\u00e3o ao MCMV com teto R$600k (regra nova de 08/06/2026)"}], "summary": {"passed": 5, "failed": 1, "total": 6, "pass_rate": 0.8333}}}, {"id": "primeira-viagem-sp-with_skill", "prompt": "me d\u00e1 5 ideias de post pra essa semana. sou corretor e produtor de conte\u00fado, compro e vendo im\u00f3veis em SP. p\u00fablico \u00e9 de compradores de primeira viagem, faixa de 300 a 500 mil", "eval_id": 3, "outputs": [{"name": "briefing.md", "type": "text", "content": "# Briefing Semanal \u2014 Corretor SP | Compradores de Primeira Viagem (R$ 300\u2013500k)\n**Semana de 19/06/2026**\n\n---\n\n## 1. Minha Casa Minha Vida subiu o teto para R$ 600k \u2014 seu cliente pode n\u00e3o saber disso\n\n**Por que est\u00e1 em alta:** Em abril de 2026, o governo atualizou as faixas do MCMV com nova publica\u00e7\u00e3o em 08/06/2026. A faixa 4 passou de R$ 500k para R$ 600k, e a faixa 3 subiu de R$ 350k para R$ 400k. S\u00e3o 31 mil novas fam\u00edlias eleg\u00edveis na faixa 3.\n\n**\u00c2ngulo imobili\u00e1rio:** Quem achava que n\u00e3o se enquadrava no MCMV pode estar errado. Para compradores de primeira viagem com renda entre R$ 5k e R$ 9,6k buscando im\u00f3veis entre R$ 300k e R$ 400k em SP, isso \u00e9 acesso a juros subsidiados que eles desconhecem.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** Comparativo antes/depois das faixas + simula\u00e7\u00e3o de parcela com e sem MCMV. Conte\u00fado que as pessoas salvam para consultar depois.\n\n**Urg\u00eancia:** Postar essa semana \u2014 not\u00edcia com menos de 2 semanas, alto potencial de alcance org\u00e2nico\n\n**Sugest\u00e3o de gancho:** \"O teto do Minha Casa Minha Vida subiu \u2014 e muita gente que l\u00ea isso agora pode comprar um apartamento com juro subsidiado sem saber.\"\n\n---\n\n## 2. A conta que ningu\u00e9m faz antes de financiar: ITBI, cart\u00f3rio e CET\n\n**Por que est\u00e1 em alta:** Pesquisas sobre financiamento imobili\u00e1rio de primeiro im\u00f3vel est\u00e3o em alta em SP. O dado recorrente nos f\u00f3runs e buscas: compradores de primeira viagem focam na parcela e se surpreendem com os custos de fechamento.\n\n**\u00c2ngulo imobili\u00e1rio:** Para um im\u00f3vel de R$ 400k em SP, ITBI (3%), registro em cart\u00f3rio e CET adicionam entre R$ 15k e R$ 25k que n\u00e3o estavam no or\u00e7amento do comprador. Esse gap entre \"quanto custa o ap\u00ea\" e \"quanto custa comprar o ap\u00ea\" \u00e9 exatamente a dor do p\u00fablico de primeira viagem.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** Lista de custos ocultos com valores reais e exemplos pr\u00e1ticos \u2014 conte\u00fado educativo de alto salvamento.\n\n**Urg\u00eancia:** Evergreen com execu\u00e7\u00e3o essa semana \u2014 t\u00f3pico perene que performa bem qualquer semana\n\n**Sugest\u00e3o de gancho:** \"Voc\u00ea juntou R$ 80 mil de entrada para um ap\u00ea de R$ 400 mil. Mas ningu\u00e9m te contou sobre os outros R$ 20 mil que v\u00eam junto.\"\n\n---\n\n## 3. Alugar ou comprar em 2026: a resposta honesta para quem ganha R$ 7k\n\n**Por que est\u00e1 em alta:** O debate \"aluguel vs. compra\" est\u00e1 entre os termos mais buscados no nicho imobili\u00e1rio em 2026, impulsionado pela Selic em 14,75% e pelo IGPM pressionando alugu\u00e9is. A CNN Brasil, Suno e m\u00faltiplos portais publicaram an\u00e1lises em junho.\n\n**\u00c2ngulo imobili\u00e1rio:** Com taxa de financiamento entre 9,39% e 10,99% ao ano (SBPE + TR) e aluguel de R$ 2k a R$ 3k para um im\u00f3vel de R$ 500k em SP, a conta n\u00e3o \u00e9 \u00f3bvia. Para o p\u00fablico de primeira viagem, o argumento emocional e patrimonial costuma ganhar do matem\u00e1tico puro \u2014 e o corretor pode usar isso.\n\n**Formato recomendado:** Reels\n\n**Por que esse formato:** Assunto polarizador e comportamental, ideal para v\u00eddeo com posicionamento claro e provoca\u00e7\u00e3o de coment\u00e1rios.\n\n**Urg\u00eancia:** Postar essa semana \u2014 assunto em alta nos portais agora\n\n**Sugest\u00e3o de gancho:** \"Todo mundo tem uma opini\u00e3o sobre alugar ou comprar. Eu tenho uma calculadora. E ela me diz uma coisa diferente dependendo do seu sal\u00e1rio.\"\n\n---\n\n## 4. FGTS: o dinheiro que est\u00e1 parado na sua conta e pode virar entrada\n\n**Por que est\u00e1 em alta:** Buscas por \"como usar FGTS para comprar im\u00f3vel 2026\" est\u00e3o consistentemente altas. O teto de avalia\u00e7\u00e3o do im\u00f3vel para uso do FGTS subiu de R$ 1,5M para R$ 2,25M em 2026 \u2014 mas o p\u00fablico de primeira viagem raramente sabe quanto tem acumulado ou como usar.\n\n**\u00c2ngulo imobili\u00e1rio:** Para quem est\u00e1 na faixa de R$ 300k a R$ 500k, o FGTS pode cobrir parte ou totalidade da entrada (que costuma ser 20% = R$ 60k a R$ 100k). Tr\u00eas anos de carteira assinada com sal\u00e1rio de R$ 5k = aproximadamente R$ 18k em FGTS \u2014 esse n\u00famero real, mostrado na tela, gera identifica\u00e7\u00e3o imediata.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** Passo a passo visual de como verificar o saldo, quais condi\u00e7\u00f5es permitem o uso, e como isso entra no financiamento. Conte\u00fado de alt\u00edssimo salvamento.\n\n**Urg\u00eancia:** Evergreen com alta relev\u00e2ncia agora \u2014 poste essa semana enquanto o tema est\u00e1 em alta\n\n**Sugest\u00e3o de gancho:** \"Voc\u00ea tem dinheiro parado que pode virar a entrada do seu apartamento. A maioria das pessoas n\u00e3o sabe quanto.\"\n\n---\n\n## 5. Quanto custa morar em SP pagando parcela de R$ 2.500 \u2014 bairro por bairro\n\n**Por que est\u00e1 em alta:** Lan\u00e7amentos no m\u00e9dio padr\u00e3o em SP recuaram 5% no 1\u00ba tri de 2026, mas o segmento popular segue aquecido. Comprador de primeira viagem com or\u00e7amento de R$ 300k a R$ 500k em SP est\u00e1 mapeando ativamente quais bairros cabem no seu bolso.\n\n**\u00c2ngulo imobili\u00e1rio:** Com financiamento de R$ 240k (entrada de R$ 60k em im\u00f3vel de R$ 300k), a parcela SAC inicial fica em torno de R$ 2.900. Mostrar quais bairros e regi\u00f5es de SP t\u00eam im\u00f3veis nessa faixa \u2014 com metragem, transporte e contexto de vida \u2014 \u00e9 exatamente o conte\u00fado que o comprador de primeira viagem salva e compartilha com o c\u00f4njuge.\n\n**Formato recomendado:** Carrossel\n\n**Por que esse formato:** Comparativo visual de bairros com dados reais. Esse formato funciona como guia \u2014 as pessoas mandam para amigos e salvam para revisitar.\n\n**Urg\u00eancia:** Postar essa semana \u2014 aproveita o contexto de busca ativa de im\u00f3veis no meio do ano\n\n**Sugest\u00e3o de gancho:** \"Com parcela de R$ 2.500 voc\u00ea consegue comprar um apartamento em SP. Mas em qual bairro? Mapeei os melhores para quem est\u00e1 comprando o primeiro.\"\n\n---\n\n*Briefing gerado em 19/06/2026 | Perfil: Corretor SP | P\u00fablico: compradores de primeira viagem, R$ 300\u2013500k*\n\n*Fontes consultadas: Minist\u00e9rio das Cidades (gov.br), Ag\u00eancia Brasil, CNN Brasil, Portas.com.br, quadragon.com.br, spimovel.com.br, larya.com.br, Suno*\n"}], "grading": {"eval_id": 3, "run_id": "primeira-viagem-sp-with_skill", "expectations": [{"text": "Entrega exatamente 5 itens", "passed": true, "evidence": "Exatamente 5 itens entregues"}, {"text": "Ao menos um item menciona FGTS, financiamento, ou cr\u00e9dito imobili\u00e1rio", "passed": true, "evidence": "Item 2 (ITBI/custos), Item 3 (financiamento/Selic), Item 4 (FGTS com teto R$2,25M), Item 5 (parcela SAC)"}, {"text": "Ao menos um item \u00e9 espec\u00edfico para S\u00e3o Paulo (bairros, mercado local, etc.)", "passed": true, "evidence": "Item 5 explicitamente: 'Quanto custa morar em SP pagando parcela de R$ 2.500 \u2014 bairro por bairro'; Item 3 menciona taxas de financiamento com contexto SP"}, {"text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo", "passed": true, "evidence": "Todos os 5 t\u00eam 'Sugest\u00e3o de gancho' com frase espec\u00edfica"}, {"text": "Cada item tem formato recomendado", "passed": true, "evidence": "Todos os 5 t\u00eam 'Formato recomendado' e 'Por que esse formato'"}, {"text": "Nenhum item \u00e9 gen\u00e9rico demais (ex: 'fale sobre im\u00f3veis' sem contexto)", "passed": true, "evidence": "Todos t\u00eam dados espec\u00edficos: valores reais (R$400k + ITBI 3% = R$12k), taxas reais (9,39%-10,99% a.a.), teto FGTS (R$2,25M)"}]}}, {"id": "primeira-viagem-sp-without_skill", "prompt": "me d\u00e1 5 ideias de post pra essa semana. sou corretor e produtor de conte\u00fado, compro e vendo im\u00f3veis em SP. p\u00fablico \u00e9 de compradores de primeira viagem, faixa de 300 a 500 mil", "eval_id": 3, "outputs": [{"name": "briefing.md", "type": "text", "content": "# 5 Ideias de Post \u2014 Semana 23/06 a 29/06/2026\n**Perfil:** Corretor e produtor de conte\u00fado | Compra e venda em SP | P\u00fablico: compradores de primeira viagem | Faixa: R$ 300k \u2013 R$ 500k\n\n---\n\n## Post 1 \u2014 Educativo / Desmistificador\n**Formato:** Carrossel (6\u20138 slides)\n**T\u00edtulo/Gancho:** \"Voc\u00ea acha que n\u00e3o pode comprar um ap\u00ea em SP. Mas provavelmente pode.\"\n\n**Ideia:**\nMuita gente de primeira viagem descarta a ideia de comprar antes mesmo de pesquisar, achando que o mercado est\u00e1 fora do alcance. Mostre de forma direta que com a faixa de R$ 300k a R$ 500k \u00e9 poss\u00edvel comprar em bairros reais de SP \u2014 com exemplos de tipologia, metragem e localiza\u00e7\u00e3o.\n\n**Estrutura dos slides:**\n1. Gancho: \"Voc\u00ea desistiu de comprar antes de pesquisar?\"\n2. \"Com R$ 300k a R$ 500k voc\u00ea encontra...\"\n3. Exemplos: 2 dormit\u00f3rios em [bairro X], 48m\u00b2 + vaga\n4. Exemplos: Studio em [bairro Y], pr\u00f3ximo ao metr\u00f4\n5. \"Ah, e o FGTS pode entrar como entrada\"\n6. CTA: \"Me chama no direct pra eu te mostrar o que cabe no seu bolso\"\n\n**Legenda-gancho:** \"A maioria das pessoas acha que precisa de R$ 800k pra comprar em SP. Errado. Vou te mostrar o que d\u00e1 pra comprar de verdade com R$ 300k a R$ 500k \u2014 com exemplos reais.\"\n\n---\n\n## Post 2 \u2014 Financeiro / Pr\u00e1tico\n**Formato:** Reels (45\u201360 seg) ou carrossel\n**T\u00edtulo/Gancho:** \"Quanto voc\u00ea precisa ter guardado pra dar entrada num ap\u00ea de R$ 400k?\"\n\n**Ideia:**\nA d\u00favida n\u00famero 1 do comprador de primeira viagem \u00e9 sobre a entrada. Quebre o tabu com um c\u00e1lculo transparente e acess\u00edvel: entrada m\u00ednima, FGTS, custos de cart\u00f3rio, ITBI e despesas extras.\n\n**Roteiro (Reels):**\n- Abertura: \"Voc\u00ea quer comprar, mas n\u00e3o sabe quanto precisa ter guardado? Calma, vou te explicar.\"\n- Entrada m\u00ednima: 20% = R$ 80k (ou menos com Minha Casa Minha Vida)\n- FGTS pode abater: \"Se voc\u00ea trabalha com carteira, ele entra\"\n- Custos extras: ITBI (~2%), cart\u00f3rio (~1%), mudan\u00e7a\n- \"No total, prepare entre R$ 60k e R$ 100k fora do financiamento\"\n- CTA: \"Comenta aqui o valor do im\u00f3vel que voc\u00ea quer comprar e eu calculo pra voc\u00ea\"\n\n**Legenda-gancho:** \"Antes de desistir de comprar, me deixa te mostrar a conta real. Spoiler: pode ser menor do que voc\u00ea imagina.\"\n\n---\n\n## Post 3 \u2014 Prova Social / Storytelling\n**Formato:** Reels ou foto com legenda longa\n**T\u00edtulo/Gancho:** \"Ela tinha 28 anos, R$ 60k guardados e achava que nunca ia conseguir comprar. Hoje tem as chaves na m\u00e3o.\"\n\n**Ideia:**\nCase real (ou composto com dados reais de um cliente) de um comprador de primeira viagem que fechou neg\u00f3cio na faixa de R$ 300k\u2013R$ 500k em SP. Humaniza o processo e gera identifica\u00e7\u00e3o imediata.\n\n**Estrutura:**\n- Perfil do cliente: idade, situa\u00e7\u00e3o financeira, medo inicial\n- O que ela procurava vs. o que encontrou\n- Como usou o FGTS + financiamento\n- Quanto tempo levou do primeiro contato \u00e0 entrega das chaves\n- Sentimento no dia da escritura\n- CTA: \"Se voc\u00ea est\u00e1 na mesma situa\u00e7\u00e3o que ela estava, me chama. Vamos descobrir juntos se o seu momento chegou.\"\n\n**Legenda-gancho:** \"Ela chegou at\u00e9 mim dizendo: 'Acho que ainda n\u00e3o \u00e9 a minha hora.' Tr\u00eas meses depois eu entreguei as chaves pra ela.\"\n\n---\n\n## Post 4 \u2014 Comparativo / Provoca\u00e7\u00e3o\n**Formato:** Carrossel ou imagem est\u00e1tica com texto\n**T\u00edtulo/Gancho:** \"Alugar ou comprar? Fiz a conta pra voc\u00ea.\"\n\n**Ideia:**\nUm dos temas mais engajadores para o p\u00fablico de primeira viagem \u00e9 a d\u00favida entre continuar alugando ou comprar. Apresente um comparativo direto com n\u00fameros reais de SP: aluguel m\u00e9dio de 2 dormit\u00f3rios na cidade vs. parcela de financiamento de um im\u00f3vel similar.\n\n**Estrutura dos slides:**\n1. \"Voc\u00ea paga R$ 2.500/m\u00eas de aluguel faz quanto tempo?\"\n2. Aluguel de 2 dorms em SP: R$ 2.200 \u2013 R$ 3.500/m\u00eas\n3. Financiamento de im\u00f3vel R$ 380k (entrada de R$ 76k): ~R$ 2.800/m\u00eas\n4. \"Diferen\u00e7a: R$ 300/m\u00eas. Mas um constr\u00f3i patrim\u00f4nio, o outro n\u00e3o.\"\n5. \"Em 30 anos de aluguel voc\u00ea paga ~R$ 900k e n\u00e3o fica com nada.\"\n6. CTA: \"Me manda mensagem e eu te mostro quanto custaria a parcela do SEU im\u00f3vel.\"\n\n**Legenda-gancho:** \"Fiz essa conta com n\u00fameros reais de SP e quase n\u00e3o acreditei. Voc\u00ea vai querer ver isso.\"\n\n---\n\n## Post 5 \u2014 Localiza\u00e7\u00e3o / Descoberta\n**Formato:** Carrossel ou Reels de tour r\u00e1pido\n**T\u00edtulo/Gancho:** \"3 bairros em SP onde voc\u00ea ainda encontra im\u00f3vel bom entre R$ 300k e R$ 500k\"\n\n**Ideia:**\nConte\u00fado de descoberta de bairros acess\u00edveis mas com boa infraestrutura para o p\u00fablico de primeira viagem. Vai contra a narrativa de que SP s\u00f3 tem op\u00e7\u00f5es caras. Escolha 3 bairros reais com tipologias dispon\u00edveis na faixa \u2014 preferencialmente pr\u00f3ximos a metr\u00f4 ou corredor de \u00f4nibus.\n\n**Sugest\u00e3o de bairros (adapte \u00e0 sua carteira atual):**\n- Penha / Vila Prudente: bem servido de metr\u00f4, em valoriza\u00e7\u00e3o\n- Pirituba / Jaragu\u00e1: op\u00e7\u00f5es amplas, fam\u00edlias em busca de espa\u00e7o\n- Santo Andr\u00e9 / S\u00e3o Bernardo (Grande SP): \u00f3timo custo-benef\u00edcio, metr\u00f4/trem\n\n**Estrutura dos slides:**\n1. \"Voc\u00ea procura im\u00f3vel em SP e s\u00f3 encontra coisa cara? Olha esses bairros.\"\n2. Bairro 1: foto + dados (m\u00b2 m\u00e9dio, faixa de pre\u00e7o, pontos positivos)\n3. Bairro 2: foto + dados\n4. Bairro 3: foto + dados\n5. \"Todos esses bairros t\u00eam im\u00f3veis entre R$ 300k e R$ 500k AGORA\"\n6. CTA: \"Qual desses bairros voc\u00ea mora perto ou quer morar? Me conta nos coment\u00e1rios.\"\n\n**Legenda-gancho:** \"Quando falo que ainda d\u00e1 pra comprar bem em SP com at\u00e9 R$ 500k, as pessoas n\u00e3o acreditam. Ent\u00e3o resolvi mostrar com endere\u00e7o e tudo.\"\n\n---\n\n## Resumo da Semana\n\n| Dia sugerido | Post | Formato | Objetivo |\n|---|---|---|---|\n| Segunda | Post 1 \u2014 Desmistificador | Carrossel | Educa\u00e7\u00e3o / alcance |\n| Ter\u00e7a | Post 2 \u2014 Quanto guardar | Reels | Engajamento / DM |\n| Quarta | Post 3 \u2014 Case real | Reels ou foto | Prova social / confian\u00e7a |\n| Quinta | Post 4 \u2014 Alugar x comprar | Carrossel | Provoca\u00e7\u00e3o / compartilhamento |\n| S\u00e1bado | Post 5 \u2014 Bairros acess\u00edveis | Carrossel ou Reels | Descoberta / salvamentos |\n\n---\n\n*Gerado em 19/06/2026 \u2014 sem uso de skill especializada*\n"}], "grading": {"eval_id": 3, "run_id": "primeira-viagem-sp-without_skill", "expectations": [{"text": "Entrega exatamente 5 itens", "passed": true, "evidence": "Exatamente 5 posts"}, {"text": "Ao menos um item menciona FGTS, financiamento, ou cr\u00e9dito imobili\u00e1rio", "passed": true, "evidence": "Post 2 (quanto guardar/FGTS), Post 4 (simula\u00e7\u00e3o financiamento)"}, {"text": "Ao menos um item \u00e9 espec\u00edfico para S\u00e3o Paulo (bairros, mercado local, etc.)", "passed": true, "evidence": "Post 5: Penha, Pirituba, Santo Andr\u00e9/S\u00e3o Bernardo com contexto de metr\u00f4"}, {"text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo", "passed": true, "evidence": "Todos t\u00eam legenda-gancho"}, {"text": "Cada item tem formato recomendado", "passed": true, "evidence": "Todos t\u00eam formato, mas \u00e0s vezes alternativo ('Reels ou carrossel')"}, {"text": "Nenhum item \u00e9 gen\u00e9rico demais (ex: 'fale sobre im\u00f3veis' sem contexto)", "passed": false, "evidence": "Post 3 (case real) \u00e9 completamente inventado \u2014 'Ela tinha 28 anos...' sem dados de mercado atuais. Sem dados da Selic, MCMV atualizado de junho 2026, ou pesquisas recentes. Nenhuma men\u00e7\u00e3o ao MCMV com teto R$600k (regra nova de 08/06/2026)"}]}}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"metadata": {"skill_name": "imoveis-trends", "skill_path": "<path/to/skill>", "executor_model": "<model-name>", "analyzer_model": "<model-name>", "timestamp": "2026-06-19T14:46:35Z", "evals_run": [1, 2, 3], "runs_per_configuration": 3}, "runs": [{"eval_id": 1, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 127.4, "tokens": 29836, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Entrega pelo menos 5 itens no briefing", "passed": true, "evidence": "Entregou 7 itens com estrutura completa"}, {"text": "Cada item tem formato recomendado (carrossel, reels, story ou post \u00fanico)", "passed": true, "evidence": "Todos os 7 itens t\u00eam 'Formato recomendado' e 'Por que esse formato'"}, {"text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo", "passed": true, "evidence": "Todos os itens t\u00eam 'Sugest\u00e3o de gancho' em it\u00e1lico"}, {"text": "Cada item tem \u00e2ngulo imobili\u00e1rio espec\u00edfico (n\u00e3o s\u00f3 'fale sobre im\u00f3veis')", "passed": true, "evidence": "Ex: item 2 conecta isen\u00e7\u00e3o de IR com reserva para entrada; item 4 explica FGTS para quem financiou 2021-2025"}, {"text": "Inclui pelo menos um tema de financiamento ou cr\u00e9dito imobili\u00e1rio", "passed": true, "evidence": "Item 4 (FGTS), item 6 (Selic e financiamento), item 7 (parcela vs. aluguel)"}, {"text": "N\u00e3o lista itens com conex\u00e3o fraca ou for\u00e7ada com im\u00f3veis", "passed": true, "evidence": "Todos os 7 itens t\u00eam conex\u00e3o direta e fundamentada com mercado imobili\u00e1rio"}], "notes": []}, {"eval_id": 2, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 127.4, "tokens": 29638, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Avalia honestamente se a conex\u00e3o IA \u2192 im\u00f3veis \u00e9 forte ou fraca", "passed": true, "evidence": "Se\u00e7\u00e3o expl\u00edcita de avalia\u00e7\u00e3o: 'Conex\u00e3o com im\u00f3veis para primeira compra: genu\u00edna e forte' com justificativa clara"}, {"text": "Se recomendar o tema, apresenta \u00e2ngulo concreto (n\u00e3o gen\u00e9rico)", "passed": true, "evidence": "6 posts com \u00e2ngulos distintos: medo de perder emprego \u2192 financiamento; MCMV novas faixas; Selic e simula\u00e7\u00e3o; apartamento para home office+IA; FGTS atualizado; 'e se perder emprego depois de financiar?'"}, {"text": "Se descartar, explica por que e sugere alternativa melhor", "passed": true, "evidence": "N\u00e3o descartou (conex\u00e3o genu\u00edna), mas a 'Nota estrat\u00e9gica' alerta para evitar o \u00e2ngulo gen\u00e9rico 'IA vai transformar o mercado imobili\u00e1rio'"}, {"text": "Tem sugest\u00e3o de gancho se recomendar o post", "passed": true, "evidence": "Todos os 6 posts t\u00eam 'Sugest\u00e3o de gancho' espec\u00edfico"}, {"text": "Tem formato recomendado com justificativa", "passed": true, "evidence": "Todos os 6 posts t\u00eam formato + 'Por que esse formato'"}], "notes": []}, {"eval_id": 3, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 103.8, "tokens": 27490, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Entrega exatamente 5 itens", "passed": true, "evidence": "Exatamente 5 itens entregues"}, {"text": "Ao menos um item menciona FGTS, financiamento, ou cr\u00e9dito imobili\u00e1rio", "passed": true, "evidence": "Item 2 (ITBI/custos), Item 3 (financiamento/Selic), Item 4 (FGTS com teto R$2,25M), Item 5 (parcela SAC)"}, {"text": "Ao menos um item \u00e9 espec\u00edfico para S\u00e3o Paulo (bairros, mercado local, etc.)", "passed": true, "evidence": "Item 5 explicitamente: 'Quanto custa morar em SP pagando parcela de R$ 2.500 \u2014 bairro por bairro'; Item 3 menciona taxas de financiamento com contexto SP"}, {"text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo", "passed": true, "evidence": "Todos os 5 t\u00eam 'Sugest\u00e3o de gancho' com frase espec\u00edfica"}, {"text": "Cada item tem formato recomendado", "passed": true, "evidence": "Todos os 5 t\u00eam 'Formato recomendado' e 'Por que esse formato'"}, {"text": "Nenhum item \u00e9 gen\u00e9rico demais (ex: 'fale sobre im\u00f3veis' sem contexto)", "passed": true, "evidence": "Todos t\u00eam dados espec\u00edficos: valores reais (R$400k + ITBI 3% = R$12k), taxas reais (9,39%-10,99% a.a.), teto FGTS (R$2,25M)"}], "notes": []}, {"eval_id": 1, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.6667, "passed": 4, "failed": 2, "total": 6, "time_seconds": 120.1, "tokens": 26574, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Entrega pelo menos 5 itens no briefing", "passed": true, "evidence": "Entregou 7 posts com estrutura de calend\u00e1rio semanal"}, {"text": "Cada item tem formato recomendado (carrossel, reels, story ou post \u00fanico)", "passed": true, "evidence": "Todos os posts t\u00eam formato definido"}, {"text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo", "passed": true, "evidence": "Todos t\u00eam t\u00edtulo e roteiro com abertura de gancho"}, {"text": "Cada item tem \u00e2ngulo imobili\u00e1rio espec\u00edfico (n\u00e3o s\u00f3 'fale sobre im\u00f3veis')", "passed": false, "evidence": "Post 2 (bastidores do corretor) e Post 7 (depoimento) s\u00e3o sobre marca pessoal, n\u00e3o sobre tend\u00eancia imobili\u00e1ria. N\u00e3o cruzam trends gerais com im\u00f3veis \u2014 foca s\u00f3 em marketing do corretor"}, {"text": "Inclui pelo menos um tema de financiamento ou cr\u00e9dito imobili\u00e1rio", "passed": true, "evidence": "Post 1 (FGTS/juros), Post 3 (Selic), Post 5 (FGTS Futuro)"}, {"text": "N\u00e3o lista itens com conex\u00e3o fraca ou for\u00e7ada com im\u00f3veis", "passed": false, "evidence": "Post 6 (tour de im\u00f3vel de 1 dorm) e Post 7 (inspira\u00e7\u00e3o/depoimento) s\u00e3o conte\u00fado gen\u00e9rico de corretor, n\u00e3o t\u00eam origem em trend pesquisado \u2014 n\u00e3o cumprem a proposta de cruzar trends com im\u00f3veis"}], "notes": []}, {"eval_id": 2, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.6, "passed": 3, "failed": 2, "total": 5, "time_seconds": 54.2, "tokens": 17636, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Avalia honestamente se a conex\u00e3o IA \u2192 im\u00f3veis \u00e9 forte ou fraca", "passed": true, "evidence": "Confirmou conex\u00e3o genu\u00edna: 'O erro seria ignorar o assunto ou for\u00e7ar uma conex\u00e3o irrelevante'"}, {"text": "Se recomendar o tema, apresenta \u00e2ngulo concreto (n\u00e3o gen\u00e9rico)", "passed": false, "evidence": "Os 5 posts t\u00eam \u00e2ngulos mas sem dados concretos: n\u00e3o menciona MCMV atualizado, Selic 14,75%, FGTS com teto de R$2,25M \u2014 apenas racioc\u00ednio emocional gen\u00e9rico ('im\u00f3vel \u00e9 seguran\u00e7a')"}, {"text": "Se descartar, explica por que e sugere alternativa melhor", "passed": true, "evidence": "N\u00e3o descartou \u2014 acertou ao identificar a conex\u00e3o como v\u00e1lida"}, {"text": "Tem sugest\u00e3o de gancho se recomendar o post", "passed": true, "evidence": "Todos os 5 posts t\u00eam gancho sugerido"}, {"text": "Tem formato recomendado com justificativa", "passed": false, "evidence": "Post 3 (Story interativo) e Post 4 (texto) t\u00eam justificativa, mas Posts 1, 2, 5 t\u00eam formato sem explicar o porqu\u00ea da escolha"}], "notes": []}, {"eval_id": 3, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.8333, "passed": 5, "failed": 1, "total": 6, "time_seconds": 58.5, "tokens": 18023, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Entrega exatamente 5 itens", "passed": true, "evidence": "Exatamente 5 posts"}, {"text": "Ao menos um item menciona FGTS, financiamento, ou cr\u00e9dito imobili\u00e1rio", "passed": true, "evidence": "Post 2 (quanto guardar/FGTS), Post 4 (simula\u00e7\u00e3o financiamento)"}, {"text": "Ao menos um item \u00e9 espec\u00edfico para S\u00e3o Paulo (bairros, mercado local, etc.)", "passed": true, "evidence": "Post 5: Penha, Pirituba, Santo Andr\u00e9/S\u00e3o Bernardo com contexto de metr\u00f4"}, {"text": "Cada item tem sugest\u00e3o de gancho/t\u00edtulo", "passed": true, "evidence": "Todos t\u00eam legenda-gancho"}, {"text": "Cada item tem formato recomendado", "passed": true, "evidence": "Todos t\u00eam formato, mas \u00e0s vezes alternativo ('Reels ou carrossel')"}, {"text": "Nenhum item \u00e9 gen\u00e9rico demais (ex: 'fale sobre im\u00f3veis' sem contexto)", "passed": false, "evidence": "Post 3 (case real) \u00e9 completamente inventado \u2014 'Ela tinha 28 anos...' sem dados de mercado atuais. Sem dados da Selic, MCMV atualizado de junho 2026, ou pesquisas recentes. Nenhuma men\u00e7\u00e3o ao MCMV com teto R$600k (regra nova de 08/06/2026)"}], "notes": []}], "run_summary": {"with_skill": {"pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0}, "time_seconds": {"mean": 119.5333, "stddev": 13.6255, "min": 103.8, "max": 127.4}, "tokens": {"mean": 28988.0, "stddev": 1301.078, "min": 27490, "max": 29836}}, "without_skill": {"pass_rate": {"mean": 0.7, "stddev": 0.1202, "min": 0.6, "max": 0.8333}, "time_seconds": {"mean": 77.6, "stddev": 36.8688, "min": 54.2, "max": 120.1}, "tokens": {"mean": 20744.3333, "stddev": 5052.3462, "min": 17636, "max": 26574}}, "delta": {"pass_rate": "+0.30", "time_seconds": "+41.9", "tokens": "+8244"}}, "notes": []}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>

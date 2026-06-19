@@ -1,0 +1,37 @@
+{
+  "eval_id": 2,
+  "run_id": "ia-adaptada-imoveis-without_skill",
+  "expectations": [
+    {
+      "text": "Avalia honestamente se a conexão IA → imóveis é forte ou fraca",
+      "passed": true,
+      "evidence": "Confirmou conexão genuína: 'O erro seria ignorar o assunto ou forçar uma conexão irrelevante'"
+    },
+    {
+      "text": "Se recomendar o tema, apresenta ângulo concreto (não genérico)",
+      "passed": false,
+      "evidence": "Os 5 posts têm ângulos mas sem dados concretos: não menciona MCMV atualizado, Selic 14,75%, FGTS com teto de R$2,25M — apenas raciocínio emocional genérico ('imóvel é segurança')"
+    },
+    {
+      "text": "Se descartar, explica por que e sugere alternativa melhor",
+      "passed": true,
+      "evidence": "Não descartou — acertou ao identificar a conexão como válida"
+    },
+    {
+      "text": "Tem sugestão de gancho se recomendar o post",
+      "passed": true,
+      "evidence": "Todos os 5 posts têm gancho sugerido"
+    },
+    {
+      "text": "Tem formato recomendado com justificativa",
+      "passed": false,
+      "evidence": "Post 3 (Story interativo) e Post 4 (texto) têm justificativa, mas Posts 1, 2, 5 têm formato sem explicar o porquê da escolha"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 2,
+    "total": 5,
+    "pass_rate": 0.6
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "eval_id": 2,
+  "eval_name": "ia-adaptada-imoveis",
+  "prompt": "vi que o pessoal tá falando muito de inteligência artificial e automação de empregos. tem como usar isso no instagram de imóveis? meu foco é em compradores de primeira viagem e público geral",
+  "assertions": [
+    "Avalia honestamente se a conexão IA → imóveis é forte ou fraca",
+    "Se recomendar o tema, apresenta ângulo concreto (não genérico)",
+    "Se descartar, explica por que e sugere alternativa melhor",
+    "Tem sugestão de gancho se recomendar o post",
+    "Tem formato recomendado com justificativa"
+  ]
+}

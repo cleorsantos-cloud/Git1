@@ -1,0 +1,13 @@
+{
+  "eval_id": 1,
+  "eval_name": "trends-semanal",
+  "prompt": "quais são os trends imobiliários dessa semana? preciso planejar os posts do meu instagram de imóveis. sou corretor, público é de compradores de primeira viagem e geral",
+  "assertions": [
+    "Entrega pelo menos 5 itens no briefing",
+    "Cada item tem formato recomendado (carrossel, reels, story ou post único)",
+    "Cada item tem sugestão de gancho/título",
+    "Cada item tem ângulo imobiliário específico (não só 'fale sobre imóveis')",
+    "Inclui pelo menos um tema de financiamento ou crédito imobiliário",
+    "Não lista itens com conexão fraca ou forçada com imóveis"
+  ]
+}
