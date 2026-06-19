@@ -1,0 +1,37 @@
+{
+  "eval_id": 2,
+  "run_id": "post-estatico-parcela-with_skill-iter2",
+  "expectations": [
+    {
+      "text": "Texto da imagem tem máximo 12 palavras",
+      "passed": true,
+      "evidence": "'Apê de R$ 300 mil em SP. Parcela: R$ 2.500 por mês.' = 12 palavras exatas"
+    },
+    {
+      "text": "Legenda desenvolve o argumento com contexto (não só repete o dado)",
+      "passed": true,
+      "evidence": "Compara com aluguel, explica SAC/entrada de 20%/prazo 30 anos, menciona FGTS — vai muito além do dado inicial"
+    },
+    {
+      "text": "CTA presente (direct, salvar, comentar)",
+      "passed": true,
+      "evidence": "'Me chama no direct que a gente faz o cálculo junto. 👇'"
+    },
+    {
+      "text": "Sem palavras proibidas",
+      "passed": true,
+      "evidence": "Nenhuma palavra proibida encontrada"
+    },
+    {
+      "text": "Tom de corretor amigo, não anúncio",
+      "passed": true,
+      "evidence": "'Isso é menos do que muita gente paga de aluguel por aí' — tom conversacional, sem hipérbole"
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  }
+}

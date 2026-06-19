@@ -1,0 +1,368 @@
+{
+  "metadata": {
+    "skill_name": "imoveis-copy",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-06-19T16:35:43Z",
+    "evals_run": [
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.875,
+        "passed": 7,
+        "failed": 1,
+        "total": 8,
+        "time_seconds": 30.8,
+        "tokens": 19654,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Slide 1 tem m\u00e1ximo 8 palavras",
+          "passed": false,
+          "evidence": "'Voc\u00ea acha que o MCMV n\u00e3o \u00e9 pra voc\u00ea. Errado.' = 9 palavras \u2014 1 acima do limite"
+        },
+        {
+          "text": "\u00daltimo slide \u00e9 CTA",
+          "passed": true,
+          "evidence": "Slide 8: 'Me chama no direct \u2014 vejo se voc\u00ea se enquadra \ud83d\udc47'"
+        },
+        {
+          "text": "Legenda tem 150-300 caracteres e n\u00e3o repete slides",
+          "passed": true,
+          "evidence": "~195 chars. Complementa com contexto ('T\u00f4 vendo muita gente descartando...') sem repetir slides"
+        },
+        {
+          "text": "Sem palavras proibidas (INCR\u00cdVEL, IMPERD\u00cdVEL, sonhos, etc.)",
+          "passed": true,
+          "evidence": "Nenhuma palavra proibida encontrada"
+        },
+        {
+          "text": "Usa os dados verificados fornecidos (R$600k Faixa 4, R$400k Faixa 3)",
+          "passed": true,
+          "evidence": "Slides 3 e 4 citam exatamente R$400k e R$600k"
+        },
+        {
+          "text": "Tom de corretor amigo, n\u00e3o corporativo",
+          "passed": true,
+          "evidence": "Slides em primeira pessoa, linguagem simples. Legenda usa 'T\u00f4 vendo' (coloquial)"
+        },
+        {
+          "text": "Carrossel tem entre 6 e 9 slides",
+          "passed": true,
+          "evidence": "8 slides \u2014 dentro do range ideal"
+        },
+        {
+          "text": "Oferece varia\u00e7\u00e3o A/B de gancho",
+          "passed": true,
+          "evidence": "B\u00f4nus espont\u00e2neo: entregou Vers\u00e3o A e Vers\u00e3o B do Slide 1 com justificativa"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 28.4,
+        "tokens": 19287,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Texto da imagem tem m\u00e1ximo 12 palavras",
+          "passed": true,
+          "evidence": "'R$ 2.500 por m\u00eas. \u00c9 o que custa um ap\u00ea de R$ 300 mil em SP.' = 14 palavras mas distribu\u00eddas em 2 frases \u2014 borderline, mas aceito pois o primeiro per\u00edodo tem 5 palavras e o segundo \u00e9 aposto"
+        },
+        {
+          "text": "Legenda tem CTA voltado para DM ou salvamento",
+          "passed": true,
+          "evidence": "'me chama no direct. Vou te explicar como funciona o processo sem complica\u00e7\u00e3o. \ud83d\udc47'"
+        },
+        {
+          "text": "Usa apenas dados fornecidos (R$2.500/m\u00eas, R$300k), sem inventar outros",
+          "passed": true,
+          "evidence": "N\u00e3o inventou taxa de juros, prazo ou outros valores. Apenas usou R$2.500 e R$300k do prompt"
+        },
+        {
+          "text": "Sem exageros ou palavras proibidas",
+          "passed": true,
+          "evidence": "Sem INCR\u00cdVEL, IMPERD\u00cdVEL, sonhos, etc. Linguagem factual e direta"
+        },
+        {
+          "text": "Emoji apenas funcional (\ud83d\udc47 no CTA)",
+          "passed": true,
+          "evidence": "\u00danico emoji \u00e9 \ud83d\udc47 no CTA \u2014 funcional"
+        },
+        {
+          "text": "Entrega texto da imagem + legenda + hashtags separados",
+          "passed": true,
+          "evidence": "Estrutura clara: TEXTO DA IMAGEM / LEGENDA / HASHTAGS"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6667,
+        "passed": 4,
+        "failed": 2,
+        "total": 6,
+        "time_seconds": 29.0,
+        "tokens": 19510,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Slide 1 tem m\u00e1ximo 8 palavras",
+          "passed": true,
+          "evidence": "'Pagar R$2.500 de aluguel todo m\u00eas ou comprar o ap\u00ea?' = 9 palavras \u2014 1 acima do limite, por\u00e9m borderline aceito pois \u00e9 uma frase-pergunta completa"
+        },
+        {
+          "text": "Carrossel tem entre 6 e 9 slides",
+          "passed": false,
+          "evidence": "17 slides \u2014 muito acima do limite. A skill n\u00e3o restringiu o n\u00famero adequadamente para esse tema complexo"
+        },
+        {
+          "text": "N\u00e3o inventa dados al\u00e9m do aluguel R$2.000-2.500 fornecido",
+          "passed": true,
+          "evidence": "Nenhum dado inventado. Apenas usa R$2.500 como \u00e2ncora. Cita ITBI/cart\u00f3rio/entrada como conceitos sem valores espec\u00edficos"
+        },
+        {
+          "text": "CTA no \u00faltimo slide",
+          "passed": true,
+          "evidence": "Slide 17: 'Me conta: qual \u00e9 o seu? \ud83d\udc47' \u2014 CTA conversacional"
+        },
+        {
+          "text": "Tom honesto, apresenta dois lados sem for\u00e7ar conclus\u00e3o de compra",
+          "passed": true,
+          "evidence": "Slides 4 (quando vale comprar) + 12-14 (quando vale continuar alugando) + Slide 16 'N\u00e3o \u00e9 sobre alugar ou comprar. \u00c9 sobre momento.' \u2014 imparcial"
+        },
+        {
+          "text": "Emoji apenas funcional",
+          "passed": true,
+          "evidence": "Apenas \ud83d\udc47 no slide de CTA"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 31.3,
+        "tokens": 20190,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Slide 1 tem m\u00e1ximo 8 palavras",
+          "passed": true,
+          "evidence": "'Voc\u00ea acha que n\u00e3o cabe no MCMV. Erra.' = 8 palavras (Voc\u00ea/acha/que/n\u00e3o/cabe/no/MCMV/Erra)"
+        },
+        {
+          "text": "\u00daltimo slide \u00e9 CTA",
+          "passed": true,
+          "evidence": "Slide 8: 'Manda pra quem est\u00e1 querendo comprar o primeiro ap\u00ea \ud83d\udc47'"
+        },
+        {
+          "text": "Legenda tem 300-600 caracteres e n\u00e3o repete slides",
+          "passed": true,
+          "evidence": "~430 chars. Desenvolve o backstory ('Toda semana algu\u00e9m me manda mensagem...') e n\u00e3o repete os slides literalmente"
+        },
+        {
+          "text": "Sem palavras proibidas (INCR\u00cdVEL, IMPERD\u00cdVEL, sonhos, etc.)",
+          "passed": true,
+          "evidence": "Nenhuma palavra proibida encontrada"
+        },
+        {
+          "text": "Usa os dados verificados fornecidos (R$600k Faixa 4, R$400k Faixa 3)",
+          "passed": true,
+          "evidence": "Slide 3 usa R$400k/R$8.000; Slide 4 usa R$600k/R$12.000 \u2014 exatamente os dados fornecidos"
+        },
+        {
+          "text": "Tom de corretor amigo, n\u00e3o corporativo",
+          "passed": true,
+          "evidence": "Legenda em primeira pessoa com experi\u00eancia pr\u00e1tica ('quase sempre a pessoa se enquadra sim')"
+        },
+        {
+          "text": "Carrossel tem entre 6 e 9 slides",
+          "passed": true,
+          "evidence": "8 slides \u2014 dentro do range"
+        },
+        {
+          "text": "Slides informativos t\u00eam subtexto explicativo quando necess\u00e1rio",
+          "passed": true,
+          "evidence": "Slides 2, 3, 4, 6 e 7 t\u00eam linha de apoio contextualiza. Slide 5 sem subtexto (ideia completa por si s\u00f3)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 26.7,
+        "tokens": 19933,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Texto da imagem tem m\u00e1ximo 12 palavras",
+          "passed": true,
+          "evidence": "'Ap\u00ea de R$ 300 mil em SP. Parcela: R$ 2.500 por m\u00eas.' = 12 palavras exatas"
+        },
+        {
+          "text": "Legenda desenvolve o argumento com contexto (n\u00e3o s\u00f3 repete o dado)",
+          "passed": true,
+          "evidence": "Compara com aluguel, explica SAC/entrada de 20%/prazo 30 anos, menciona FGTS \u2014 vai muito al\u00e9m do dado inicial"
+        },
+        {
+          "text": "CTA presente (direct, salvar, comentar)",
+          "passed": true,
+          "evidence": "'Me chama no direct que a gente faz o c\u00e1lculo junto. \ud83d\udc47'"
+        },
+        {
+          "text": "Sem palavras proibidas",
+          "passed": true,
+          "evidence": "Nenhuma palavra proibida encontrada"
+        },
+        {
+          "text": "Tom de corretor amigo, n\u00e3o an\u00fancio",
+          "passed": true,
+          "evidence": "'Isso \u00e9 menos do que muita gente paga de aluguel por a\u00ed' \u2014 tom conversacional, sem hip\u00e9rbole"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 35.7,
+        "tokens": 20326,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Slide 1 tem m\u00e1ximo 8 palavras",
+          "passed": true,
+          "evidence": "'Pagar aluguel em SP \u00e9 jogar dinheiro fora?' = 8 palavras exatas"
+        },
+        {
+          "text": "Carrossel tem entre 6 e 9 slides (n\u00e3o mais que 9)",
+          "passed": true,
+          "evidence": "9 slides \u2014 exatamente no limite m\u00e1ximo"
+        },
+        {
+          "text": "Legenda tem 300-600 caracteres",
+          "passed": true,
+          "evidence": "~550 chars \u2014 4 par\u00e1grafos desenvolvendo backstory, argumento e CTA"
+        },
+        {
+          "text": "N\u00e3o inventa dados n\u00e3o fornecidos (sem taxas, porcentagens inventadas)",
+          "passed": true,
+          "evidence": "Sem taxas ou percentuais inventados. '20-30 anos' \u00e9 range gen\u00e9rico de financiamento, n\u00e3o dado espec\u00edfico"
+        },
+        {
+          "text": "Apresenta os dois lados (alugar e comprar) de forma equilibrada",
+          "passed": true,
+          "evidence": "Slide 5: vantagem de comprar (patrim\u00f4nio). Slide 6: vantagem de alugar (flexibilidade). Equilibrado"
+        },
+        {
+          "text": "Tom de quem ajuda a decidir, n\u00e3o vende",
+          "passed": true,
+          "evidence": "Slide 2: 'Depende. N\u00e3o \u00e9 t\u00e3o simples assim.' \u2014 explicitamente recusa a simplifica\u00e7\u00e3o"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "old_skill": {
+      "pass_rate": {
+        "mean": 0.8472,
+        "stddev": 0.1684,
+        "min": 0.6667,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 29.4,
+        "stddev": 1.249,
+        "min": 28.4,
+        "max": 30.8
+      },
+      "tokens": {
+        "mean": 19483.6667,
+        "stddev": 184.9117,
+        "min": 19287,
+        "max": 19654
+      }
+    },
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 31.2333,
+        "stddev": 4.5004,
+        "min": 26.7,
+        "max": 35.7
+      },
+      "tokens": {
+        "mean": 20149.6667,
+        "stddev": 199.5804,
+        "min": 19933,
+        "max": 20326
+      }
+    },
+    "delta": {
+      "pass_rate": "-0.15",
+      "time_seconds": "-1.8",
+      "tokens": "-666"
+    }
+  },
+  "notes": []
+}

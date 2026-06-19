@@ -1,0 +1,42 @@
+{
+  "eval_id": 3,
+  "run_id": "carrossel-alugar-vs-comprar-with_skill-iter2",
+  "expectations": [
+    {
+      "text": "Slide 1 tem máximo 8 palavras",
+      "passed": true,
+      "evidence": "'Pagar aluguel em SP é jogar dinheiro fora?' = 8 palavras exatas"
+    },
+    {
+      "text": "Carrossel tem entre 6 e 9 slides (não mais que 9)",
+      "passed": true,
+      "evidence": "9 slides — exatamente no limite máximo"
+    },
+    {
+      "text": "Legenda tem 300-600 caracteres",
+      "passed": true,
+      "evidence": "~550 chars — 4 parágrafos desenvolvendo backstory, argumento e CTA"
+    },
+    {
+      "text": "Não inventa dados não fornecidos (sem taxas, porcentagens inventadas)",
+      "passed": true,
+      "evidence": "Sem taxas ou percentuais inventados. '20-30 anos' é range genérico de financiamento, não dado específico"
+    },
+    {
+      "text": "Apresenta os dois lados (alugar e comprar) de forma equilibrada",
+      "passed": true,
+      "evidence": "Slide 5: vantagem de comprar (patrimônio). Slide 6: vantagem de alugar (flexibilidade). Equilibrado"
+    },
+    {
+      "text": "Tom de quem ajuda a decidir, não vende",
+      "passed": true,
+      "evidence": "Slide 2: 'Depende. Não é tão simples assim.' — explicitamente recusa a simplificação"
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  }
+}

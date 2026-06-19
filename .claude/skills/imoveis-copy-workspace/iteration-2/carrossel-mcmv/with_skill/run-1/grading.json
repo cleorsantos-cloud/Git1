@@ -1,0 +1,52 @@
+{
+  "eval_id": 1,
+  "run_id": "carrossel-mcmv-with_skill-iter2",
+  "expectations": [
+    {
+      "text": "Slide 1 tem máximo 8 palavras",
+      "passed": true,
+      "evidence": "'Você acha que não cabe no MCMV. Erra.' = 8 palavras (Você/acha/que/não/cabe/no/MCMV/Erra)"
+    },
+    {
+      "text": "Último slide é CTA",
+      "passed": true,
+      "evidence": "Slide 8: 'Manda pra quem está querendo comprar o primeiro apê 👇'"
+    },
+    {
+      "text": "Legenda tem 300-600 caracteres e não repete slides",
+      "passed": true,
+      "evidence": "~430 chars. Desenvolve o backstory ('Toda semana alguém me manda mensagem...') e não repete os slides literalmente"
+    },
+    {
+      "text": "Sem palavras proibidas (INCRÍVEL, IMPERDÍVEL, sonhos, etc.)",
+      "passed": true,
+      "evidence": "Nenhuma palavra proibida encontrada"
+    },
+    {
+      "text": "Usa os dados verificados fornecidos (R$600k Faixa 4, R$400k Faixa 3)",
+      "passed": true,
+      "evidence": "Slide 3 usa R$400k/R$8.000; Slide 4 usa R$600k/R$12.000 — exatamente os dados fornecidos"
+    },
+    {
+      "text": "Tom de corretor amigo, não corporativo",
+      "passed": true,
+      "evidence": "Legenda em primeira pessoa com experiência prática ('quase sempre a pessoa se enquadra sim')"
+    },
+    {
+      "text": "Carrossel tem entre 6 e 9 slides",
+      "passed": true,
+      "evidence": "8 slides — dentro do range"
+    },
+    {
+      "text": "Slides informativos têm subtexto explicativo quando necessário",
+      "passed": true,
+      "evidence": "Slides 2, 3, 4, 6 e 7 têm linha de apoio contextualiza. Slide 5 sem subtexto (ideia completa por si só)"
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  }
+}
