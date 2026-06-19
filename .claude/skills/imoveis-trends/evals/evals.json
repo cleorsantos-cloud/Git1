@@ -1,0 +1,23 @@
+{
+  "skill_name": "imoveis-trends",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "quais são os trends imobiliários dessa semana? preciso planejar os posts do meu instagram de imóveis",
+      "expected_output": "Briefing com 5-8 itens priorizados, cada um com: por que está em alta, ângulo imobiliário, formato recomendado, urgência e sugestão de gancho. Mix de trends gerais adaptados para imóveis e temas específicos do mercado imobiliário.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "vi que o pessoal tá falando muito de inteligência artificial e automação de empregos. tem como usar isso no instagram de imóveis? meu foco é em investidores",
+      "expected_output": "Avaliação da conexão entre IA/automação e mercado imobiliário para investidores. Deve identificar o ângulo real (ex: impacto no mercado de trabalho e consequências para demanda imobiliária, ou IA como ferramenta de análise de FII) e sugerir formato adequado. Se a conexão for fraca, deve dizer isso com honestidade.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "me dá 5 ideias de post pra essa semana. trabalho com imóveis em São Paulo, público é de primeira viagem comprando apartamento na faixa de 300 a 500 mil",
+      "expected_output": "Briefing com 5 itens focados no perfil de comprador de primeira viagem em SP, faixa de R$300-500k. Deve mencionar temas como FGTS, financiamento CEF/bancos, bairros acessíveis em SP, Minha Casa Minha Vida (se aplicável à faixa), e comportamento de quem está comprando o primeiro imóvel.",
+      "files": []
+    }
+  ]
+}
