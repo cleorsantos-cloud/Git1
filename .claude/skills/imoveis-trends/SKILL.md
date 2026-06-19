@@ -54,19 +54,61 @@ Use a skill `deep-research` apenas quando um assunto exigir profundidade real �
 
 ---
 
-## Fase 3 — Avaliação e seleção
+## Fase 3 — Verificação de fatos (não pule essa etapa)
 
-Para cada trend encontrado, avalie mentalmente três dimensões:
+Antes de recomendar qualquer assunto, verifique os dados concretos que ele contém. Mercado imobiliário é um nicho cheio de informações desatualizadas circulando como novidade — regras de FGTS de anos anteriores, tetos do MCMV desatualizados, taxas de juros que já mudaram. Postar dado errado destrói a credibilidade do perfil.
+
+### O que verificar
+
+Para cada dado ou regra que vai aparecer no briefing, confirme:
+
+1. **Data da fonte:** o artigo ou notícia é recente (últimos 60 dias)? Se o dado vier de artigo antigo, busque a versão atual nas fontes oficiais antes de incluir.
+
+2. **Fonte primária vs. secundária:** prefira fontes primárias (gov.br, Banco Central, Caixa Econômica, IBGE, Ministério das Cidades, Diário Oficial) sobre blogs e portais de nicho. Se só encontrar em blog, busque a fonte original que o blog cita.
+
+3. **Consistência entre fontes:** se dois portais confiáveis contradizem um dado, não inclua — ou inclua com ressalva clara.
+
+### Fontes primárias confiáveis para imóveis
+
+| Assunto | Fonte primária |
+|---|---|
+| MCMV: faixas, tetos, regras | gov.br/minhacasaminhavida ou Ministério das Cidades |
+| Selic, crédito imobiliário | Banco Central (bcb.gov.br) |
+| FGTS: regras, portarias | Caixa (caixa.gov.br) ou Diário Oficial |
+| Preços de imóveis | FipeZap, DataZAP, ABECIP |
+| ITBI, registro | Prefeitura municipal |
+| FII | B3, CVM |
+
+### Sinais de alerta (verifique com cuidado extra)
+
+- Número específico sem link para fonte oficial (ex: "o teto subiu para R$ X" sem citar onde)
+- Notícia de mudança de regra em site de nicho sem referência à portaria/decreto
+- Dado de pesquisa sem mencionar quem fez a pesquisa e quando
+- "Especialistas dizem que..." sem nomear quem e onde disse
+- Regras de FGTS, MCMV ou financiamento com mais de 6 meses — verificar se ainda vigentes
+
+### O que fazer com informação não verificada
+
+- **Dado confirmado em fonte primária:** inclua normalmente no briefing.
+- **Dado encontrado só em blogs/portais secundários:** inclua com nota "confirme antes de postar — não encontrei a fonte oficial".
+- **Dado contraditório entre fontes:** não inclua, ou mencione a contradição e recomende aguardar confirmação.
+- **Assunto com rumor mas sem confirmação oficial:** descarte ou sugira como "aguarde — assunto em desenvolvimento, não poste ainda".
+
+---
+
+## Fase 4 — Avaliação e seleção
+
+Para cada trend verificado, avalie três dimensões:
 
 1. **Relevância imobiliária (1–5):** tem ligação real com imóveis, moradia, financiamento ou investimento?
 2. **Potencial de engajamento (1–5):** provoca dúvida, surpresa, identificação, ou é informação útil que as pessoas vão salvar/compartilhar?
 3. **Urgência:** é assunto do momento (essa semana) ou pode ser usado quando quiser (evergreen)?
 
-Descarte tudo com relevância ≤ 2 ou engajamento ≤ 2. Prefira assuntos que combinam relevância alta + engajamento alto, mesmo que não sejam novidade absoluta.
+Descarte tudo com relevância ≤ 2 ou engajamento ≤ 2.
 
 ---
 
-## Fase 4 — Briefing de entrega
+## Fase 5 — Briefing de entrega
 
 Entregue uma lista priorizada (do mais urgente/relevante para o menos). Use este formato para cada item:
 
@@ -75,11 +117,16 @@ Entregue uma lista priorizada (do mais urgente/relevante para o menos). Use este
 
 **Por que está em alta:** [1–2 frases sobre o contexto atual — o que aconteceu ou está acontecendo]
 **Ângulo imobiliário:** [O gancho específico para o nicho — como conectar com imóveis]
-**Formato recomendado:** Carrossel / Reels / Story / Post único
+**Formato recomendado:** Carrossel / Post único / Story
 **Por que esse formato:** [Uma frase justificando a escolha do formato]
 **Urgência:** Postar essa semana / Pode guardar para [quando] / Evergreen
 **Sugestão de gancho:** "[Primeira frase ou título do post — o hook que vai parar o scroll]"
+**✅ Verificado:** [Fonte primária + data] — ex: "gov.br/minhacasaminhavida, jun/2026"
 ```
+
+Se algum item tiver dado não verificado, sinalize com **⚠️ Verificar antes de postar:** e explique o que precisa ser confirmado.
+
+Itens onde nenhum dado concreto foi verificado em fonte primária não entram no briefing — descarte.
 
 Entregue no mínimo 5 e no máximo 8 itens. Se o usuário pediu um número diferente, respeite isso.
 
