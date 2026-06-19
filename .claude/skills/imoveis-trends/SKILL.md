@@ -15,10 +15,11 @@ Se o usuário não especificou, pergunte **apenas isso** antes de pesquisar:
 
 - **Foco do perfil:** geral, investimento/FII, luxo, ou primeira compra?
 - **Público principal:** compradores, investidores, ou misto?
+- **Formatos disponíveis:** só carrossel/post estático, ou também grava vídeo/reels?
 
-Se o usuário responder "vai" ou qualquer coisa vaga, assuma: foco geral, público misto, semana atual, 5 posts.
+Se o usuário responder "vai" ou qualquer coisa vaga, assuma: foco geral, público misto, semana atual, 5 posts, **apenas carrossel e post estático**.
 
-Se já houver contexto na conversa (ex: "instagram de imóveis em SP para investidores"), não pergunte — use o que foi dito.
+Se já houver contexto na conversa, não pergunte — use o que foi dito. Se o usuário já informou que não grava vídeo, não sugira Reels em nenhuma circunstância.
 
 ---
 
@@ -86,16 +87,18 @@ Entregue no mínimo 5 e no máximo 8 itens. Se o usuário pediu um número difer
 
 ## Guia de formatos do Instagram
 
-Use este critério para recomendar o formato certo:
+O formato padrão é **Carrossel** — é o que gera mais salvamentos e alcance orgânico para conteúdo educativo sem precisar gravar vídeo. Só sugira Reels se o usuário confirmou que grava vídeo.
 
-| Situação | Formato |
-|---|---|
-| Explicação com múltiplos passos, comparativo, lista de dicas | Carrossel |
-| Assunto emocional, tendência visual, lifestyle | Reels |
-| Novidade urgente, enquete, bastidor, rápido | Story |
-| Frase de impacto, dado único, citação | Post único |
-| Dados, gráficos, antes/depois | Carrossel |
-| Conexão com trend viral, humor, comportamental | Reels |
+| Situação | Formato preferido | Formato alternativo (só se gravar vídeo) |
+|---|---|---|
+| Explicação com múltiplos passos, lista de dicas | **Carrossel** | — |
+| Comparativo, dados, antes/depois | **Carrossel** | — |
+| Frase de impacto, dado único, provocação | **Post único (estático)** | — |
+| Novidade urgente, enquete | **Story ou Post único** | — |
+| Assunto emocional, comportamental, viral | **Carrossel narrativo** | Reels |
+| Bastidor, lifestyle, vlog | — | Reels (só se disponível) |
+
+**Carrossel narrativo:** quando o assunto é emocional mas não tem vídeo, estruture o carrossel como história — slide 1 é o gancho, slides 2-4 desenvolvem a tensão, último slide é a virada ou CTA. Performa quase tão bem quanto Reels para conteúdo comportamental.
 
 ---
 
