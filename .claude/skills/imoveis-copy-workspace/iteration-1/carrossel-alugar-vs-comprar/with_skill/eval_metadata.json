@@ -1,0 +1,6 @@
+{
+  "eval_id": 3,
+  "eval_name": "carrossel-alugar-vs-comprar",
+  "prompt": "carrossel: alugar ou comprar em 2026? foco em quem paga aluguel de R$2.000 a R$2.500 em SP e fica em dúvida se vale comprar. não tenho dados verificados além desses valores de aluguel, pode usar argumento qualitativo.",
+  "assertions": []
+}

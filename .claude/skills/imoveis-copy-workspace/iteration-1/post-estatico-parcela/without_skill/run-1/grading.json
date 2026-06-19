@@ -1,0 +1,42 @@
+{
+  "eval_id": 2,
+  "run_id": "post-estatico-parcela-without_skill",
+  "expectations": [
+    {
+      "text": "Texto da imagem tem máximo 12 palavras",
+      "passed": false,
+      "evidence": "Texto da imagem tem 3 camadas/linhas — não segue estrutura de 'texto da imagem máx 12 palavras'. Entregou formato multi-bloco sem separar claramente o que vai na imagem"
+    },
+    {
+      "text": "Legenda tem CTA voltado para DM ou salvamento",
+      "passed": true,
+      "evidence": "'me manda uma mensagem' — aponta para DM"
+    },
+    {
+      "text": "Usa apenas dados fornecidos (R$2.500/mês, R$300k), sem inventar outros",
+      "passed": true,
+      "evidence": "Usou apenas os dados do prompt"
+    },
+    {
+      "text": "Sem exageros ou palavras proibidas",
+      "passed": true,
+      "evidence": "Linguagem equilibrada, sem exageros"
+    },
+    {
+      "text": "Emoji apenas funcional (👇 no CTA)",
+      "passed": false,
+      "evidence": "Não identificado — o resumo menciona hashtags adequadas mas não emoji funcional vs decorativo"
+    },
+    {
+      "text": "Entrega texto da imagem + legenda + hashtags separados",
+      "passed": false,
+      "evidence": "Texto da imagem entregue em '3 camadas' sem formato claro de separação — dificulta saber o que vai na imagem vs legenda"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 3,
+    "total": 6,
+    "pass_rate": 0.5
+  }
+}

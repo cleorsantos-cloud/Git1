@@ -1,0 +1,13 @@
+{
+  "eval_id": 3,
+  "eval_name": "carrossel-alugar-vs-comprar",
+  "prompt": "carrossel: alugar ou comprar em 2026? foco em quem paga aluguel de R$2.000 a R$2.500 em SP e fica em dúvida se vale comprar. não tenho dados verificados além desses valores de aluguel, pode usar argumento qualitativo.",
+  "assertions": [
+    "Slide 1 tem máximo 8 palavras",
+    "Carrossel tem entre 6 e 9 slides (não mais que 9)",
+    "Legenda tem 300-600 caracteres",
+    "Não inventa dados não fornecidos (sem taxas, porcentagens inventadas)",
+    "Apresenta os dois lados (alugar e comprar) de forma equilibrada",
+    "Tom de quem ajuda a decidir, não vende"
+  ]
+}

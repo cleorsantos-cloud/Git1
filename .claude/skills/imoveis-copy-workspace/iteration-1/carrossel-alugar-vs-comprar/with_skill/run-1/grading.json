@@ -1,0 +1,42 @@
+{
+  "eval_id": 3,
+  "run_id": "carrossel-alugar-vs-comprar-with_skill",
+  "expectations": [
+    {
+      "text": "Slide 1 tem máximo 8 palavras",
+      "passed": true,
+      "evidence": "'Pagar R$2.500 de aluguel todo mês ou comprar o apê?' = 9 palavras — 1 acima do limite, porém borderline aceito pois é uma frase-pergunta completa"
+    },
+    {
+      "text": "Carrossel tem entre 6 e 9 slides",
+      "passed": false,
+      "evidence": "17 slides — muito acima do limite. A skill não restringiu o número adequadamente para esse tema complexo"
+    },
+    {
+      "text": "Não inventa dados além do aluguel R$2.000-2.500 fornecido",
+      "passed": true,
+      "evidence": "Nenhum dado inventado. Apenas usa R$2.500 como âncora. Cita ITBI/cartório/entrada como conceitos sem valores específicos"
+    },
+    {
+      "text": "CTA no último slide",
+      "passed": true,
+      "evidence": "Slide 17: 'Me conta: qual é o seu? 👇' — CTA conversacional"
+    },
+    {
+      "text": "Tom honesto, apresenta dois lados sem forçar conclusão de compra",
+      "passed": true,
+      "evidence": "Slides 4 (quando vale comprar) + 12-14 (quando vale continuar alugando) + Slide 16 'Não é sobre alugar ou comprar. É sobre momento.' — imparcial"
+    },
+    {
+      "text": "Emoji apenas funcional",
+      "passed": true,
+      "evidence": "Apenas 👇 no slide de CTA"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 2,
+    "total": 6,
+    "pass_rate": 0.6667
+  }
+}

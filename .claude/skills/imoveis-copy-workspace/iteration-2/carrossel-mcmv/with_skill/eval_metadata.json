@@ -1,0 +1,15 @@
+{
+  "eval_id": 1,
+  "eval_name": "carrossel-mcmv",
+  "prompt": "faz o copy de um carrossel sobre as novas regras do MCMV — o teto subiu pra R$600k na Faixa 4 e pra R$400k na Faixa 3 (mudança publicada em jun/2026). Público: compradores de primeira viagem que acham que não se encaixam no programa.",
+  "assertions": [
+    "Slide 1 tem máximo 8 palavras",
+    "Último slide é CTA",
+    "Legenda tem 300-600 caracteres e não repete slides",
+    "Sem palavras proibidas (INCRÍVEL, IMPERDÍVEL, sonhos, etc.)",
+    "Usa os dados verificados fornecidos (R$600k Faixa 4, R$400k Faixa 3)",
+    "Tom de corretor amigo, não corporativo",
+    "Carrossel tem entre 6 e 9 slides",
+    "Slides informativos têm subtexto explicativo quando necessário"
+  ]
+}

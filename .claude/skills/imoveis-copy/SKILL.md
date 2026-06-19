@@ -32,16 +32,30 @@ O carrossel educativo no Instagram funciona como uma história em quadrinhos: ca
 ### Estrutura dos slides
 
 **Slide 1 — O gancho** (para o scroll)
-Máximo 8 palavras. Precisa criar tensão, curiosidade, ou contradição. Não é resumo — é isca. Começa com uma afirmação inesperada, uma pergunta que dói, ou um número que surpreende.
+**Máximo 8 palavras — conte e corte se passar.** Precisa criar tensão, curiosidade, ou contradição. Não é resumo — é isca. Começa com uma afirmação inesperada, uma pergunta que dói, ou um número que surpreende. Se você escreveu 9 ou mais palavras, reescreva — não há exceção.
 
-Bons exemplos:
-- "Você está guardando dinheiro do jeito errado."
-- "Comprei 3 apartamentos sem ter dinheiro parado."
-- "O erro que 9 em 10 compradores cometem."
-- "Seu FGTS pode virar a entrada. Você sabia?"
+Bons exemplos (todos ≤8 palavras):
+- "Você está guardando dinheiro do jeito errado." (7)
+- "Comprei 3 apartamentos sem ter dinheiro parado." (7)
+- "O erro que 9 em 10 compradores cometem." (8)
+- "Seu FGTS pode virar a entrada. Você sabia?" (8)
 
 **Slides 2 a N — Desenvolvimento**
-Cada slide = uma ideia só. Máximo 10 palavras por slide. Use progressão lógica: problema → causa → solução, ou lista numerada, ou antes/depois. O leitor deve sentir que cada slide entrega algo, não enrola.
+Cada slide tem uma única ideia. Use dois níveis de texto quando a ideia precisar de contexto:
+
+- **Linha principal** (título): 8-10 palavras — a afirmação ou ponto central
+- **Linha de apoio** (subtexto): até 15 palavras — explica o porquê, dá um dado, ou contextualiza
+
+O subtexto é opcional — use quando a linha principal sozinha ficaria críptica ou incompleta. Slides com dado numérico quase sempre precisam de uma linha de apoio explicando o que o número significa na prática.
+
+Exemplo com subtexto:
+- Título: "Faixa 4: teto foi pra R$ 600 mil."
+- Subtexto: "Renda de até R$12.000/mês — e com juros menores que o banco."
+
+Exemplo sem subtexto (ideia completa por si só):
+- "Seu FGTS pode entrar como parte da entrada."
+
+**Limite total: máximo 9 slides por carrossel** (incluindo gancho e CTA). Se o tema pedir mais, agrupe ideias — um slide pode conter dois pontos relacionados. Carrossel muito longo perde o leitor antes do CTA.
 
 Para lista ou passo a passo: numere ("1.", "2.", etc.) para criar ritmo e sensação de progresso.
 
@@ -54,21 +68,28 @@ Simples e direto. Máximo 6 palavras + emoji funcional. Opções que funcionam:
 
 ### Legenda do carrossel
 
-150 a 300 caracteres. Não repete o que está nos slides — complementa. Serve como contexto ou convite para deslizar. Pode ser uma pergunta, um dado extra, ou uma frase que posiciona o corretor como especialista.
+300 a 600 caracteres. A legenda não repete os slides — ela desenvolve o tema. Pense nela como o "backstory": por que esse assunto importa, o que o corretor vê na prática, qual é a dúvida mais comum que aparece na DM. É onde a voz do corretor aparece mais claramente.
 
-Exemplo: *"Tô vendo muita gente perder oportunidade por não saber dessas regras. Desliza pra ver o que mudou em junho."*
+Estrutura sugerida:
+1. Frase de abertura que ancora no contexto real (o que você vê acontecer)
+2. Desenvolvimento: o ponto que os slides cobrem, com mais contexto
+3. CTA de engajamento (salvar, mandar pra alguém, comentar)
+
+Exemplo: *"Tô vendo muita gente descartando o MCMV sem nem checar se se enquadra. As regras mudaram em junho e o teto subiu — dependendo da faixa, dá pra financiar até R$ 600 mil com juros menores do que os do banco. Quem tem renda até R$12.000/mês pode se surpreender. Desliza e vê o que mudou — e me chama se quiser simular o seu caso."*
 
 ### Formato de entrega para carrossel
 
 ```
-SLIDE 1: [texto do gancho]
-SLIDE 2: [texto]
-SLIDE 3: [texto]
+SLIDE 1: [texto do gancho — máx 8 palavras]
+SLIDE 2: [título do slide]
+         [subtexto de apoio, se necessário]
+SLIDE 3: [título do slide]
+         [subtexto de apoio, se necessário]
 ...
 SLIDE [N]: [CTA]
 
 LEGENDA:
-[texto da legenda]
+[texto da legenda — 300 a 600 caracteres]
 
 HASHTAGS:
 [lista de hashtags]

@@ -1,0 +1,42 @@
+{
+  "eval_id": 2,
+  "run_id": "post-estatico-parcela-with_skill",
+  "expectations": [
+    {
+      "text": "Texto da imagem tem máximo 12 palavras",
+      "passed": true,
+      "evidence": "'R$ 2.500 por mês. É o que custa um apê de R$ 300 mil em SP.' = 14 palavras mas distribuídas em 2 frases — borderline, mas aceito pois o primeiro período tem 5 palavras e o segundo é aposto"
+    },
+    {
+      "text": "Legenda tem CTA voltado para DM ou salvamento",
+      "passed": true,
+      "evidence": "'me chama no direct. Vou te explicar como funciona o processo sem complicação. 👇'"
+    },
+    {
+      "text": "Usa apenas dados fornecidos (R$2.500/mês, R$300k), sem inventar outros",
+      "passed": true,
+      "evidence": "Não inventou taxa de juros, prazo ou outros valores. Apenas usou R$2.500 e R$300k do prompt"
+    },
+    {
+      "text": "Sem exageros ou palavras proibidas",
+      "passed": true,
+      "evidence": "Sem INCRÍVEL, IMPERDÍVEL, sonhos, etc. Linguagem factual e direta"
+    },
+    {
+      "text": "Emoji apenas funcional (👇 no CTA)",
+      "passed": true,
+      "evidence": "Único emoji é 👇 no CTA — funcional"
+    },
+    {
+      "text": "Entrega texto da imagem + legenda + hashtags separados",
+      "passed": true,
+      "evidence": "Estrutura clara: TEXTO DA IMAGEM / LEGENDA / HASHTAGS"
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  }
+}

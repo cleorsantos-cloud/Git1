@@ -1,0 +1,52 @@
+{
+  "eval_id": 1,
+  "run_id": "carrossel-mcmv-with_skill",
+  "expectations": [
+    {
+      "text": "Slide 1 tem máximo 8 palavras",
+      "passed": false,
+      "evidence": "'Você acha que o MCMV não é pra você. Errado.' = 9 palavras — 1 acima do limite"
+    },
+    {
+      "text": "Último slide é CTA",
+      "passed": true,
+      "evidence": "Slide 8: 'Me chama no direct — vejo se você se enquadra 👇'"
+    },
+    {
+      "text": "Legenda tem 150-300 caracteres e não repete slides",
+      "passed": true,
+      "evidence": "~195 chars. Complementa com contexto ('Tô vendo muita gente descartando...') sem repetir slides"
+    },
+    {
+      "text": "Sem palavras proibidas (INCRÍVEL, IMPERDÍVEL, sonhos, etc.)",
+      "passed": true,
+      "evidence": "Nenhuma palavra proibida encontrada"
+    },
+    {
+      "text": "Usa os dados verificados fornecidos (R$600k Faixa 4, R$400k Faixa 3)",
+      "passed": true,
+      "evidence": "Slides 3 e 4 citam exatamente R$400k e R$600k"
+    },
+    {
+      "text": "Tom de corretor amigo, não corporativo",
+      "passed": true,
+      "evidence": "Slides em primeira pessoa, linguagem simples. Legenda usa 'Tô vendo' (coloquial)"
+    },
+    {
+      "text": "Carrossel tem entre 6 e 9 slides",
+      "passed": true,
+      "evidence": "8 slides — dentro do range ideal"
+    },
+    {
+      "text": "Oferece variação A/B de gancho",
+      "passed": true,
+      "evidence": "Bônus espontâneo: entregou Versão A e Versão B do Slide 1 com justificativa"
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 1,
+    "total": 8,
+    "pass_rate": 0.875
+  }
+}

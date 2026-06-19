@@ -1,0 +1,42 @@
+{
+  "eval_id": 3,
+  "run_id": "carrossel-alugar-vs-comprar-without_skill",
+  "expectations": [
+    {
+      "text": "Slide 1 tem máximo 8 palavras",
+      "passed": false,
+      "evidence": "Slide 1 tem 2 linhas: pergunta longa + 'Essa dúvida é mais comum do que você imagina.' — excede limite e quebra regra de 1 ideia por slide"
+    },
+    {
+      "text": "Carrossel tem entre 6 e 9 slides",
+      "passed": true,
+      "evidence": "9 slides — dentro do range"
+    },
+    {
+      "text": "Não inventa dados além do aluguel R$2.000-2.500 fornecido",
+      "passed": true,
+      "evidence": "Usa apenas os valores de aluguel fornecidos. Cita custos (cartório, ITBI) como conceitos"
+    },
+    {
+      "text": "CTA no último slide",
+      "passed": true,
+      "evidence": "Slide 9: 'Me chama no direct... Salva esse carrossel'"
+    },
+    {
+      "text": "Tom honesto, apresenta dois lados sem forçar conclusão de compra",
+      "passed": true,
+      "evidence": "Slides 3 e 4 apresentam argumentos pró-compra e pró-aluguel. Slide 8 'Comprar não é sempre melhor. Alugar não é sempre jogar dinheiro fora.'"
+    },
+    {
+      "text": "Emoji apenas funcional",
+      "passed": false,
+      "evidence": "Legenda usa ⬇️ decorativo ao final de parágrafo de texto — não está associado a ação específica"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 2,
+    "total": 6,
+    "pass_rate": 0.6667
+  }
+}

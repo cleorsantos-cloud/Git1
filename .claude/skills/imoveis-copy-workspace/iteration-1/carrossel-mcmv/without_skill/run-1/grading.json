@@ -1,0 +1,52 @@
+{
+  "eval_id": 1,
+  "run_id": "carrossel-mcmv-without_skill",
+  "expectations": [
+    {
+      "text": "Slide 1 tem máximo 8 palavras",
+      "passed": false,
+      "evidence": "Slide 1 tem 2 linhas: 'Achei que MCMV não era pra mim.' + 'Mas acabei de ver as novas regras e mudei de ideia.' — excede limite e usa estilo de depoimento, não hook direto"
+    },
+    {
+      "text": "Último slide é CTA",
+      "passed": true,
+      "evidence": "Slide 7 é CTA com convite pro direct"
+    },
+    {
+      "text": "Legenda tem 150-300 caracteres e não repete slides",
+      "passed": false,
+      "evidence": "Legenda tem ~390 chars (acima do limite de 300) e repete informações dos slides (teto R$600k, R$400k, FGTS, prazo 35 anos)"
+    },
+    {
+      "text": "Sem palavras proibidas (INCRÍVEL, IMPERDÍVEL, sonhos, etc.)",
+      "passed": false,
+      "evidence": "Slide 4: 'O seu apartamento dos sonhos pode ter entrado nessa faixa agora' — usa 'sonhos' como promessa"
+    },
+    {
+      "text": "Usa os dados verificados fornecidos (R$600k Faixa 4, R$400k Faixa 3)",
+      "passed": true,
+      "evidence": "Slides 3 e 4 citam os valores corretos"
+    },
+    {
+      "text": "Tom de corretor amigo, não corporativo",
+      "passed": false,
+      "evidence": "Slide 7: 'É só uma conversa. Pode ser o começo de tudo.' — soa como slogan. Legenda usa 🏠 emoji decorativo e markdown bold desnecessário"
+    },
+    {
+      "text": "Carrossel tem entre 6 e 9 slides",
+      "passed": true,
+      "evidence": "7 slides"
+    },
+    {
+      "text": "Oferece variação A/B de gancho",
+      "passed": false,
+      "evidence": "Não ofereceu variação"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 5,
+    "total": 8,
+    "pass_rate": 0.375
+  }
+}
