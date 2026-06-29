@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080">
+  <title>Criativo A v9 — Mansões Recreio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Inter:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px; height: 1350px;
+      overflow: hidden; background: #060B12;
+    }
+
+    .canvas {
+      width: 1080px; height: 1350px;
+      position: relative; overflow: hidden;
+    }
+
+    /* === CINEMATIC POOL ATMOSPHERE (pure CSS — no external image) === */
+    .hero-zone {
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 880px;
+
+      /* Layer 1: dark overlay (transparent at top → opaque at bottom)
+         Layer 2: pool water radial gradient (bright aqua center, deep teal edges) */
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(6,11,18,0.08)  0%,
+          rgba(6,11,18,0.14) 22%,
+          rgba(6,11,18,0.52) 52%,
+          rgba(6,11,18,0.92) 74%,
+          rgba(6,11,18,1.00) 100%
+        ),
+        radial-gradient(
+          ellipse 120% 80% at 50% 4%,
+          #BAE6FD  0%,
+          #7DD3FC 16%,
+          #38BDF8 32%,
+          #0EA5E9 50%,
+          #0284C7 66%,
+          #075985 82%,
+          #0C4A6E 100%
+        );
+    }
+
+    /* Subtle shimmer lines — water surface suggestion */
+    .shimmer {
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 460px;
+      background: repeating-linear-gradient(
+        168deg,
+        transparent 0px,
+        transparent 56px,
+        rgba(255,255,255,0.025) 56px,
+        rgba(255,255,255,0.025) 57px
+      );
+      pointer-events: none;
+    }
+
+    /* Top label */
+    .top-label {
+      position: absolute;
+      top: 48px; left: 52px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.26em; text-transform: uppercase;
+      color: rgba(255,255,255,0.38);
+    }
+
+    /* Glass badge */
+    .badge {
+      position: absolute;
+      top: 40px; right: 52px;
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 10px 16px; border-radius: 3px;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #38BDF8; flex-shrink: 0;
+      animation: bdot 2.4s ease-in-out infinite;
+    }
+    @keyframes bdot { 0%,100%{opacity:1} 50%{opacity:0.26} }
+    .badge span {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.20em; text-transform: uppercase;
+      color: rgba(255,255,255,0.82);
+    }
+
+    /* === HEADLINE — emerges from the darkening gradient === */
+    .headline {
+      position: absolute;
+      top: 444px; left: 52px; right: 52px;
+    }
+    .h-outline {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 130px; font-weight: 900;
+      line-height: 0.88; letter-spacing: -0.01em;
+      color: transparent;
+      -webkit-text-stroke: 2.5px rgba(255,255,255,0.76);
+      display: block;
+    }
+    .h-solid {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 152px; font-weight: 900;
+      line-height: 0.86; letter-spacing: -0.01em;
+      color: #38BDF8; display: block;
+    }
+    .h-sub {
+      margin-top: 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 17px; font-weight: 300;
+      color: rgba(255,255,255,0.44);
+      letter-spacing: 0.025em; line-height: 1.45;
+    }
+
+    /* === DARK FLOOR === */
+    .dark-floor {
+      position: absolute;
+      top: 880px; bottom: 0; left: 0; right: 0;
+      background: #060B12;
+    }
+
+    /* Price */
+    .price-wrap {
+      position: absolute; top: 900px; left: 52px;
+    }
+    .price-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.24em; text-transform: uppercase;
+      color: rgba(255,255,255,0.24); margin-bottom: 5px;
+    }
+    .price-val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 88px; font-weight: 900;
+      line-height: 1; letter-spacing: -0.01em; color: #ffffff;
+    }
+    .price-val small { font-size: 44px; color: rgba(255,255,255,0.38); }
+    .price-note {
+      margin-top: 5px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 300; font-style: italic;
+      color: rgba(255,255,255,0.30); letter-spacing: 0.04em;
+    }
+
+    .sep {
+      position: absolute; top: 1068px;
+      left: 52px; right: 52px;
+      height: 1px; background: rgba(255,255,255,0.08);
+    }
+
+    .specs {
+      position: absolute; top: 1082px;
+      left: 52px; right: 52px;
+      display: flex; align-items: center;
+    }
+    .s-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22); white-space: nowrap;
+    }
+    .s-div {
+      width: 1px; height: 10px;
+      background: rgba(255,255,255,0.12);
+      margin: 0 12px; flex-shrink: 0;
+    }
+
+    /* === CTA === */
+    .cta-section { position: absolute; bottom: 0; left: 0; right: 0; }
+    .cta-context {
+      background: #060B12; padding: 13px 52px; text-align: center;
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.20em; text-transform: uppercase;
+      color: rgba(255,255,255,0.16);
+    }
+    .cta-btn {
+      display: block; background: #25D366; padding: 28px 52px;
+      text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 52px; font-weight: 900;
+      letter-spacing: 0.04em; text-transform: uppercase; color: #000000;
+      box-shadow: 0 -18px 52px rgba(37,211,102,0.14);
+    }
+    .cta-footer {
+      background: #030609; padding: 13px 52px 26px; text-align: center;
+    }
+    .cf-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px; font-weight: 700;
+      letter-spacing: 0.26em; text-transform: uppercase;
+      color: rgba(255,255,255,0.24);
+    }
+    .cf-loc {
+      margin-top: 4px; font-family: 'Inter', sans-serif;
+      font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+      color: rgba(255,255,255,0.11);
+    }
+  </style>
+</head>
+<body>
+<div class="canvas">
+
+  <div class="hero-zone"></div>
+  <div class="shimmer"></div>
+  <div class="dark-floor"></div>
+
+  <div class="top-label">MANSÕES RECREIO · CIDADE OCIDENTAL-GO</div>
+  <div class="badge">
+    <div class="badge-dot"></div>
+    <span>MCMV · FGTS Aceito · Cond. Fechado</span>
+  </div>
+
+  <div class="headline">
+    <span class="h-outline">SUA PRÓPRIA</span>
+    <span class="h-solid">PISCINA.</span>
+    <p class="h-sub">Apartamento 2 quartos · 47m² · Cidade Ocidental-GO</p>
+  </div>
+
+  <div class="price-wrap">
+    <div class="price-eyebrow">Financiamento MCMV a partir de</div>
+    <div class="price-val">R$ 1.500<small> /MÊS</small></div>
+    <div class="price-note">Entrada facilitada · Sem burocracia</div>
+  </div>
+
+  <div class="sep"></div>
+
+  <div class="specs">
+    <span class="s-item">2 Quartos</span>
+    <div class="s-div"></div>
+    <span class="s-item">47m²</span>
+    <div class="s-div"></div>
+    <span class="s-item">Piscina</span>
+    <div class="s-div"></div>
+    <span class="s-item">Cond. Fechado</span>
+    <div class="s-div"></div>
+    <span class="s-item">43km de Brasília</span>
+  </div>
+
+  <div class="cta-section">
+    <div class="cta-context">Corretor disponível agora · Sem compromisso</div>
+    <div class="cta-btn">QUERO MEU APÊ → WHATSAPP</div>
+    <div class="cta-footer">
+      <div class="cf-name">MANSÕES RECREIO</div>
+      <div class="cf-loc">Cidade Ocidental-GO · 43km do Plano Piloto</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

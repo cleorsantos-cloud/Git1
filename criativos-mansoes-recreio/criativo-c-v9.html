@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080">
+  <title>Criativo C v9 — Mansões Recreio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Inter:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px; height: 1350px;
+      overflow: hidden; background: #050A0F;
+    }
+
+    .canvas {
+      width: 1080px; height: 1350px;
+      position: relative; overflow: hidden;
+    }
+
+    /* === ATMOSPHERIC GRADIENT SCENE (city-at-night feel) === */
+    .hero-zone {
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 940px;
+      /* Deep night-sky gradient — suggests distance, horizon, city lights */
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(5,10,15,0.42)  0%,
+          rgba(5,10,15,0.30) 18%,
+          rgba(5,10,15,0.52) 50%,
+          rgba(5,10,15,0.90) 76%,
+          rgba(5,10,15,1.00) 100%
+        ),
+        radial-gradient(
+          ellipse 130% 65% at 50% -5%,
+          #1E3A5F 0%,
+          #0F2744 22%,
+          #091A30 44%,
+          #05111F 65%,
+          #050A0F 100%
+        );
+    }
+
+    /* Ghost large "43KM" behind headline — depth without clutter */
+    .ghost-num {
+      position: absolute;
+      top: 44px; right: -24px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 540px; font-weight: 900;
+      line-height: 1; letter-spacing: -0.04em;
+      color: rgba(255,255,255,0.034);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* === BADGES === */
+    .badge-left {
+      position: absolute;
+      top: 40px; left: 52px;
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 10px 16px; border-radius: 3px;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #38BDF8; flex-shrink: 0;
+      animation: bd 2.2s ease-in-out infinite;
+    }
+    @keyframes bd { 0%,100%{opacity:1} 50%{opacity:0.24} }
+    .badge-left span {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.20em; text-transform: uppercase;
+      color: rgba(255,255,255,0.78);
+    }
+
+    .top-right {
+      position: absolute;
+      top: 48px; right: 52px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.26em; text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+    }
+
+    /* === HEADLINE BLOCK === */
+    .headline {
+      position: absolute;
+      top: 166px; left: 52px; right: 52px;
+    }
+
+    .h-line {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; letter-spacing: -0.01em;
+      display: block;
+    }
+
+    /* "VIVA" — ghost outline, very large */
+    .h-viva {
+      font-size: 196px; line-height: 0.88;
+      color: transparent;
+      -webkit-text-stroke: 2.5px rgba(255,255,255,0.62);
+    }
+
+    /* "PERTO" — solid white, slightly smaller */
+    .h-perto {
+      font-size: 174px; line-height: 0.88;
+      color: #ffffff;
+    }
+
+    /* "DE BRASÍLIA." — sky blue, the emotional payoff */
+    .h-bsb {
+      font-size: 122px; line-height: 0.90;
+      color: #38BDF8;
+    }
+
+    /* Accent rule */
+    .h-rule {
+      margin-top: 24px;
+      width: 64px; height: 2px;
+      background: rgba(56,189,248,0.52);
+    }
+
+    .h-sub {
+      margin-top: 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 17px; font-weight: 300;
+      color: rgba(255,255,255,0.40);
+      letter-spacing: 0.025em; line-height: 1.45;
+    }
+
+    /* === DARK FLOOR === */
+    .dark-floor {
+      position: absolute;
+      top: 810px; bottom: 0; left: 0; right: 0;
+      background: #050A0F;
+    }
+
+    /* Price */
+    .price-wrap {
+      position: absolute; top: 826px; left: 52px;
+    }
+    .price-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.24em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22); margin-bottom: 5px;
+    }
+    .price-val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 90px; font-weight: 900;
+      line-height: 1; letter-spacing: -0.01em; color: #ffffff;
+    }
+    .price-val small { font-size: 46px; color: rgba(255,255,255,0.36); }
+    .price-note {
+      margin-top: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 300; font-style: italic;
+      color: rgba(255,255,255,0.28); letter-spacing: 0.04em;
+    }
+
+    .sep {
+      position: absolute; top: 952px;
+      left: 52px; right: 52px;
+      height: 1px; background: rgba(255,255,255,0.07);
+    }
+
+    .specs {
+      position: absolute; top: 966px;
+      left: 52px; right: 52px;
+      display: flex; align-items: center;
+    }
+    .s-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.21); white-space: nowrap;
+    }
+    .s-div {
+      width: 1px; height: 10px;
+      background: rgba(255,255,255,0.11);
+      margin: 0 12px; flex-shrink: 0;
+    }
+
+    /* === CTA === */
+    .cta-section { position: absolute; bottom: 0; left: 0; right: 0; }
+    .cta-context {
+      background: #050A0F; padding: 13px 52px; text-align: center;
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.20em; text-transform: uppercase;
+      color: rgba(255,255,255,0.15);
+    }
+    .cta-btn {
+      display: block; background: #25D366; padding: 28px 52px;
+      text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 52px; font-weight: 900;
+      letter-spacing: 0.04em; text-transform: uppercase; color: #000000;
+      box-shadow: 0 -18px 52px rgba(37,211,102,0.13);
+    }
+    .cta-footer {
+      background: #020508; padding: 13px 52px 26px; text-align: center;
+    }
+    .cf-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px; font-weight: 700;
+      letter-spacing: 0.26em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+    }
+    .cf-loc {
+      margin-top: 4px; font-family: 'Inter', sans-serif;
+      font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+      color: rgba(255,255,255,0.10);
+    }
+  </style>
+</head>
+<body>
+<div class="canvas">
+
+  <div class="hero-zone"></div>
+  <div class="ghost-num">43</div>
+  <div class="dark-floor"></div>
+
+  <div class="badge-left">
+    <div class="badge-dot"></div>
+    <span>MCMV · Cond. Fechado</span>
+  </div>
+  <div class="top-right">MANSÕES RECREIO</div>
+
+  <div class="headline">
+    <span class="h-line h-viva">VIVA</span>
+    <span class="h-line h-perto">PERTO</span>
+    <span class="h-line h-bsb">DE BRASÍLIA.</span>
+    <div class="h-rule"></div>
+    <p class="h-sub">43km do Plano Piloto · Apartamento 2 quartos · 47m²</p>
+  </div>
+
+  <div class="price-wrap">
+    <div class="price-eyebrow">Financiamento MCMV a partir de</div>
+    <div class="price-val">R$ 1.500<small> /MÊS</small></div>
+    <div class="price-note">FGTS aceito · Entrada facilitada</div>
+  </div>
+
+  <div class="sep"></div>
+
+  <div class="specs">
+    <span class="s-item">2 Quartos</span>
+    <div class="s-div"></div>
+    <span class="s-item">47m²</span>
+    <div class="s-div"></div>
+    <span class="s-item">Piscina</span>
+    <div class="s-div"></div>
+    <span class="s-item">Cond. Fechado</span>
+    <div class="s-div"></div>
+    <span class="s-item">43km de Brasília</span>
+  </div>
+
+  <div class="cta-section">
+    <div class="cta-context">Corretor disponível agora · Sem compromisso</div>
+    <div class="cta-btn">QUERO MEU APÊ → WHATSAPP</div>
+    <div class="cta-footer">
+      <div class="cf-name">MANSÕES RECREIO</div>
+      <div class="cf-loc">Cidade Ocidental-GO · 43km do Plano Piloto</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
