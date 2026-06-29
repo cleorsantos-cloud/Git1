@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080">
+  <title>Criativo C v7 — Mansões Recreio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+    }
+
+    body {
+      background: #04101e;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER: 130px ── */
+    .header {
+      flex: 0 0 130px;
+      background: #04101e;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .header-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.24);
+      margin-bottom: 8px;
+    }
+    .header-amount {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 72px;
+      line-height: 0.88;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+    }
+    .flag { position: absolute; width: 26px; height: 26px; }
+    .flag-tl { top:18px; left:28px; border-top:1.5px solid rgba(245,158,11,0.42); border-left:1.5px solid rgba(245,158,11,0.42); }
+    .flag-tr { top:18px; right:28px; border-top:1.5px solid rgba(245,158,11,0.42); border-right:1.5px solid rgba(245,158,11,0.42); }
+
+    /* ── COLUMNS: 720px ── */
+    .columns {
+      flex: 0 0 720px;
+      display: flex;
+      position: relative;
+    }
+
+    .divider {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      background: linear-gradient(to bottom,
+        rgba(245,158,11,0.5) 0%,
+        rgba(245,158,11,0.3) 40%,
+        rgba(74,222,128,0.3) 60%,
+        rgba(74,222,128,0.5) 100%
+      );
+    }
+
+    /* LEFT — ALUGUEL (muted) */
+    .col-left {
+      flex: 1;
+      background: #04101e;
+      padding: 40px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .col-left::after {
+      content: '✕';
+      position: absolute;
+      bottom: -20px; right: -10px;
+      font-size: 240px; font-weight: 900;
+      color: rgba(255,255,255,0.025);
+      line-height: 1;
+      pointer-events: none;
+    }
+    .col-left::before {
+      content: '';
+      position: absolute;
+      top: 30px; left: -50px;
+      width: 380px; height: 280px;
+      background: radial-gradient(ellipse at center, rgba(245,158,11,0.06) 0%, transparent 65%);
+      filter: blur(40px);
+      pointer-events: none;
+    }
+
+    .left-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.26em; text-transform: uppercase;
+      color: rgba(245,158,11,0.35);
+      margin-bottom: 12px;
+    }
+    .left-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 74px; line-height: 0.84;
+      color: rgba(255,255,255,0.16);
+      margin-bottom: 8px;
+    }
+    .left-amount {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 104px; line-height: 0.80;
+      letter-spacing: -0.01em;
+      color: rgba(245,158,11,0.14);
+      margin-bottom: 6px;
+      white-space: nowrap;
+    }
+    .left-period {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.14);
+      margin-bottom: 22px;
+    }
+    .left-rule { height: 1px; background: rgba(255,255,255,0.06); margin-bottom: 20px; }
+
+    .left-items { display: flex; flex-direction: column; gap: 16px; }
+    .left-item { display: flex; align-items: flex-start; gap: 10px; }
+    .left-arrow {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px; line-height: 1.15;
+      color: rgba(245,158,11,0.22);
+      flex-shrink: 0;
+    }
+    .left-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px; font-weight: 300;
+      line-height: 1.4;
+      color: rgba(255,255,255,0.18);
+    }
+
+    /* RIGHT — SEU APÊ (vivid) */
+    .col-right {
+      flex: 1;
+      background: #030e0a;
+      padding: 40px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .col-right::before {
+      content: '';
+      position: absolute;
+      top: 30px; right: -50px;
+      width: 380px; height: 280px;
+      background: radial-gradient(ellipse at center, rgba(74,222,128,0.10) 0%, transparent 65%);
+      filter: blur(40px);
+      pointer-events: none;
+    }
+
+    .right-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.26em; text-transform: uppercase;
+      color: rgba(74,222,128,0.6);
+      margin-bottom: 12px;
+    }
+    .right-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 74px; line-height: 0.84;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+    .right-amount {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 104px; line-height: 0.80;
+      letter-spacing: -0.01em;
+      background: linear-gradient(110deg, #f59e0b 20%, #fbbf24 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
+      white-space: nowrap;
+    }
+    .right-period {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.42);
+      margin-bottom: 22px;
+    }
+    .right-rule { height: 1px; background: rgba(74,222,128,0.18); margin-bottom: 20px; }
+
+    .right-items { display: flex; flex-direction: column; gap: 16px; }
+    .right-item { display: flex; align-items: flex-start; gap: 10px; }
+    .right-arrow {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px; line-height: 1.15;
+      color: #4ade80;
+      flex-shrink: 0;
+    }
+    .right-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px; font-weight: 400;
+      line-height: 1.4;
+      color: rgba(255,255,255,0.76);
+    }
+
+    /* ── CALLOUT STRIPE: 100px ── */
+    .callout {
+      flex: 0 0 100px;
+      background: #020c14;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 90px;
+      text-align: center;
+    }
+    .callout-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.32);
+      letter-spacing: 0.03em;
+    }
+    .callout-green { color: #4ade80; font-style: normal; font-weight: 400; }
+
+    /* ── FOOTER: 400px ── */
+    .footer {
+      flex: 0 0 400px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .specs-row {
+      flex: 0 0 56px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      background: #04101e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .spec {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.27);
+      padding: 0 16px;
+    }
+    .spec-sep { width: 1px; height: 13px; background: rgba(255,255,255,0.08); }
+
+    .cta-button {
+      flex: 0 0 106px;
+      background: #25D366;
+      color: #000;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 46px;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 52px rgba(37,211,102,0.22), 0 -20px 48px rgba(37,211,102,0.08);
+    }
+
+    .cta-sub {
+      flex: 0 0 44px;
+      background: #020c14;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    .brand-section {
+      flex: 1;
+      background: #020c14;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      position: relative;
+    }
+    .flag-bl-f { position: absolute; bottom:18px; left:28px; width:26px; height:26px; border-bottom:1.5px solid rgba(74,222,128,0.38); border-left:1.5px solid rgba(74,222,128,0.38); }
+    .flag-br-f { position: absolute; bottom:18px; right:28px; width:26px; height:26px; border-bottom:1.5px solid rgba(74,222,128,0.38); border-right:1.5px solid rgba(74,222,128,0.38); }
+
+    .brand-row { display: flex; align-items: center; gap: 10px; }
+    .brand-name { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.14em; color: #4ade80; }
+    .brand-sub { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(255,255,255,0.2); }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="flag flag-tl"></div>
+    <div class="flag flag-tr"></div>
+    <div class="header-eyebrow">TODO MÊS VOCÊ ESCOLHE O DESTINO DO SEU DINHEIRO</div>
+    <div class="header-amount">R$ 1.500 / MÊS</div>
+  </div>
+
+  <div class="columns">
+    <div class="divider"></div>
+
+    <div class="col-left">
+      <div class="left-label">No aluguel hoje</div>
+      <div class="left-title">ALUGUEL</div>
+      <div class="left-amount">R$&nbsp;1.500</div>
+      <div class="left-period">TODO MÊS</div>
+      <div class="left-rule"></div>
+      <div class="left-items">
+        <div class="left-item">
+          <span class="left-arrow">→</span>
+          <span class="left-text">Vai pro bolso<br>do proprietário</span>
+        </div>
+        <div class="left-item">
+          <span class="left-arrow">→</span>
+          <span class="left-text">Some ao fim<br>do mês</span>
+        </div>
+        <div class="left-item">
+          <span class="left-arrow">→</span>
+          <span class="left-text">Você nunca<br>recupera</span>
+        </div>
+        <div class="left-item">
+          <span class="left-arrow">→</span>
+          <span class="left-text">Sem patrimônio<br>no final</span>
+        </div>
+        <div class="left-item">
+          <span class="left-arrow">→</span>
+          <span class="left-text">Reajuste pode<br>te pegar de surpresa</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-right">
+      <div class="right-label">No seu próprio apê</div>
+      <div class="right-title">SEU APÊ</div>
+      <div class="right-amount">R$&nbsp;1.500</div>
+      <div class="right-period">TODO MÊS</div>
+      <div class="right-rule"></div>
+      <div class="right-items">
+        <div class="right-item">
+          <span class="right-arrow">→</span>
+          <span class="right-text">Constrói o seu<br>patrimônio</span>
+        </div>
+        <div class="right-item">
+          <span class="right-arrow">→</span>
+          <span class="right-text">Valoriza com<br>o tempo</span>
+        </div>
+        <div class="right-item">
+          <span class="right-arrow">→</span>
+          <span class="right-text">É seu<br>para sempre</span>
+        </div>
+        <div class="right-item">
+          <span class="right-arrow">→</span>
+          <span class="right-text">Piscina e condomínio<br>fechado inclusos</span>
+        </div>
+        <div class="right-item">
+          <span class="right-arrow">→</span>
+          <span class="right-text">MCMV · 43km do<br>Plano Piloto</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p class="callout-text">
+      Enquanto o aluguel some, <span class="callout-green">seu apê valoriza.</span>
+    </p>
+  </div>
+
+  <div class="footer">
+    <div class="specs-row">
+      <span class="spec">2 Quartos</span>
+      <div class="spec-sep"></div>
+      <span class="spec">47m²</span>
+      <div class="spec-sep"></div>
+      <span class="spec">Piscina</span>
+      <div class="spec-sep"></div>
+      <span class="spec">Cond. Fechado</span>
+      <div class="spec-sep"></div>
+      <span class="spec">MCMV</span>
+      <div class="spec-sep"></div>
+      <span class="spec">43km BSB</span>
+    </div>
+    <div class="cta-button">QUERO MEU APÊ &nbsp;→ WHATSAPP</div>
+    <div class="cta-sub">Mansões Recreio · Cidade Ocidental-GO · Sem compromisso</div>
+    <div class="brand-section">
+      <div class="flag-bl-f"></div>
+      <div class="flag-br-f"></div>
+      <div class="brand-row">
+        <svg width="24" height="12" viewBox="0 0 60 28" fill="none">
+          <path d="M30,14 C30,14 24,4 16,4 C8,4 2,9 2,14 C2,19 8,24 16,24 C24,24 30,14 30,14 C30,14 36,4 44,4 C52,4 58,9 58,14 C58,19 52,24 44,24 C36,24 30,14 30,14Z" fill="none" stroke="#4ade80" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+        <div class="brand-name">Bona Vita</div>
+      </div>
+      <div class="brand-sub">Digital Marketing Agency</div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080">
+  <title>Criativo B v7 — Mansões Recreio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      background: #020d1c;
+    }
+
+    .canvas {
+      width: 1080px;
+      height: 1350px;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse 80% 55% at 50% 30%, #051c38 0%, #020d1c 65%);
+    }
+
+    .bloom-main {
+      position: absolute;
+      top: 50px; left: 50%;
+      transform: translateX(-50%);
+      width: 960px; height: 640px;
+      background: radial-gradient(ellipse at center,
+        rgba(37,99,235,0.18) 0%,
+        rgba(6,182,212,0.12) 45%,
+        transparent 68%
+      );
+      filter: blur(66px);
+      pointer-events: none;
+    }
+    .bloom-accent {
+      position: absolute;
+      top: 200px; left: 50%;
+      transform: translateX(-50%);
+      width: 560px; height: 360px;
+      background: radial-gradient(ellipse at center, rgba(14,165,233,0.14) 0%, transparent 65%);
+      filter: blur(40px);
+      pointer-events: none;
+    }
+
+    .grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: radial-gradient(ellipse 78% 56% at 50% 32%, black 10%, transparent 72%);
+    }
+
+    .flag { position: absolute; width: 28px; height: 28px; }
+    .flag-tl { top:36px; left:36px; border-top:1.5px solid rgba(37,99,235,0.5); border-left:1.5px solid rgba(37,99,235,0.5); }
+    .flag-tr { top:36px; right:36px; border-top:1.5px solid rgba(37,99,235,0.5); border-right:1.5px solid rgba(37,99,235,0.5); }
+    .flag-bl { bottom:36px; left:36px; border-bottom:1.5px solid rgba(6,182,212,0.4); border-left:1.5px solid rgba(6,182,212,0.4); }
+    .flag-br { bottom:36px; right:36px; border-bottom:1.5px solid rgba(6,182,212,0.4); border-right:1.5px solid rgba(6,182,212,0.4); }
+
+    .pool-wrap {
+      position: absolute;
+      top: 78px; left: 50%;
+      transform: translateX(-50%);
+      width: 340px; height: 310px;
+    }
+    .pool-wrap svg {
+      width: 100%; height: 100%; overflow: visible;
+      filter:
+        drop-shadow(0 0 22px rgba(37,99,235,0.68))
+        drop-shadow(0 0 80px rgba(37,99,235,0.30))
+        drop-shadow(0 0 140px rgba(6,182,212,0.18));
+    }
+
+    .top-label {
+      position: absolute;
+      top: 60px; left: 0; right: 0;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.18);
+    }
+
+    .content {
+      position: absolute;
+      top: 440px; left: 0; right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 72px;
+    }
+
+    .eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(14,165,233,0.75);
+      margin-bottom: 18px;
+    }
+
+    .head-outline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 154px;
+      line-height: 0.84;
+      letter-spacing: 0.01em;
+      color: transparent;
+      -webkit-text-stroke: 3px rgba(255,255,255,0.82);
+      display: block;
+    }
+
+    .head-gold {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 154px;
+      line-height: 0.84;
+      letter-spacing: 0.01em;
+      background: linear-gradient(110deg, #f59e0b 20%, #fbbf24 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .subhead {
+      font-family: 'Inter', sans-serif;
+      font-size: 22px;
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(255,255,255,0.44);
+      letter-spacing: 0.06em;
+      margin-bottom: 28px;
+    }
+
+    .price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 64px;
+      line-height: 1;
+      background: linear-gradient(110deg, #4ade80 20%, #2563eb 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .price-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(255,255,255,0.32);
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+    }
+
+    .pills {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .pill {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+      color: #0ea5e9;
+      border: 1px solid rgba(14,165,233,0.32);
+      padding: 7px 16px;
+      border-radius: 40px;
+    }
+    .pill.gold { color: #f59e0b; border-color: rgba(245,158,11,0.32); }
+
+    .cta-section {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+    }
+
+    .specs-strip {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 18px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      background: #020d1c;
+    }
+    .s-spec {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.26);
+      padding: 0 14px;
+    }
+    .s-sep { width: 1px; height: 12px; background: rgba(255,255,255,0.08); }
+
+    .cta-tick {
+      width: 1px; height: 52px;
+      background: linear-gradient(to bottom, rgba(37,99,235,0.7), rgba(6,182,212,0.7));
+      margin: 0 auto;
+    }
+
+    .cta-location {
+      padding: 14px 0 16px;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    .cta-button {
+      background: #25D366;
+      color: #000;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      letter-spacing: 0.08em;
+      padding: 26px 0;
+      display: block;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 -28px 64px rgba(37,211,102,0.1), 0 0 48px rgba(37,211,102,0.22);
+    }
+
+    .cta-sub {
+      background: #010810;
+      padding: 16px;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    .brand-section {
+      background: #010810;
+      padding: 14px 0 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .brand-row { display: flex; align-items: center; gap: 10px; }
+    .brand-name { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 0.14em; color: #4ade80; }
+    .brand-sub { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(255,255,255,0.2); }
+  </style>
+</head>
+<body>
+<div class="canvas">
+
+  <div class="grid"></div>
+  <div class="bloom-main"></div>
+  <div class="bloom-accent"></div>
+
+  <div class="flag flag-tl"></div>
+  <div class="flag flag-tr"></div>
+  <div class="flag flag-bl"></div>
+  <div class="flag flag-br"></div>
+
+  <div class="top-label">MANSÕES RECREIO · PISCINA · CONDOMÍNIO FECHADO</div>
+
+  <div class="pool-wrap">
+    <svg viewBox="0 0 340 310" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="ripG" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#60a5fa"/>
+          <stop offset="100%" stop-color="#06b6d4"/>
+        </linearGradient>
+        <linearGradient id="dropG" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#93c5fd"/>
+          <stop offset="100%" stop-color="#0ea5e9"/>
+        </linearGradient>
+      </defs>
+      <path d="M170,42 C170,42 128,122 128,154 a42,42 0 0,0 84,0 C212,122 170,42 170,42Z"
+        fill="none" stroke="url(#dropG)" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="170" cy="200" rx="44" ry="22" fill="none" stroke="url(#ripG)" stroke-width="5" opacity="0.9"/>
+      <ellipse cx="170" cy="200" rx="90" ry="46" fill="none" stroke="url(#ripG)" stroke-width="4.5" opacity="0.66"/>
+      <ellipse cx="170" cy="200" rx="138" ry="70" fill="none" stroke="url(#ripG)" stroke-width="3.5" opacity="0.40"/>
+      <ellipse cx="170" cy="200" rx="168" ry="84" fill="none" stroke="url(#ripG)" stroke-width="2.5" opacity="0.20"/>
+      <circle cx="170" cy="145" r="6" fill="#93c5fd" opacity="0.85">
+        <animate attributeName="opacity" values="0.85;0.2;0.85" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+  </div>
+
+  <div class="content">
+    <p class="eyebrow">Condomínio Fechado · Cidade Ocidental-GO</p>
+    <span class="head-outline">ESSA</span>
+    <span class="head-gold">PISCINA.</span>
+    <p class="subhead">pode ser sua.</p>
+    <div class="price">R$ 1.500 / MÊS</div>
+    <p class="price-label">Financiamento MCMV · Apartamento próprio</p>
+    <div class="pills">
+      <div class="pill gold">2 Quartos</div>
+      <div class="pill gold">47m²</div>
+      <div class="pill">FGTS Aceito</div>
+      <div class="pill">MCMV</div>
+      <div class="pill gold">43km de Brasília</div>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <div class="specs-strip">
+      <span class="s-spec">2 Quartos</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">47m²</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">Piscina</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">Cond. Fechado</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">MCMV</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">43km BSB</span>
+    </div>
+    <div class="cta-tick"></div>
+    <div class="cta-location">Mansões Recreio · Entrada facilitada · Sem burocracia</div>
+    <div class="cta-button">PODE SER SUA &nbsp;→&nbsp; FALAR NO WHATSAPP</div>
+    <div class="cta-sub">Falar com corretor · Sem compromisso · Resposta imediata</div>
+    <div class="brand-section">
+      <div class="brand-row">
+        <svg width="26" height="13" viewBox="0 0 60 28" fill="none">
+          <path d="M30,14 C30,14 24,4 16,4 C8,4 2,9 2,14 C2,19 8,24 16,24 C24,24 30,14 30,14 C30,14 36,4 44,4 C52,4 58,9 58,14 C58,19 52,24 44,24 C36,24 30,14 30,14Z" fill="none" stroke="#4ade80" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+        <div class="brand-name">Bona Vita</div>
+      </div>
+      <div class="brand-sub">Digital Marketing Agency</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

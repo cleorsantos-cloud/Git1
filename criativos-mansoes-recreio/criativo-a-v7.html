@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080">
+  <title>Criativo A v7 — Mansões Recreio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      background: #04101e;
+    }
+
+    .canvas {
+      width: 1080px;
+      height: 1350px;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse 78% 52% at 50% 32%, #0d1a0c 0%, #04101e 66%);
+    }
+
+    .bloom {
+      position: absolute;
+      top: 60px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 620px;
+      background: radial-gradient(ellipse at center,
+        rgba(245,158,11,0.15) 0%,
+        rgba(74,222,128,0.07) 48%,
+        transparent 70%
+      );
+      filter: blur(62px);
+      pointer-events: none;
+    }
+
+    .grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: radial-gradient(ellipse 82% 60% at 50% 36%, black 10%, transparent 74%);
+    }
+
+    .flag { position: absolute; width: 28px; height: 28px; }
+    .flag-tl { top:36px; left:36px; border-top:1.5px solid rgba(245,158,11,0.45); border-left:1.5px solid rgba(245,158,11,0.45); }
+    .flag-tr { top:36px; right:36px; border-top:1.5px solid rgba(245,158,11,0.45); border-right:1.5px solid rgba(245,158,11,0.45); }
+    .flag-bl { bottom:36px; left:36px; border-bottom:1.5px solid rgba(74,222,128,0.38); border-left:1.5px solid rgba(74,222,128,0.38); }
+    .flag-br { bottom:36px; right:36px; border-bottom:1.5px solid rgba(74,222,128,0.38); border-right:1.5px solid rgba(74,222,128,0.38); }
+
+    .top-label {
+      position: absolute;
+      top: 60px; left: 0; right: 0;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.18);
+    }
+
+    .house-wrap {
+      position: absolute;
+      top: 76px; left: 50%;
+      transform: translateX(-50%);
+      width: 360px; height: 330px;
+    }
+    .house-wrap svg {
+      width: 100%; height: 100%; overflow: visible;
+      filter:
+        drop-shadow(0 0 20px rgba(245,158,11,0.64))
+        drop-shadow(0 0 72px rgba(245,158,11,0.26))
+        drop-shadow(0 0 130px rgba(74,222,128,0.14));
+    }
+
+    .key-wrap {
+      position: absolute;
+      top: 392px; left: 50%;
+      transform: translateX(-50%);
+      opacity: 0.52;
+    }
+    .key-wrap svg { filter: drop-shadow(0 0 7px rgba(245,158,11,0.45)); }
+
+    .content {
+      position: absolute;
+      top: 480px; left: 0; right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 78px;
+    }
+
+    .eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #f59e0b;
+      margin-bottom: 16px;
+    }
+
+    .pre-head {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 82px;
+      line-height: 0.88;
+      letter-spacing: 0.015em;
+      color: rgba(255,255,255,0.88);
+    }
+
+    .main-head {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 156px;
+      line-height: 0.82;
+      letter-spacing: 0.01em;
+      background: linear-gradient(110deg, #f59e0b 20%, #fbbf24 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+      margin-bottom: 22px;
+    }
+
+    .tagline {
+      font-family: 'Inter', sans-serif;
+      font-size: 17px;
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.05em;
+      line-height: 1.55;
+      margin-bottom: 22px;
+    }
+
+    .price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 66px;
+      line-height: 1;
+      background: linear-gradient(110deg, #4ade80 20%, #2563eb 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 22px;
+    }
+
+    .pills {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .pill {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+      color: #f59e0b;
+      border: 1px solid rgba(245,158,11,0.32);
+      padding: 7px 16px;
+      border-radius: 40px;
+    }
+    .pill.alt { color: #4ade80; border-color: rgba(74,222,128,0.32); }
+
+    /* CTA section — 376px from bottom */
+    .cta-section {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+    }
+
+    .specs-strip {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 18px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      background: #04101e;
+    }
+    .s-spec {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.26);
+      padding: 0 14px;
+    }
+    .s-sep { width: 1px; height: 12px; background: rgba(255,255,255,0.08); }
+
+    .cta-tick {
+      width: 1px; height: 52px;
+      background: linear-gradient(to bottom, rgba(245,158,11,0.7), rgba(74,222,128,0.7));
+      margin: 0 auto;
+    }
+
+    .cta-location {
+      padding: 14px 0 16px;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    .cta-button {
+      background: #25D366;
+      color: #000;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      letter-spacing: 0.08em;
+      padding: 26px 0;
+      display: block;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 -28px 64px rgba(37,211,102,0.1), 0 0 48px rgba(37,211,102,0.22);
+    }
+
+    .cta-sub {
+      background: #020c14;
+      padding: 16px;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    .brand-section {
+      background: #020c14;
+      padding: 14px 0 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .brand-row { display: flex; align-items: center; gap: 10px; }
+    .brand-name { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 0.14em; color: #4ade80; }
+    .brand-sub { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(255,255,255,0.2); }
+  </style>
+</head>
+<body>
+<div class="canvas">
+
+  <div class="grid"></div>
+  <div class="bloom"></div>
+
+  <div class="flag flag-tl"></div>
+  <div class="flag flag-tr"></div>
+  <div class="flag flag-bl"></div>
+  <div class="flag flag-br"></div>
+
+  <div class="top-label">MANSÕES RECREIO · CIDADE OCIDENTAL-GO · MCMV</div>
+
+  <div class="house-wrap">
+    <svg viewBox="0 0 360 330" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="hG" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   stop-color="#fbbf24"/>
+          <stop offset="55%"  stop-color="#f59e0b"/>
+          <stop offset="100%" stop-color="#4ade80"/>
+        </linearGradient>
+        <linearGradient id="rG" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"  stop-color="#fde68a"/>
+          <stop offset="100%" stop-color="#f59e0b"/>
+        </linearGradient>
+      </defs>
+      <polyline points="22,160 180,22 338,160" fill="none" stroke="url(#rG)" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>
+      <rect x="58" y="158" width="244" height="152" rx="5" fill="none" stroke="url(#hG)" stroke-width="10" stroke-linejoin="round"/>
+      <rect x="148" y="218" width="64" height="92" rx="5" fill="none" stroke="url(#hG)" stroke-width="7"/>
+      <circle cx="206" cy="268" r="6" fill="#f59e0b" opacity="0.9"/>
+      <rect x="78" y="186" width="46" height="40" rx="4" fill="none" stroke="url(#hG)" stroke-width="6" opacity="0.72"/>
+      <rect x="236" y="186" width="46" height="40" rx="4" fill="none" stroke="url(#hG)" stroke-width="6" opacity="0.72"/>
+      <rect x="246" y="48" width="28" height="66" rx="3" fill="none" stroke="#fbbf24" stroke-width="7" opacity="0.6"/>
+      <circle cx="180" cy="22" r="8" fill="#fde68a" opacity="0.92">
+        <animate attributeName="opacity" values="0.92;0.35;0.92" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+  </div>
+
+  <div class="key-wrap">
+    <svg width="42" height="42" viewBox="0 0 36 36" fill="none">
+      <circle cx="13" cy="13" r="9" stroke="#f59e0b" stroke-width="2.5"/>
+      <line x1="20" y1="20" x2="32" y2="32" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="27" y1="27" x2="27" y2="31" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/>
+      <line x1="31" y1="27" x2="31" y2="30" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="content">
+    <p class="eyebrow">Primeiro Imóvel · Saia do Aluguel</p>
+    <div class="pre-head">CHEGA DE</div>
+    <span class="main-head">ALUGUEL.</span>
+    <p class="tagline">
+      Você já paga R$&nbsp;1.500 por mês.<br>
+      A diferença é onde esse dinheiro vai.
+    </p>
+    <div class="price">R$ 1.500 / MÊS</div>
+    <div class="pills">
+      <div class="pill">2 Quartos</div>
+      <div class="pill">47m²</div>
+      <div class="pill alt">Piscina</div>
+      <div class="pill alt">MCMV</div>
+      <div class="pill">Entrada Facilitada</div>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <div class="specs-strip">
+      <span class="s-spec">2 Quartos</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">47m²</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">Piscina</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">Cond. Fechado</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">MCMV</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">43km BSB</span>
+    </div>
+    <div class="cta-tick"></div>
+    <div class="cta-location">43km do Plano Piloto · Condomínio Fechado · FGTS Aceito</div>
+    <div class="cta-button">QUERO MEU APÊ &nbsp;→&nbsp; FALAR NO WHATSAPP</div>
+    <div class="cta-sub">Falar com corretor · Sem compromisso · Resposta imediata</div>
+    <div class="brand-section">
+      <div class="brand-row">
+        <svg width="26" height="13" viewBox="0 0 60 28" fill="none">
+          <path d="M30,14 C30,14 24,4 16,4 C8,4 2,9 2,14 C2,19 8,24 16,24 C24,24 30,14 30,14 C30,14 36,4 44,4 C52,4 58,9 58,14 C58,19 52,24 44,24 C36,24 30,14 30,14Z" fill="none" stroke="#4ade80" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+        <div class="brand-name">Bona Vita</div>
+      </div>
+      <div class="brand-sub">Digital Marketing Agency</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
