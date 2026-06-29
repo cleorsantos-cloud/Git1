@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080">
+  <title>Criativo A v8 — Mansões Recreio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      background: #080c0f;
+    }
+
+    .canvas {
+      width: 1080px;
+      height: 1350px;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse 72% 50% at 50% 32%, #0d1318 0%, #080c0f 65%);
+    }
+
+    /* Subtle blue bloom behind house — not branded, just depth */
+    .bloom {
+      position: absolute;
+      top: 60px; left: 50%;
+      transform: translateX(-50%);
+      width: 860px; height: 580px;
+      background: radial-gradient(ellipse at center,
+        rgba(59,130,246,0.09) 0%,
+        rgba(255,255,255,0.03) 50%,
+        transparent 70%
+      );
+      filter: blur(60px);
+      pointer-events: none;
+    }
+
+    /* Dot grid */
+    .grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: radial-gradient(ellipse 80% 55% at 50% 34%, black 10%, transparent 72%);
+    }
+
+    /* Property label — top center */
+    .top-label {
+      position: absolute;
+      top: 42px; left: 0; right: 0;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* House icon — white */
+    .house-wrap {
+      position: absolute;
+      top: 82px; left: 50%;
+      transform: translateX(-50%);
+      width: 360px; height: 330px;
+    }
+    .house-wrap svg {
+      width: 100%; height: 100%; overflow: visible;
+      filter:
+        drop-shadow(0 0 18px rgba(255,255,255,0.32))
+        drop-shadow(0 0 64px rgba(59,130,246,0.22))
+        drop-shadow(0 0 120px rgba(59,130,246,0.10));
+    }
+
+    /* Key icon */
+    .key-wrap {
+      position: absolute;
+      top: 396px; left: 50%;
+      transform: translateX(-50%);
+      opacity: 0.38;
+    }
+
+    /* Main content */
+    .content {
+      position: absolute;
+      top: 480px; left: 0; right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 76px;
+    }
+
+    .eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 18px;
+    }
+
+    .pre-head {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 84px;
+      line-height: 0.88;
+      letter-spacing: 0.015em;
+      color: #ffffff;
+    }
+
+    /* ALUGUEL em vermelho — representa perda, desperdício */
+    .main-head {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 158px;
+      line-height: 0.82;
+      letter-spacing: 0.01em;
+      color: #EF4444;
+      display: block;
+      margin-bottom: 22px;
+    }
+
+    .tagline {
+      font-family: 'Inter', sans-serif;
+      font-size: 17px;
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(255,255,255,0.38);
+      letter-spacing: 0.04em;
+      line-height: 1.55;
+      margin-bottom: 24px;
+    }
+
+    /* Preço em azul — representa solução, positivo */
+    .price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 68px;
+      line-height: 1;
+      color: #3B82F6;
+      margin-bottom: 24px;
+    }
+
+    .pills {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .pill {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 7px 16px;
+      border-radius: 40px;
+    }
+    .pill.blue { color: #60A5FA; border-color: rgba(59,130,246,0.38); }
+
+    /* CTA section */
+    .cta-section {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+    }
+
+    .specs-strip {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 18px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #080c0f;
+    }
+    .s-spec {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.24);
+      padding: 0 14px;
+    }
+    .s-sep { width: 1px; height: 12px; background: rgba(255,255,255,0.1); }
+
+    .cta-tick {
+      width: 1px; height: 48px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(37,211,102,0.5));
+      margin: 0 auto;
+    }
+
+    .cta-location {
+      padding: 14px 0 16px;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    .cta-button {
+      background: #25D366;
+      color: #000;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 44px;
+      letter-spacing: 0.07em;
+      padding: 26px 0;
+      display: block;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 -24px 56px rgba(37,211,102,0.12), 0 0 48px rgba(37,211,102,0.18);
+    }
+
+    .cta-sub {
+      background: #040709;
+      padding: 16px;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    .property-footer {
+      background: #040709;
+      padding: 14px 0 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .property-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.32);
+    }
+    .property-loc {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.16);
+    }
+  </style>
+</head>
+<body>
+<div class="canvas">
+
+  <div class="grid"></div>
+  <div class="bloom"></div>
+
+  <div class="top-label">MANSÕES RECREIO · CIDADE OCIDENTAL-GO · MCMV</div>
+
+  <!-- Casa — branca, não dourada -->
+  <div class="house-wrap">
+    <svg viewBox="0 0 360 330" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="22,160 180,22 338,160"
+        fill="none" stroke="rgba(255,255,255,0.88)" stroke-width="10"
+        stroke-linejoin="round" stroke-linecap="round"/>
+      <rect x="58" y="158" width="244" height="152" rx="5"
+        fill="none" stroke="rgba(255,255,255,0.88)" stroke-width="10" stroke-linejoin="round"/>
+      <rect x="148" y="218" width="64" height="92" rx="5"
+        fill="none" stroke="rgba(255,255,255,0.82)" stroke-width="7"/>
+      <circle cx="206" cy="268" r="6" fill="rgba(255,255,255,0.7)" opacity="0.9"/>
+      <rect x="78" y="186" width="46" height="40" rx="4"
+        fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="6"/>
+      <rect x="236" y="186" width="46" height="40" rx="4"
+        fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="6"/>
+      <rect x="246" y="48" width="28" height="66" rx="3"
+        fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="7"/>
+      <circle cx="180" cy="22" r="8" fill="#60A5FA" opacity="0.9">
+        <animate attributeName="opacity" values="0.9;0.3;0.9" dur="3s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+  </div>
+
+  <!-- Chave -->
+  <div class="key-wrap">
+    <svg width="42" height="42" viewBox="0 0 36 36" fill="none">
+      <circle cx="13" cy="13" r="9" stroke="rgba(255,255,255,0.7)" stroke-width="2.5"/>
+      <line x1="20" y1="20" x2="32" y2="32" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="27" y1="27" x2="27" y2="31" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+      <line x1="31" y1="27" x2="31" y2="30" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="content">
+    <p class="eyebrow">Saia do aluguel · Primeiro imóvel</p>
+    <div class="pre-head">CHEGA DE</div>
+    <span class="main-head">ALUGUEL.</span>
+    <p class="tagline">
+      Você já paga R$&nbsp;1.500 por mês.<br>
+      A diferença é onde esse dinheiro vai.
+    </p>
+    <div class="price">R$ 1.500 / MÊS</div>
+    <div class="pills">
+      <div class="pill">2 Quartos</div>
+      <div class="pill">47m²</div>
+      <div class="pill blue">Piscina</div>
+      <div class="pill blue">MCMV</div>
+      <div class="pill">Entrada Facilitada</div>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <div class="specs-strip">
+      <span class="s-spec">2 Quartos</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">47m²</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">Piscina</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">Cond. Fechado</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">MCMV</span>
+      <div class="s-sep"></div>
+      <span class="s-spec">43km BSB</span>
+    </div>
+    <div class="cta-tick"></div>
+    <div class="cta-location">Condomínio Fechado · FGTS Aceito · Sem burocracia</div>
+    <div class="cta-button">QUERO MEU APÊ &nbsp;→&nbsp; FALAR NO WHATSAPP</div>
+    <div class="cta-sub">Corretor disponível agora · Sem compromisso</div>
+    <div class="property-footer">
+      <div class="property-name">MANSÕES RECREIO</div>
+      <div class="property-loc">Cidade Ocidental-GO · 43km do Plano Piloto</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

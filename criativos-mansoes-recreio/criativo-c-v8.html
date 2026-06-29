@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080">
+  <title>Criativo C v8 — Mansões Recreio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      background: #080c0f;
+    }
+
+    .canvas {
+      width: 1080px;
+      height: 1350px;
+      position: relative;
+      overflow: hidden;
+      background: #080c0f;
+    }
+
+    /* Left: red bloom (aluguel) */
+    .bloom-left {
+      position: absolute;
+      top: 200px; left: -40px;
+      width: 640px; height: 560px;
+      background: radial-gradient(ellipse at center, rgba(239,68,68,0.08) 0%, transparent 68%);
+      filter: blur(56px);
+      pointer-events: none;
+    }
+    /* Right: blue bloom (apê) */
+    .bloom-right {
+      position: absolute;
+      top: 200px; right: -40px;
+      width: 640px; height: 560px;
+      background: radial-gradient(ellipse at center, rgba(59,130,246,0.10) 0%, transparent 68%);
+      filter: blur(56px);
+      pointer-events: none;
+    }
+
+    .grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: radial-gradient(ellipse 88% 72% at 50% 46%, black 10%, transparent 74%);
+    }
+
+    /* Top header */
+    .top-eyebrow {
+      position: absolute;
+      top: 48px; left: 0; right: 0;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* Central question block */
+    .central {
+      position: absolute;
+      top: 94px;
+      left: 0; right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 80px;
+    }
+
+    .intro-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 16px;
+    }
+
+    .q-head {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 88px;
+      line-height: 0.87;
+      letter-spacing: 0.01em;
+      color: #ffffff;
+    }
+
+    .q-sub {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 88px;
+      line-height: 0.87;
+      letter-spacing: 0.01em;
+      color: rgba(255,255,255,0.28);
+      display: block;
+      margin-bottom: 50px;
+    }
+
+    /* Horizon divider between blocks */
+    .horizon {
+      position: absolute;
+      top: 390px;
+      left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right,
+        transparent 6%,
+        rgba(239,68,68,0.18) 28%,
+        rgba(255,255,255,0.06) 50%,
+        rgba(59,130,246,0.18) 72%,
+        transparent 94%
+      );
+    }
+
+    /* Two-column comparison */
+    .compare {
+      position: absolute;
+      top: 392px;
+      left: 0; right: 0;
+      height: 690px;
+      display: flex;
+    }
+
+    /* Vertical center divider */
+    .divider {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      background: linear-gradient(to bottom,
+        transparent 0%,
+        rgba(239,68,68,0.35) 20%,
+        rgba(255,255,255,0.10) 50%,
+        rgba(59,130,246,0.35) 80%,
+        transparent 100%
+      );
+    }
+
+    .col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 44px 40px 36px;
+    }
+
+    .col-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .col-tag.red  { color: rgba(239,68,68,0.55); }
+    .col-tag.blue { color: rgba(59,130,246,0.65); }
+
+    .col-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 64px;
+      line-height: 0.85;
+      letter-spacing: 0.01em;
+      margin-bottom: 14px;
+    }
+    .col-title.muted { color: rgba(255,255,255,0.20); }
+    .col-title.vivid { color: #ffffff; }
+
+    .col-amount {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 100px;
+      line-height: 0.80;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+    .col-amount.red  { color: rgba(239,68,68,0.28); }
+    .col-amount.blue { color: #3B82F6; }
+
+    .col-per {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 26px;
+    }
+    .col-per.muted { color: rgba(255,255,255,0.18); }
+    .col-per.vivid { color: rgba(255,255,255,0.45); }
+
+    .col-rule {
+      width: 56%; height: 1px; margin-bottom: 22px;
+    }
+    .col-rule.red  { background: rgba(239,68,68,0.16); }
+    .col-rule.blue { background: rgba(59,130,246,0.24); }
+
+    .col-items { display: flex; flex-direction: column; gap: 14px; }
+    .col-item  { display: flex; align-items: flex-start; gap: 10px; }
+
+    .col-arrow {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+    .col-arrow.red  { color: rgba(239,68,68,0.35); }
+    .col-arrow.blue { color: #3B82F6; }
+
+    .col-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.42;
+      text-align: left;
+    }
+    .col-text.muted { color: rgba(255,255,255,0.22); }
+    .col-text.vivid { color: rgba(255,255,255,0.78); }
+
+    /* Bottom CTA */
+    .bottom-section {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+    }
+
+    .specs-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      width: 100%;
+    }
+    .spec-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.26);
+      padding: 0 16px;
+    }
+    .spec-sep { width: 1px; height: 12px; background: rgba(255,255,255,0.08); }
+
+    .cta-tick {
+      width: 1px; height: 44px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.12), rgba(37,211,102,0.5));
+      margin: 0 auto;
+    }
+
+    .cta-sub-label {
+      padding: 12px 0 14px;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    .cta-button {
+      background: #25D366;
+      color: #000;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      letter-spacing: 0.08em;
+      padding: 26px 0;
+      display: block;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 -22px 52px rgba(37,211,102,0.10), 0 0 44px rgba(37,211,102,0.18);
+    }
+
+    .cta-foot {
+      background: #040709;
+      padding: 14px 0 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .property-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.30);
+    }
+    .property-loc {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.15);
+    }
+  </style>
+</head>
+<body>
+<div class="canvas">
+
+  <div class="grid"></div>
+  <div class="bloom-left"></div>
+  <div class="bloom-right"></div>
+  <div class="horizon"></div>
+
+  <div class="top-eyebrow">MANSÕES RECREIO · CIDADE OCIDENTAL-GO · MCMV</div>
+
+  <!-- Central question -->
+  <div class="central">
+    <div class="intro-tag">Você já paga R$ 1.500 por mês.</div>
+    <div class="q-head">A DIFERENÇA</div>
+    <span class="q-sub">É ONDE VAI.</span>
+  </div>
+
+  <!-- Comparison -->
+  <div class="compare">
+    <div class="divider"></div>
+
+    <!-- LEFT: aluguel -->
+    <div class="col">
+      <div class="col-tag red">Hoje, no aluguel</div>
+      <div class="col-title muted">ALUGUEL</div>
+      <div class="col-amount red">R$&nbsp;1.500</div>
+      <div class="col-per muted">POR MÊS</div>
+      <div class="col-rule red"></div>
+      <div class="col-items">
+        <div class="col-item">
+          <span class="col-arrow red">→</span>
+          <span class="col-text muted">Vai pro bolso<br>do proprietário</span>
+        </div>
+        <div class="col-item">
+          <span class="col-arrow red">→</span>
+          <span class="col-text muted">Some todo<br>fim de mês</span>
+        </div>
+        <div class="col-item">
+          <span class="col-arrow red">→</span>
+          <span class="col-text muted">Você nunca<br>recupera esse valor</span>
+        </div>
+        <div class="col-item">
+          <span class="col-arrow red">→</span>
+          <span class="col-text muted">Pode pedir<br>pra sair a hora que quiser</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: seu apê -->
+    <div class="col">
+      <div class="col-tag blue">No seu próprio apê</div>
+      <div class="col-title vivid">SEU APÊ</div>
+      <div class="col-amount blue">R$&nbsp;1.500</div>
+      <div class="col-per vivid">POR MÊS</div>
+      <div class="col-rule blue"></div>
+      <div class="col-items">
+        <div class="col-item">
+          <span class="col-arrow blue">→</span>
+          <span class="col-text vivid">Constrói o seu<br>patrimônio</span>
+        </div>
+        <div class="col-item">
+          <span class="col-arrow blue">→</span>
+          <span class="col-text vivid">Valoriza com<br>o tempo</span>
+        </div>
+        <div class="col-item">
+          <span class="col-arrow blue">→</span>
+          <span class="col-text vivid">É seu<br>para sempre</span>
+        </div>
+        <div class="col-item">
+          <span class="col-arrow blue">→</span>
+          <span class="col-text vivid">Segurança pra<br>você e sua família</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom -->
+  <div class="bottom-section">
+    <div class="specs-row">
+      <span class="spec-item">2 Quartos</span>
+      <span class="spec-sep"></span>
+      <span class="spec-item">47m²</span>
+      <span class="spec-sep"></span>
+      <span class="spec-item">Piscina</span>
+      <span class="spec-sep"></span>
+      <span class="spec-item">Cond. Fechado</span>
+      <span class="spec-sep"></span>
+      <span class="spec-item">MCMV</span>
+      <span class="spec-sep"></span>
+      <span class="spec-item">FGTS Aceito</span>
+    </div>
+    <div class="cta-tick"></div>
+    <div class="cta-sub-label">Condomínio Fechado · Entrada facilitada · Sem burocracia</div>
+    <div class="cta-button">QUERO MEU APÊ &nbsp;→&nbsp; FALAR NO WHATSAPP</div>
+    <div class="cta-foot">
+      <div class="property-name">MANSÕES RECREIO</div>
+      <div class="property-loc">Cidade Ocidental-GO · 43km do Plano Piloto</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
