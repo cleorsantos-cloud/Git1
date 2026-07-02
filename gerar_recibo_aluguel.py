@@ -147,7 +147,7 @@ def desenhar_via(c, via):
     linha("(+) Condomínio", "condominio")
     linha("(+) IPTU", "iptu")
     # >>> Campo solicitado: Desconto de Pontualidade (pagamento em dia) <<<
-    linha("(-) Desconto de pontualidade (pagamento até o vencimento)", "desconto_pontualidade", cor=VERDE)
+    linha("(-) Desconto de pontualidade (pagamento até o dia 10 de julho)", "desconto_pontualidade", cor=VERDE)
     linha("VALOR TOTAL PAGO", "valor_total", negrito=True, destaque=True)
 
     y -= 14 * mm
