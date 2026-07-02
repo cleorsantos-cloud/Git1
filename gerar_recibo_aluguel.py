@@ -143,11 +143,11 @@ def desenhar_via(c, via):
         c.drawString(MARGEM + 3 * mm, y + 1.5 * mm, rotulo)
         _campo(c, f"{nome}{sufixo}", col_val_x, y, larg_val, 6.5 * mm, tamanho=11, alinhamento="R")
 
-    linha("Valor do aluguel", "valor_aluguel")
-    # >>> Campo solicitado: Desconto de Pontualidade <<<
-    linha("(-) Desconto de pontualidade", "desconto_pontualidade", cor=VERDE)
-    linha("(+) Água / Condomínio / IPTU / outros encargos", "encargos")
-    linha("(+) Multa / Juros por atraso", "multa_juros")
+    linha("(+) Valor do aluguel", "valor_aluguel")
+    linha("(+) Condomínio", "condominio")
+    linha("(+) IPTU", "iptu")
+    # >>> Campo solicitado: Desconto de Pontualidade (pagamento em dia) <<<
+    linha("(-) Desconto de pontualidade (pagamento até o vencimento)", "desconto_pontualidade", cor=VERDE)
     linha("VALOR TOTAL PAGO", "valor_total", negrito=True, destaque=True)
 
     y -= 14 * mm

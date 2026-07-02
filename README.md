@@ -26,11 +26,11 @@ navegadores como Chrome/Edge, Preview do macOS, etc.) — sem precisar imprimir.
 - Valor recebido (R$) e valor por extenso
 - Locatário e CPF/CNPJ
 - Endereço do imóvel
-- **Demonstrativo de valores:**
-  - Valor do aluguel
-  - **(-) Desconto de pontualidade**
-  - (+) Água / Condomínio / IPTU / outros encargos
-  - (+) Multa / Juros por atraso
+- **Demonstrativo de valores (cada valor em seu próprio campo):**
+  - (+) Valor do aluguel
+  - (+) Condomínio
+  - (+) IPTU
+  - **(-) Desconto de pontualidade (pagamento até o vencimento)**
   - **Valor total pago**
 - Vencimento, Data de pagamento e Forma de pagamento
 - Local e data
