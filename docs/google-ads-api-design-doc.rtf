@@ -1,0 +1,58 @@
+{\rtf1\ansi\ansicpg1252\deff0{\fonttbl{\f0\fswiss Arial;}}
+\f0\fs28\b Google Ads API \endash Tool Design Documentation\b0\fs22\par
+\par
+\b Applicant:\b0  Ag\'eancia Bona Vita (digital marketing agency)\par
+\b Primary website:\b0  agenciabonavita.com\par
+\b Access level requested:\b0  Read-only reporting access\par
+\par
+\b\fs26 1. Overview\b0\fs22\par
+\par
+Ag\'eancia Bona Vita is a digital marketing agency that plans, launches, optimizes and reports on paid advertising campaigns for its clients. This tool is an internal reporting and analysis assistant that connects a Large Language Model (Claude, by Anthropic) to the Google Ads API through the official, open-source Google Ads MCP (Model Context Protocol) server published by Google (github.com/googleads/google-ads-mcp).\par
+\par
+The purpose of the tool is to let our internal team query campaign performance data using natural language and generate performance reports faster. The tool is strictly read-only: it does not create, edit, pause or delete any campaigns, ad groups, ads, budgets or other entities.\par
+\par
+\b\fs26 2. How it works (architecture)\b0\fs22\par
+\par
+The data flow is:\par
+\par
+1. An internal team member asks a question in natural language (for example: "show the cost, clicks and conversions for client X last 30 days").\par
+2. Claude interprets the request and calls the Google Ads MCP server, which is self-hosted and runs locally on our own machine.\par
+3. The MCP server authenticates to the Google Ads API using our own OAuth credentials and developer token, and issues a read-only GAQL query.\par
+4. The Google Ads API returns the reporting data, which the MCP server passes back to Claude.\par
+5. Claude summarizes the results and, when requested, drafts a performance report.\par
+\par
+\b\fs26 3. Google Ads API usage\b0\fs22\par
+\par
+The tool uses only read/reporting operations exposed by the official MCP server:\par
+\par
+\bullet  ListAccessibleCustomers \endash  to list the accounts the authenticated user can access.\par
+\bullet  GoogleAdsService.Search / SearchStream (GAQL) \endash  to retrieve reporting metrics such as impressions, clicks, cost, conversions and conversion value at campaign, ad group, keyword and ad level.\par
+\bullet  Resource metadata lookups \endash  to understand available fields for building valid GAQL queries.\par
+\par
+No mutate operations are used. The tool never writes to the Google Ads platform.\par
+\par
+\b\fs26 4. Account structure and volume\b0\fs22\par
+\par
+Access is organized through our Manager Account (MCC). Through this MCC we manage multiple client Google Ads accounts. The developer token will be used to read reporting data across these managed client accounts for the purpose of analysis and client reporting, always under the appropriate access already granted to our agency.\par
+\par
+\b\fs26 5. Who has access\b0\fs22\par
+\par
+Access to the tool is limited to internal users only \endash  employees and contracted staff of Ag\'eancia Bona Vita. Clients do not log into or operate the tool. The API credentials and developer token are stored locally on our own systems and are not shared with any external party.\par
+\par
+\b\fs26 6. Third-party components\b0\fs22\par
+\par
+The token is used together with tools developed by others:\par
+\par
+\bullet  Google Ads MCP Server \endash  the official open-source server published by Google, self-hosted by us.\par
+\bullet  Claude \endash  a Large Language Model by Anthropic, used as the natural-language interface.\par
+\par
+Both components are used as-is; our developer token and OAuth credentials remain under our control and are not transmitted to any third-party hosted service beyond the standard Google Ads API calls required to read data.\par
+\par
+\b\fs26 7. Data handling and security\b0\fs22\par
+\par
+\bullet  Read-only access; no modification of advertising entities.\par
+\bullet  Credentials and developer token stored locally, not embedded in any distributed application.\par
+\bullet  Data is used solely for internal analysis and client performance reporting.\par
+\bullet  Access follows Google Ads API Terms of Service and the Required Minimum Functionality guidelines.\par
+\par
+}
