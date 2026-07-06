@@ -39,14 +39,9 @@ Access is organized through our Manager Account (MCC). Through this MCC we manag
 \par
 Access to the tool is limited to internal users only \endash  employees and contracted staff of Ag\'eancia Bona Vita. Clients do not log into or operate the tool. The API credentials and developer token are stored locally on our own systems and are not shared with any external party.\par
 \par
-\b\fs26 6. Third-party components\b0\fs22\par
+\b\fs26 6. Tool deployment\b0\fs22\par
 \par
-The token is used together with tools developed by others:\par
-\par
-\bullet  Google Ads MCP Server \endash  the official open-source server published by Google, self-hosted by us.\par
-\bullet  Claude \endash  a Large Language Model by Anthropic, used as the natural-language interface.\par
-\par
-Both components are used as-is; our developer token and OAuth credentials remain under our control and are not transmitted to any third-party hosted service beyond the standard Google Ads API calls required to read data.\par
+The tool is deployed and operated internally by Ag\'eancia Bona Vita. We self-host the open-source Google Ads MCP server on our own systems and configure it with our own OAuth credentials and developer token. The developer token and credentials remain entirely under our control and are not handed over to, or hosted by, any external third-party service. All calls made with the token are standard read-only Google Ads API requests issued from our own environment.\par
 \par
 \b\fs26 7. Data handling and security\b0\fs22\par
 \par
