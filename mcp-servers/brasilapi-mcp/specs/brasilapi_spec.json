@@ -1,0 +1,85 @@
+{
+  "api_name": "BrasilAPI",
+  "base_url": "https://brasilapi.com.br/api",
+  "version": "v1",
+  "auth": "none",
+  "groups": [
+    {
+      "name": "Cep",
+      "endpoints": [
+        {"func": "get_cep", "method": "GET", "path": "/cep/v1/{cep}", "summary": "Busca endereço a partir de um CEP (v1).", "path_params": [{"name": "cep", "desc": "CEP com 8 dígitos, apenas números (ex: 01310100)."}]},
+        {"func": "get_cep_v2", "method": "GET", "path": "/cep/v2/{cep}", "summary": "Busca endereço a partir de um CEP (v2, inclui coordenadas quando disponível).", "path_params": [{"name": "cep", "desc": "CEP com 8 dígitos, apenas números."}]}
+      ]
+    },
+    {
+      "name": "Cnpj",
+      "endpoints": [
+        {"func": "get_cnpj", "method": "GET", "path": "/cnpj/v1/{cnpj}", "summary": "Dados cadastrais de uma empresa pelo CNPJ (Receita Federal).", "path_params": [{"name": "cnpj", "desc": "CNPJ com 14 dígitos, apenas números."}]}
+      ]
+    },
+    {
+      "name": "Bank",
+      "endpoints": [
+        {"func": "list_bank", "method": "GET", "path": "/banks/v1", "summary": "Lista todos os bancos do Brasil (código, nome, ISPB).", "path_params": []},
+        {"func": "get_bank", "method": "GET", "path": "/banks/v1/{code}", "summary": "Detalhes de um banco pelo código de compensação.", "path_params": [{"name": "code", "desc": "Código de compensação do banco (ex: 341 = Itaú)."}]}
+      ]
+    },
+    {
+      "name": "Ddd",
+      "endpoints": [
+        {"func": "get_ddd", "method": "GET", "path": "/ddd/v1/{ddd}", "summary": "Estado e lista de cidades atendidas por um DDD.", "path_params": [{"name": "ddd", "desc": "Código DDD de 2 dígitos (ex: 71 = Bahia)."}]}
+      ]
+    },
+    {
+      "name": "Feriado",
+      "endpoints": [
+        {"func": "list_feriado", "method": "GET", "path": "/feriados/v1/{ano}", "summary": "Feriados nacionais de um ano (fixos + móveis).", "path_params": [{"name": "ano", "desc": "Ano com 4 dígitos entre 1900 e 2199 (ex: 2026)."}]}
+      ]
+    },
+    {
+      "name": "Isbn",
+      "endpoints": [
+        {"func": "get_isbn", "method": "GET", "path": "/isbn/v1/{isbn}", "summary": "Informações de um livro pelo ISBN.", "path_params": [{"name": "isbn", "desc": "ISBN 10 ou 13, com ou sem hífens."}]}
+      ]
+    },
+    {
+      "name": "Taxa",
+      "endpoints": [
+        {"func": "list_taxa", "method": "GET", "path": "/taxas/v1", "summary": "Lista taxas de juros e índices oficiais (Selic, CDI, IPCA...).", "path_params": []},
+        {"func": "get_taxa", "method": "GET", "path": "/taxas/v1/{sigla}", "summary": "Valor de uma taxa/índice específico pela sigla.", "path_params": [{"name": "sigla", "desc": "Sigla da taxa (ex: Selic, CDI, IPCA)."}]}
+      ]
+    },
+    {
+      "name": "Ncm",
+      "endpoints": [
+        {"func": "list_ncm", "method": "GET", "path": "/ncm/v1", "summary": "Lista/busca códigos NCM. Use o parâmetro 'search' para filtrar.", "path_params": [], "query_params": [{"name": "search", "desc": "Termo de busca por descrição ou código NCM (opcional)."}]},
+        {"func": "get_ncm", "method": "GET", "path": "/ncm/v1/{code}", "summary": "Detalhes de um código NCM específico.", "path_params": [{"name": "code", "desc": "Código NCM (ex: 33030010)."}]}
+      ]
+    },
+    {
+      "name": "Pix",
+      "endpoints": [
+        {"func": "list_pix_participant", "method": "GET", "path": "/pix/v1/participants", "summary": "Lista os participantes do arranjo PIX.", "path_params": []}
+      ]
+    },
+    {
+      "name": "IbgeUf",
+      "endpoints": [
+        {"func": "list_ibge_uf", "method": "GET", "path": "/ibge/uf/v1", "summary": "Lista todas as Unidades da Federação (UFs) do IBGE.", "path_params": []},
+        {"func": "get_ibge_uf", "method": "GET", "path": "/ibge/uf/v1/{code}", "summary": "Detalhes de uma UF pelo código ou sigla.", "path_params": [{"name": "code", "desc": "Código IBGE ou sigla da UF (ex: 35 ou SP)."}]}
+      ]
+    },
+    {
+      "name": "Corretora",
+      "endpoints": [
+        {"func": "list_corretora", "method": "GET", "path": "/cvm/corretoras/v1", "summary": "Lista as corretoras ativas registradas na CVM.", "path_params": []}
+      ]
+    },
+    {
+      "name": "RegistroBr",
+      "endpoints": [
+        {"func": "get_registro_br", "method": "GET", "path": "/registrobr/v1/{domain}", "summary": "Status de registro de um domínio .br no Registro.br.", "path_params": [{"name": "domain", "desc": "Domínio a consultar (ex: brasilapi.com.br)."}]}
+      ]
+    }
+  ]
+}
