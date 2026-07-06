@@ -28,6 +28,18 @@ este arquivo (versionado no Git) para guardar o contexto que importa.
 
 ## Estado atual
 
-- Repositório recém-criado, primeiro commit.
 - Branch de trabalho: `claude/sync-computer-mobile-chat-eiac3n`.
-- Próximos passos: (anote aqui o que você quer construir)
+- **Objetivo:** instalar os MCPs oficiais do Google (Ads + Analytics) no PC.
+- Guias no repo: `docs/mcp-google-setup.md` e `docs/google-ads-api-design-doc.rtf`.
+
+### Google Ads MCP
+- [x] Formulário de solicitação do **developer token** enviado ao Google.
+- [ ] Aguardando aprovação do token (revisão manual, horas a dias).
+- [ ] Após aprovado: configurar o MCP (seção 2 do guia).
+
+### Google Analytics MCP
+- [ ] Instalar (não depende do token do Ads — pode fazer já). Seção 1 do guia.
+
+### Próximos passos
+- Instalar o Analytics MCP agora (no terminal do PC, com `claude`).
+- Quando o token do Ads sair, plugar o Google Ads MCP.
