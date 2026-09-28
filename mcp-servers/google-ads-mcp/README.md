@@ -43,16 +43,22 @@ Opcionais: `GOOGLE_ADS_API_VERSION` (padrão `v26`), `GOOGLE_ADS_MCP_ALLOW_WRITE
 
 ### Gerando o refresh token
 
-No Google Cloud Console, habilite a Google Ads API no projeto e crie uma credencial OAuth do tipo aplicativo para computador. Depois, com a biblioteca oficial:
+Antes, no Google Cloud Console: habilite a Google Ads API no projeto e crie uma credencial OAuth do tipo **App para computador**. O tipo importa, porque ele libera o retorno em `localhost` sem precisar cadastrar URL.
+
+Depois, na sua máquina, com navegador:
 
 ```bash
-pip install google-ads
-python -m google.ads.googleads.util.generate_user_credentials \
-  --client_id "$GOOGLE_ADS_CLIENT_ID" \
-  --client_secret "$GOOGLE_ADS_CLIENT_SECRET"
+pip install google-auth-oauthlib
+python3 scripts/get_refresh_token.py \
+  --client-id "SEU_CLIENT_ID" \
+  --client-secret "SEU_CLIENT_SECRET"
 ```
 
-Faça o consentimento com a conta Google que administra a MCC. O refresh token aparece no fim e não expira enquanto não for revogado. Trate como senha.
+Se preferir, baixe o JSON da credencial e use `--client-secrets-file client_secret.json`. Numa máquina sem navegador, acrescente `--no-browser` e cole a URL num navegador qualquer. A porta do retorno é 8080 e muda com `--port`.
+
+O script abre o consentimento do Google. Entre com a conta que administra a MCC, autorize, e o refresh token aparece no terminal já no formato da variável de ambiente. Ele não expira enquanto não for revogado, então trate como senha.
+
+Se o Google não devolver refresh token, é porque aquela conta já autorizou este cliente antes. Revogue em [myaccount.google.com/permissions](https://myaccount.google.com/permissions) e rode de novo.
 
 ## Instalação
 
