@@ -29,15 +29,24 @@ A URL final de um anúncio publicado **não é editável**. O que a interface ch
 
 ## Credenciais
 
-Cinco variáveis de ambiente, nenhuma delas no repositório:
+Duas variáveis são sempre obrigatórias:
 
 | Variável | Onde obter |
 |---|---|
 | `GOOGLE_ADS_DEVELOPER_TOKEN` | na MCC, em Ferramentas e configurações, Configuração, API Center |
-| `GOOGLE_ADS_CLIENT_ID` | credencial OAuth de aplicativo para computador, no Google Cloud Console |
+| `GOOGLE_ADS_LOGIN_CUSTOMER_ID` | ID da MCC, só dígitos, ex: 3845391611 |
+
+A credencial do OAuth entra de um dos dois jeitos. O primeiro é por variável de ambiente:
+
+| Variável | Onde obter |
+|---|---|
+| `GOOGLE_ADS_CLIENT_ID` | credencial OAuth de app para computador, no Google Cloud Console |
 | `GOOGLE_ADS_CLIENT_SECRET` | mesma credencial OAuth |
 | `GOOGLE_ADS_REFRESH_TOKEN` | gerado uma vez pelo consentimento, veja abaixo |
-| `GOOGLE_ADS_LOGIN_CUSTOMER_ID` | ID da MCC, só dígitos, ex: 3845391611 |
+
+O segundo aproveita credencial que já exista na máquina: aponte `GOOGLE_APPLICATION_CREDENTIALS` para um arquivo de credencial de usuário autorizado, o mesmo que `gcloud auth application-default login` grava, e o servidor lê client id, secret e refresh token de dentro dele. Variável de ambiente vence o arquivo quando as duas existem.
+
+Arquivo de conta de serviço não serve. A Google Ads API não aceita conta de serviço sem delegação de domínio no Workspace, e o servidor recusa esse arquivo com mensagem explicando o porquê.
 
 Opcionais: `GOOGLE_ADS_API_VERSION` (padrão `v26`), `GOOGLE_ADS_MCP_ALLOW_WRITES`, `GOOGLE_ADS_MCP_NO_CODEMODE`.
 

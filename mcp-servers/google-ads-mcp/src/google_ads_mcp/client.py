@@ -5,10 +5,14 @@ conta administradora (MCC). O developer token vem do API Center da MCC.
 
 Variáveis de ambiente obrigatórias:
     GOOGLE_ADS_DEVELOPER_TOKEN   token do API Center da MCC
-    GOOGLE_ADS_CLIENT_ID         client ID do OAuth (Google Cloud)
-    GOOGLE_ADS_CLIENT_SECRET     client secret do OAuth
-    GOOGLE_ADS_REFRESH_TOKEN     refresh token gerado uma vez pelo consentimento
     GOOGLE_ADS_LOGIN_CUSTOMER_ID ID da MCC, só dígitos (ex: 3845391611)
+
+Credencial do OAuth, de um jeito ou de outro:
+    a) GOOGLE_ADS_CLIENT_ID, GOOGLE_ADS_CLIENT_SECRET e
+       GOOGLE_ADS_REFRESH_TOKEN diretamente no ambiente; ou
+    b) GOOGLE_APPLICATION_CREDENTIALS apontando para um arquivo de credencial
+       de usuário autorizado (o ADC que o `gcloud auth application-default
+       login` grava), de onde os três valores são lidos.
 
 Opcionais:
     GOOGLE_ADS_API_VERSION       versão da API (padrão: v26)
@@ -30,10 +34,14 @@ DEFAULT_API_VERSION = "v26"
 
 _REQUIRED_ENV = (
     "GOOGLE_ADS_DEVELOPER_TOKEN",
-    "GOOGLE_ADS_CLIENT_ID",
-    "GOOGLE_ADS_CLIENT_SECRET",
-    "GOOGLE_ADS_REFRESH_TOKEN",
     "GOOGLE_ADS_LOGIN_CUSTOMER_ID",
+)
+
+# Pares variável de ambiente -> chave no arquivo de credencial do ADC.
+_OAUTH_FIELDS = (
+    ("GOOGLE_ADS_CLIENT_ID", "client_id"),
+    ("GOOGLE_ADS_CLIENT_SECRET", "client_secret"),
+    ("GOOGLE_ADS_REFRESH_TOKEN", "refresh_token"),
 )
 
 
@@ -90,19 +98,75 @@ class GoogleAdsClient:
 
     # ---- configuração ----
 
+    @staticmethod
+    def _oauth_from_adc() -> dict[str, str]:
+        """Lê client id, secret e refresh token do arquivo do ADC, se houver.
+
+        O arquivo apontado por GOOGLE_APPLICATION_CREDENTIALS serve quando é
+        do tipo `authorized_user`. Conta de serviço não vale para a Google Ads
+        API sem delegação de domínio, então é recusada com mensagem clara.
+        """
+        caminho = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+        if not caminho:
+            return {}
+        if not os.path.exists(caminho):
+            raise ConfigError(
+                f"GOOGLE_APPLICATION_CREDENTIALS aponta para {caminho}, que não existe."
+            )
+        try:
+            with open(caminho, encoding="utf-8") as arquivo:
+                dados = json.load(arquivo)
+        except (OSError, json.JSONDecodeError) as exc:
+            raise ConfigError(
+                f"Não consegui ler o arquivo de credencial {caminho}: {exc}"
+            ) from exc
+
+        tipo = dados.get("type")
+        if tipo == "service_account":
+            raise ConfigError(
+                f"O arquivo {caminho} é de conta de serviço. A Google Ads API não "
+                "aceita conta de serviço sem delegação de domínio no Workspace. "
+                "Gere uma credencial de usuário com scripts/get_refresh_token.py "
+                "ou com `gcloud auth application-default login`."
+            )
+
+        encontrados = {
+            destino: dados[origem]
+            for destino, origem in _OAUTH_FIELDS
+            if dados.get(origem)
+        }
+        return encontrados
+
     def config(self) -> dict[str, str]:
         missing = [name for name in _REQUIRED_ENV if not os.environ.get(name)]
         if missing:
             raise ConfigError(
                 "Variáveis de ambiente ausentes: "
                 + ", ".join(missing)
-                + ". Veja o README do google-ads-mcp para gerar cada uma."
+                + ". Veja o README do google-ads-mcp."
             )
+
+        oauth = {
+            nome: os.environ[nome] for nome, _ in _OAUTH_FIELDS if os.environ.get(nome)
+        }
+        if len(oauth) < len(_OAUTH_FIELDS):
+            for nome, valor in self._oauth_from_adc().items():
+                oauth.setdefault(nome, valor)
+
+        faltando = [nome for nome, _ in _OAUTH_FIELDS if nome not in oauth]
+        if faltando:
+            raise ConfigError(
+                "Credencial do OAuth incompleta. Faltam: "
+                + ", ".join(faltando)
+                + ". Defina essas variáveis, ou aponte GOOGLE_APPLICATION_CREDENTIALS "
+                "para um arquivo de credencial de usuário autorizado que as contenha."
+            )
+
         return {
             "developer_token": os.environ["GOOGLE_ADS_DEVELOPER_TOKEN"],
-            "client_id": os.environ["GOOGLE_ADS_CLIENT_ID"],
-            "client_secret": os.environ["GOOGLE_ADS_CLIENT_SECRET"],
-            "refresh_token": os.environ["GOOGLE_ADS_REFRESH_TOKEN"],
+            "client_id": oauth["GOOGLE_ADS_CLIENT_ID"],
+            "client_secret": oauth["GOOGLE_ADS_CLIENT_SECRET"],
+            "refresh_token": oauth["GOOGLE_ADS_REFRESH_TOKEN"],
             "login_customer_id": normalize_customer_id(
                 os.environ["GOOGLE_ADS_LOGIN_CUSTOMER_ID"]
             ),
