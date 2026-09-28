@@ -105,6 +105,19 @@ O script cria o venv, instala o pacote e registra o servidor em `~/.claude.json`
 }
 ```
 
+## Usando sem servidor MCP
+
+Em ambiente efêmero, como um container de sessão remota, registrar o MCP não compensa porque a configuração morre com o container. As mesmas tools rodam por linha de comando, lendo as credenciais do ambiente:
+
+```bash
+python -m google_ads_mcp.cli                       # lista as tools e seus parâmetros
+python -m google_ads_mcp.cli list_client_accounts
+python -m google_ads_mcp.cli list_ads customer_id=386-824-5329 only_disapproved=true
+python -m google_ads_mcp.cli list_campaigns customer_id=386-824-5329 date_range=LAST_7_DAYS
+```
+
+Argumentos vão como `chave=valor`, na mesma grafia dos parâmetros da tool. Os valores `true`, `false`, números e listas em JSON são convertidos sozinhos. As tools de escrita continuam exigindo `GOOGLE_ADS_MCP_ALLOW_WRITES=1`.
+
 ## Requisito de rede
 
 As chamadas batem em `googleads.googleapis.com` e `oauth2.googleapis.com`. Em ambiente com allowlist de rede, libere os dois domínios, senão o servidor sobe mas toda chamada falha no proxy.
