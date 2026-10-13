@@ -1,13 +1,15 @@
 ---
 name: replica-launch
 description: >-
-  Writes the launch for an app clone: the landing page built on the
-  positioning angle, pricing set against the original's public pricing and
-  its users' complaints, and the App Store and Google Play listing linted
-  against the stores' limits and copycat rules. Use when the user says
-  "landing page", "pricing", "how much should I charge", "App Store
-  listing", "store screenshots", "launch plan", "Product Hunt", or after
-  /replica-brand.
+  Escreve o lançamento de um clone de app: a landing page construída sobre o
+  ângulo de posicionamento, o preço definido a partir da tabela pública do
+  original e das reclamações dos usuários dele, e o listing da App Store e do
+  Google Play validado contra os limites das lojas e as regras anticópia. Use
+  quando o usuário disser "faz a landing page", "quanto eu cobro", "qual o
+  preço", "texto da App Store", "listing das lojas", "screenshots das lojas",
+  "plano de lançamento", "Product Hunt", ou depois de /replica-brand. Triggers
+  in English: "landing page", "pricing", "how much should I charge", "App
+  Store listing", "store screenshots", "launch plan", "Product Hunt".
 ---
 
 # replica-launch
@@ -21,89 +23,99 @@ RECIBO: RECIBO: replica-launch | ✅<passo> · ⏭️<passo>(motivo) | avisos do
 
 Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
 
-Reads `replica/fixes.md` (the angle and the evidence), `replica/brand.md`,
-and `replica/brand.json`. Writes `replica/launch/`: `landing.md`,
-`pricing.md`, `listing.json`, `launch-plan.md`.
+Lê `replica/fixes.md` (o ângulo e as evidências), `replica/brand.md` e
+`replica/brand.json`. Grava `replica/launch/`: `landing.md`, `pricing.md`,
+`listing.json`, `launch-plan.md`.
 
 ```bash
 python3 listing.py replica/launch/listing.json      # limits, claims, the original's name
 ```
 
-Start from `listing.example.json` in this folder.
+Comece a partir do `listing.example.json` desta pasta.
 
-## The rules
+## As regras
 
-- **No fake proof.** No invented testimonials, user counts, star ratings,
-  press logos or "trusted by" rows. An empty proof section is better than a
-  fake one. Real beta users, with permission, are fine.
-- **No reviewer quotes as testimonials.** The original's reviews are research.
-- **The original's name stays out** of your app name, store listing, keywords
-  and ads. Apple and Google reject it, and it invites a takedown.
+- **Nada de prova falsa.** Nada de depoimentos inventados, número de usuários,
+  nota de estrelas, logos de imprensa ou faixa "confiado por". Uma seção de
+  prova vazia é melhor que uma falsa. Usuários reais do beta, com permissão,
+  podem entrar.
+- **Nada de citação de avaliador como depoimento.** As avaliações do original
+  são pesquisa.
+- **O nome do original fica fora** do nome do seu app, do listing da loja, das
+  palavras-chave e dos anúncios. Apple e Google reprovam, e isso convida a uma
+  notificação de remoção (takedown).
 
-## Step 1: landing page
+## Passo 1: landing page
 
-`landing.md`, section by section, then build it in the project:
+`landing.md`, seção por seção, e depois construa no projeto:
 
-1. **Hero**: the angle as a headline (what you do, for whom), one line under
-   it, one button. Screenshot of the real product.
-2. **The problem**: the top two "hate" themes, in plain words. Paraphrase,
-   do not quote reviewers.
-3. **How it works**: three steps, from the core flow.
-4. **Features**: each tied to a fix from `fixes.md`. Lead with the fixes,
-   not the parity features. Parity is the price of entry.
-5. **Pricing**: the table from step 2.
-6. **FAQ**: the real objections, including "can I import from {{category}}
-   tools?" if you built an importer.
-7. **Final call to action.**
+1. **Hero**: o ângulo como título (o que você faz, para quem), uma linha
+   embaixo, um botão. Screenshot do produto real.
+2. **O problema**: os dois principais temas de "ódio", em palavras simples.
+   Parafraseie, não cite avaliadores.
+3. **Como funciona**: três passos, a partir do fluxo central.
+4. **Funcionalidades**: cada uma amarrada a um conserto do `fixes.md`. Comece
+   pelos consertos, não pelas funcionalidades de paridade. Paridade é o preço
+   de entrada.
+5. **Preço**: a tabela do passo 2.
+6. **FAQ**: as objeções reais, inclusive "posso importar de ferramentas
+   {{category}}?" se você construiu um importador.
+7. **Chamada final para ação.**
 
-Copy in the brand voice. Run replica-design's contrast check on the page.
+Texto na voz da marca. Rode a checagem de contraste do replica-design na
+página.
 
-## Step 2: pricing
+## Passo 2: preço
 
 `pricing.md`:
 
-- The original's public pricing page and 2 or 3 alternatives, in one table,
-  with the URL and the date read. Prices change, so the date matters.
-- What reviewers said about price and billing, from `feedback.md`, with counts.
-- The model: free plan or trial, per seat or flat, monthly and annual
-  (annual usually 2 months free).
-- Three tiers at most. Name them by who they are for.
-- Fix the billing complaints in the product: one-click cancel, clear renewal
-  emails, no surprise per-seat jumps.
-- The Stripe products and prices to create (the user creates them).
+- A página pública de preços do original e 2 ou 3 alternativas, numa tabela
+  só, com a URL e a data da leitura. Preço muda, então a data importa.
+- O que os avaliadores disseram sobre preço e cobrança, vindo do `feedback.md`,
+  com contagens.
+- O modelo: plano grátis ou trial, por assento ou fixo, mensal e anual (anual
+  costuma dar 2 meses grátis).
+- No máximo três planos. Nomeie pelo público a que se destinam.
+- Conserte no produto as reclamações de cobrança: cancelamento em um clique,
+  e-mails de renovação claros, sem saltos surpresa por assento.
+- Os produtos e preços do Stripe a criar (o usuário cria).
 
-## Step 3: store listing
+## Passo 3: listing da loja
 
-Fill `listing.json`, then:
+Preencha o `listing.json` e rode:
 
 ```bash
 python3 listing.py replica/launch/listing.json
 ```
 
-It checks App Store limits (name 30, subtitle 30, promotional text 170,
-keywords 100, description 4000) and Google Play's (title 30, short
-description 80, full 4000), counts characters the way a person does, flags
-ranking and price claims in short fields, emoji, wasted keyword characters,
-and **any name from `avoid`** anywhere in the listing. Exit 1 on an error.
+Ele confere os limites da App Store (nome 30, subtítulo 30, texto
+promocional 170, palavras-chave 100, descrição 4000) e do Google Play (título
+30, descrição curta 80, completa 4000), conta caracteres como uma pessoa
+contaria, aponta promessas de ranking e de preço nos campos curtos, emoji,
+caracteres desperdiçados nas palavras-chave e **qualquer nome da lista
+`avoid`** em qualquer ponto do listing. Sai com código 1 em caso de erro.
 
-Apple's App Review Guideline 4.1 (Copycats) rejects apps that simply copy a
-popular app or make minor changes to another app's name or UI. Your fixes
-and your own brand are what get you through review, so make them visible in
-the screenshots and the first lines of the description.
+A Diretriz 4.1 (Copycats) do App Review da Apple reprova apps que apenas
+copiam um app popular ou fazem mudanças mínimas no nome ou na interface de
+outro app. O que te faz passar na revisão são os seus consertos e a sua marca
+própria, então deixe-os visíveis nos screenshots e nas primeiras linhas da
+descrição.
 
-Also prepare: screenshots at the current required sizes (check App Store
-Connect and Play Console when you upload, they change), privacy labels and
-the data safety form, privacy policy and support URLs, age rating, and review
-notes with a demo account the reviewer can use.
+Prepare também: screenshots nos tamanhos exigidos hoje (confira no App Store
+Connect e no Play Console na hora do envio, eles mudam), rótulos de
+privacidade e o formulário de segurança de dados, política de privacidade e
+URLs de suporte, classificação etária e notas para o revisor com uma conta de
+demonstração que ele possa usar.
 
-## Step 4: launch plan
+## Passo 4: plano de lançamento
 
-`launch-plan.md`: a waitlist or beta list before launch, analytics and error
-tracking live, where the original's unhappy users talk (the Reddit threads
-and communities from the research), a Product Hunt or Hacker News post that
-leads with the fix, and the first 10 users to talk to by hand.
+`launch-plan.md`: lista de espera ou de beta antes do lançamento, analytics e
+rastreamento de erros no ar, onde os usuários insatisfeitos do original
+conversam (os threads do Reddit e as comunidades da pesquisa), um post no
+Product Hunt ou no Hacker News que abra com o conserto, e os 10 primeiros
+usuários para conversar um a um.
 
-## Output
+## Saída
 
-`replica/launch/` complete, the landing page built, `listing.py` passing.
-Next: `/replica-deploy`.
+`replica/launch/` completo, landing page construída, `listing.py` passando.
+Próximo: `/replica-deploy`.

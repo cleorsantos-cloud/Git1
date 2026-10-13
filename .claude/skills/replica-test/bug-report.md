@@ -1,16 +1,16 @@
-### BUG-{{001}}: {{short title, what is wrong}}
+### BUG-{{001}}: {{título curto, o que está errado}}
 
-- Severity: {{S1 | S2 | S3 | S4}}
-- Flow / case: {{F01 / F01-E1}}
-- Screen: {{S08}}
-- Build: {{commit}}  Browser / device: {{Chrome 140, 1440px}}
+- Severidade: {{S1 | S2 | S3 | S4}}
+- Fluxo / caso: {{F01 / F01-E1}}
+- Tela: {{S08}}
+- Build: {{commit}}  Navegador / dispositivo: {{Chrome 140, 1440px}}
 
-Steps
-1. {{exact step}}
-2. {{exact step}}
+Passos
+1. {{passo exato}}
+2. {{passo exato}}
 
-Expected: {{what should happen}}
-Actual: {{what happened}}
-Evidence: {{replica/bugs/BUG-001.png, console error text, failing test name}}
-Suspected cause: {{optional}}
-Status: {{open | fixed in abc1234 | won't fix: reason}}
+Esperado: {{o que deveria acontecer}}
+Obtido: {{o que aconteceu}}
+Evidência: {{replica/bugs/BUG-001.png, texto do erro de console, nome do teste que falha}}
+Causa suspeita: {{opcional}}
+Status: {{aberto | corrigido em abc1234 | não será corrigido: motivo}}

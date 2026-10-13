@@ -1,14 +1,18 @@
 ---
 name: replica-entrepreneur
 description: >-
-  Researches the app being cloned and reads what its real users say in public
-  reviews (App Store, Google Play, G2, Capterra, Trustpilot, Reddit, Hacker
-  News, its own feature-request board), then ranks what they hate, what is
-  missing and what is unsolved, turns it into a fix plan for the clone and a
-  positioning angle you can sell. Every quote is real, verbatim and linked.
-  Use when the user says "what do people hate about X", "read the reviews",
-  "how do I make mine better", "find the gap", "what features are missing",
-  "how do I position this", "make it sellable", or after /replica-diff.
+  Pesquisa o app que está sendo clonado e lê o que seus usuários reais dizem
+  em avaliações públicas (App Store, Google Play, G2, Capterra, Trustpilot,
+  Reddit, Hacker News, o próprio quadro de pedidos de feature), depois
+  ranqueia o que eles odeiam, o que falta e o que ninguém resolveu, e
+  transforma isso em um plano de correções para o clone e em um ângulo de
+  posicionamento vendável. Toda citação é real, literal e com link. Use quando
+  o usuário disser "do que o pessoal reclama do X", "lê as avaliações", "como
+  faço o meu ficar melhor", "acha a brecha", "que funcionalidades faltam",
+  "como eu posiciono isso", "faz isso vender", ou depois do /replica-diff.
+  Gatilhos em inglês: "what do people hate about X", "read the reviews", "how
+  do I make mine better", "find the gap", "what features are missing", "how do
+  I position this", "make it sellable".
 ---
 
 # replica-entrepreneur
@@ -22,87 +26,94 @@ RECIBO: RECIBO: replica-entrepreneur | ✅<passo> · ⏭️<passo>(motivo) | ava
 
 Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
 
-A straight copy of an app has no reason to exist. This skill finds the reason:
-what the original's users hate, in their own words, and fixes it in yours.
+Uma cópia pura de um app não tem razão de existir. Esta skill encontra a
+razão: o que os usuários do original odeiam, nas palavras deles, e corrige
+isso no seu.
 
-Tool in this folder:
+Ferramenta nesta pasta:
 
 ```bash
 python3 reviews.py replica/reviews.csv --out replica/feedback.md
 ```
 
-## The rules, which are not negotiable
+## As regras, que não são negociáveis
 
-- **Never fabricate.** No invented reviews, quotes, ratings, counts, users or
-  sources. If a source cannot be reached, say so and move on. If there are 14
-  reviews, say 14.
-- **Every quote is verbatim and linked.** Copied exactly from the page, with
-  the URL of the review or thread. `reviews.py` drops any row without a link.
-- **Reading, not scraping.** Read review pages the way a person does, in the
-  browser, and copy rows into the sheet. No scraping libraries against stores
-  or review sites whose terms forbid it. Official public feeds and APIs are
-  fine within their terms: Apple's customer reviews RSS feed
+- **Nunca fabrique.** Nada de avaliações, citações, notas, contagens,
+  usuários ou fontes inventados. Se uma fonte não puder ser acessada, diga e
+  siga em frente. Se são 14 avaliações, diga 14.
+- **Toda citação é literal e com link.** Copiada exatamente da página, com a
+  URL da avaliação ou da thread. O `reviews.py` descarta qualquer linha sem
+  link.
+- **Ler, não raspar.** Leia as páginas de avaliações como uma pessoa lê, no
+  navegador, e copie as linhas para a planilha. Nada de bibliotecas de
+  scraping contra lojas ou sites de avaliação cujos termos proíbem isso. Feeds
+  públicos oficiais e APIs são aceitáveis dentro dos seus termos: o feed RSS
+  de avaliações de clientes da Apple
   (`https://itunes.apple.com/us/rss/customerreviews/id=<APP_ID>/sortBy=mostRecent/json`),
-  the Hacker News Algolia API (`hn.algolia.com/api/v1/search?query=...`),
-  Reddit's official API under its terms.
-- **No fake reviews, ever.** Not for your app, not against theirs. It is
-  illegal in the US (the FTC's 2024 rule) and in many other places.
-- **Reviewers are not your testimonials.** Their words are research. Do not
-  put them on your landing page.
+  a API Algolia do Hacker News (`hn.algolia.com/api/v1/search?query=...`), a
+  API oficial do Reddit sob os termos dela.
+- **Nunca avaliações falsas.** Nem para o seu app, nem contra o deles. É
+  ilegal nos EUA (regra da FTC de 2024) e em muitos outros lugares.
+- **Quem avalia não é seu depoimento.** As palavras deles são pesquisa. Não
+  coloque na sua landing page.
 
-## Step 1: collect
+## Passo 1: coletar
 
-Aim for 100+ reviews across at least three sources, recent first:
+Mire em 100+ avaliações em pelo menos três fontes, das mais recentes para as
+mais antigas:
 
-| source | where |
+| fonte | onde |
 | --- | --- |
-| App Store | the app page, Ratings and Reviews, See All; or the RSS feed above |
-| Google Play | the listing, See all reviews, sort by newest |
-| G2, Capterra, Trustpilot | the product's review pages, filter to 1 to 3 stars too |
-| Reddit | search "X alternative", "switched from X", "X sucks", "X vs" |
-| Hacker News | the Algolia API or site search, same queries |
-| the original's own board | its public roadmap or feature-request board (Canny and similar) and the vote counts |
-| its changelog | what it shipped, so you do not "fix" what is already fixed |
+| App Store | a página do app, Ratings and Reviews, See All; ou o feed RSS acima |
+| Google Play | a listagem, See all reviews, ordenar por mais recentes |
+| G2, Capterra, Trustpilot | as páginas de avaliação do produto, filtre também por 1 a 3 estrelas |
+| Reddit | busque "X alternative", "switched from X", "X sucks", "X vs" |
+| Hacker News | a API Algolia ou a busca do site, mesmas consultas |
+| o quadro do próprio original | o roadmap público ou quadro de pedidos de feature (Canny e similares) e a contagem de votos |
+| o changelog dele | o que ele lançou, para você não "corrigir" o que já foi corrigido |
 
-Each row in `replica/reviews.csv`: `source,url,date,rating,text`, text copied
-exactly. Read the 3 and 4 star reviews too. "Love it, but..." is where the
-best fixes hide.
+Cada linha em `replica/reviews.csv`: `source,url,date,rating,text`, com o texto
+copiado exatamente. Leia também as avaliações de 3 e 4 estrelas. "Love it,
+but..." é onde as melhores correções se escondem.
 
-## Step 2: rank
+## Passo 2: ranquear
 
 ```bash
 python3 reviews.py replica/reviews.csv --out replica/feedback.md
 ```
 
-It sorts reviews into themes (`themes.json`, edit it for the app's category),
-weights low ratings and recent reviews higher, marks themes with fewer than 3
-reviews or only one source as thin, lists every request in the users' own
-words, and surfaces low ratings that matched no theme. Read that last list by
-hand. It is often the best part.
+Ele separa as avaliações em temas (`themes.json`, edite para a categoria do
+app), dá mais peso a notas baixas e a avaliações recentes, marca como thin os
+temas com menos de 3 avaliações ou de uma fonte só, lista cada pedido nas
+palavras dos próprios usuários e destaca as notas baixas que não casaram com
+nenhum tema. Leia essa última lista à mão. Muitas vezes é a melhor parte.
 
-## Step 3: three lists
+## Passo 3: três listas
 
-From `feedback.md`, write three ranked lists. Each item: the problem in one
-line, how many reviews, how many sources, one or two linked quotes.
+A partir do `feedback.md`, escreva três listas ranqueadas. Cada item: o
+problema em uma linha, quantas avaliações, quantas fontes, uma ou duas
+citações com link.
 
-1. **What they hate.** Complaints about things the app does.
-2. **What is missing.** Features people ask for by name.
-3. **What is unsolved.** Whole jobs or groups the app ignores ("not built for
-   teams", "useless for therapists"). These become positioning.
+1. **O que eles odeiam.** Reclamações sobre coisas que o app faz.
+2. **O que falta.** Funcionalidades que as pessoas pedem pelo nome.
+3. **O que ninguém resolveu.** Trabalhos inteiros ou grupos que o app ignora
+   ("not built for teams", "useless for therapists"). Isso vira
+   posicionamento.
 
-Thin themes are listed as thin. Do not present three angry Reddit comments as
-a trend.
+Temas thin entram na lista como thin. Não apresente três comentários irritados
+no Reddit como tendência.
 
-## Step 4: the fix plan
+## Passo 4: o plano de correção
 
-Pick the top 5 to 8 by evidence times how cheaply you can fix them. For each:
-what to build or change, size (S, M, L), which skill does it, and the
-evidence. Add each one to `replica/features.csv` as a row with `original` set
-to `no`. Pricing and billing complaints go to `/replica-launch`.
+Escolha de 5 a 8 itens por evidência vezes o quão barato é corrigir. Para
+cada um: o que construir ou mudar, tamanho (S, M, L), qual skill faz e a
+evidência. Adicione cada um ao `replica/features.csv` como uma linha com
+`original` igual a `no`. Reclamações de preço e cobrança vão para o
+`/replica-launch`.
 
-## Step 5: the angle
+## Passo 5: o ângulo
 
-Three positioning options, each grounded in a top theme:
+Três opções de posicionamento, cada uma ancorada em um tema principal:
 
 ```
 For {{who}} who {{hate this about the original, in plain words}},
@@ -110,12 +121,13 @@ For {{who}} who {{hate this about the original, in plain words}},
 Evidence: {{theme}}, {{n}} reviews across {{n}} sources.
 ```
 
-Recommend one. It drives replica-brand's name and voice and replica-launch's
-hero. Do not put the original's name in your app name, ads or store listing.
-A factual comparison page is a legal question for a lawyer in your country.
+Recomende uma. Ela orienta o nome e a voz do replica-brand e o hero do
+replica-launch. Não coloque o nome do original no nome do seu app, nos
+anúncios nem na listagem da loja. Uma página de comparação factual é questão
+jurídica para um advogado do seu país.
 
-## Output
+## Saída
 
-`replica/reviews.csv`, `replica/feedback.md`, `replica/fixes.md` (three
-lists, fix plan, angle), new rows in `features.csv`, and a summary that
-states the sample size. Next: `/replica-brand`.
+`replica/reviews.csv`, `replica/feedback.md`, `replica/fixes.md` (três
+listas, plano de correção, ângulo), novas linhas no `features.csv` e um
+resumo que informa o tamanho da amostra. Próximo: `/replica-brand`.

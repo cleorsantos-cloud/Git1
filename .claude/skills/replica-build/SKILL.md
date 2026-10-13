@@ -1,12 +1,15 @@
 ---
 name: replica-build
 description: >-
-  Rebuilds an app screen by screen from the recon map: app shell first, then
-  the core flow as a vertical slice, then every screen with all its states,
-  ticking off the feature matrix as it goes. Writes every line fresh, never
-  the original's code, assets or copy. Use when the user says "build the
+  Reconstrói um app tela por tela a partir do mapa do recon: primeiro o shell
+  do app, depois o fluxo principal como fatia vertical, depois cada tela com
+  todos os seus estados, marcando a matriz de features conforme avança.
+  Escreve cada linha do zero, nunca o código, os assets ou os textos do
+  original. Use quando o usuário disser "constrói o clone", "constrói a tela
+  S07", "começa a construir", "refaz essa tela", "implementa a página de
+  agendamento", ou depois do /replica-design. Gatilhos em inglês: "build the
   clone", "build screen S07", "start building", "rebuild this screen",
-  "implement the booking page", or after /replica-design.
+  "implement the booking page".
 ---
 
 # replica-build
@@ -20,77 +23,82 @@ RECIBO: RECIBO: replica-build | ✅<passo> · ⏭️<passo>(motivo) | telas pron
 
 Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
 
-Reads `replica/recon.md`, `replica/architecture.md`, `replica/design/`.
-Updates `replica/features.csv` (the `clone` column) and keeps
+Lê `replica/recon.md`, `replica/architecture.md`, `replica/design/`.
+Atualiza `replica/features.csv` (a coluna `clone`) e mantém
 `replica/build-log.md`.
 
-## The rules
+## As regras
 
-- **Clean room.** Every line of code is written here, from the recon map and
-  the specs. Never paste the original's HTML, CSS, JavaScript, SVGs or
-  images, never load anything from its domain or CDN, never "view source and
-  adapt".
-- **Your words.** Write every label, button, empty state and email fresh.
-  Matching what a button does is parity. Matching its sentence is copying.
-- **Tokens only.** No raw hex or pixel values in components. If a value is
-  missing, add it to the tokens.
+- **Clean room.** Cada linha de código é escrita aqui, a partir do mapa do
+  recon e das specs. Nunca cole o HTML, CSS, JavaScript, SVGs ou imagens do
+  original, nunca carregue nada do domínio ou da CDN dele, nunca "veja o
+  código-fonte e adapte".
+- **Suas palavras.** Escreva do zero cada rótulo, botão, estado vazio e
+  e-mail. Igualar o que um botão faz é paridade. Igualar a frase dele é
+  cópia.
+- **Só tokens.** Nada de hex ou valores em pixel soltos nos componentes. Se
+  falta um valor, acrescente-o aos tokens.
 
-## Step 1: the shell
+## Passo 1: o shell do app
 
-Routing for every screen in the inventory (stub pages are fine), the layout
-(nav, header, sidebar), tokens wired in, the primitives from replica-design,
-and seed data so screens have something real to show. Commit.
+Roteamento de todas as telas do inventário (páginas stub servem), o layout
+(nav, header, sidebar), os tokens ligados, os primitivos do replica-design e
+dados de seed para as telas terem algo real para mostrar. Faça commit.
 
-## Step 2: the vertical slice
+## Passo 2: a fatia vertical
 
-The core loop from the recon map, end to end, before anything else. For a
-booking app: create an event type, open the public page, book a slot, see it
-on the dashboard. Ugly is fine. Working is the point. If replica-backend has
-not run yet, use the seed data and a fake data layer with the same function
-signatures, so swapping in the real one changes no screen code.
+O loop principal do mapa do recon, de ponta a ponta, antes de qualquer outra
+coisa. Num app de agendamento: criar um tipo de evento, abrir a página
+pública, reservar um horário, ver na dashboard. Feio tudo bem. O ponto é
+funcionar. Se o replica-backend ainda não rodou, use os dados de seed e uma
+camada de dados falsa com as mesmas assinaturas de função, para que trocar
+pela real não mude nenhum código de tela.
 
-## Step 3: screen by screen
+## Passo 3: tela por tela
 
-Work in the order of `architecture.md`. For each screen:
+Siga a ordem do `architecture.md`. Para cada tela:
 
-1. Read its row in the recon map: purpose, components, states, which flows
-   pass through it.
-2. Look at the reference screenshot for layout and hierarchy. Not for pixels.
-3. Build it with the primitives. Real data from the data layer.
-4. **Every state**: empty, loading (skeletons, not spinners, if the original
-   does), filled, error, no permission, long content (a 60 character name),
-   mobile width.
-5. Basics, every time: semantic HTML, labels on inputs, keyboard reachable,
-   visible focus, images with alt text.
-6. Set the matching rows in `features.csv` to `yes` or `partial` (with a note).
-7. Screenshot it at the same viewport as the reference into
-   `replica/clone-screens/S07.png` for replica-diff.
-8. One commit per screen: `build: S07 booking page`.
+1. Leia a linha dela no mapa do recon: propósito, componentes, estados, quais
+   fluxos passam por ela.
+2. Olhe o screenshot de referência para layout e hierarquia. Não para pixels.
+3. Construa com os primitivos. Dados reais vindos da camada de dados.
+4. **Todos os estados**: vazio, carregando (skeletons, não spinners, se o
+   original usa), preenchido, erro, sem permissão, conteúdo longo (um nome de
+   60 caracteres), largura mobile.
+5. O básico, sempre: HTML semântico, labels nos inputs, alcançável pelo
+   teclado, foco visível, imagens com texto alternativo.
+6. Marque as linhas correspondentes do `features.csv` como `yes` ou `partial`
+   (com uma nota).
+7. Tire um screenshot no mesmo viewport da referência para
+   `replica/clone-screens/S07.png`, para o replica-diff.
+8. Um commit por tela: `build: S07 booking page`.
 
-## Definition of done, per screen
+## Definição de pronto, por tela
 
-- [ ] every state from the recon map, plus empty, error and loading
-- [ ] works at 390px and 1440px wide
-- [ ] keyboard only: can complete the flow
-- [ ] no console errors
-- [ ] no hard-coded copy borrowed from the original
-- [ ] features.csv updated
-- [ ] screenshot saved for diff
+- [ ] todos os estados do mapa do recon, mais vazio, erro e carregando
+- [ ] funciona em 390px e 1440px de largura
+- [ ] só com teclado: dá para completar o fluxo
+- [ ] sem erros no console
+- [ ] nenhum texto fixo emprestado do original
+- [ ] features.csv atualizado
+- [ ] screenshot salvo para o diff
 
-## Step 4: the build log
+## Passo 4: o build log
 
-`replica/build-log.md`, one line per screen: ID, date, done or partial, what
-is missing, what was harder than expected. When a feature is bigger than it
-looked, say so in the log and in the chat. Do not quietly ship half of it.
+`replica/build-log.md`, uma linha por tela: ID, data, pronta ou parcial, o que
+falta, o que foi mais difícil do que o esperado. Quando uma feature se mostrar
+maior do que parecia, diga isso no log e no chat. Não entregue metade dela em
+silêncio.
 
-## When you are stuck on how something works
+## Quando travar em como algo funciona
 
-Go back to the original as a user: read its help article, watch its public
-walkthrough, use the user's own account. Do not dig into its code or network
-calls. Then build your own version of the behaviour.
+Volte ao original como usuário: leia o artigo de ajuda, veja o walkthrough
+público, use a conta do próprio usuário. Não escarafunche o código nem as
+chamadas de rede dele. Depois construa a sua própria versão do comportamento.
 
-## Output
+## Saída
 
-Screens built, the feature matrix updated, screenshots saved, and a summary:
-screens done of total, must-haves done of total, what is next. Then
-`/replica-backend` if the data layer is still fake, else `/replica-test`.
+Telas construídas, matriz de features atualizada, screenshots salvos e um
+resumo: telas prontas do total, must-haves prontos do total, o que vem a
+seguir. Depois `/replica-backend` se a camada de dados ainda é falsa, senão
+`/replica-test`.

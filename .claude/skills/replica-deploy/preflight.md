@@ -1,39 +1,39 @@
-# Deploy checklist: {{your app}}
+# Checklist de deploy: {{your app}}
 
-Date: {{YYYY-MM-DD}}  Commit: {{sha}}  Go from user: {{yes / not yet}}
+Data: {{YYYY-MM-DD}}  Commit: {{sha}}  Ok do usuário: {{sim / ainda não}}
 
-## Preflight (all must pass)
+## Checagem pré-voo (preflight) — tudo precisa passar
 
-- [ ] e2e suite green: {{n passed / n}}
-- [ ] no open S1 or S2 bugs
-- [ ] parity: all must-haves done ({{n/n}}), feature score {{n}}
-- [ ] rebrand sweep clean (`sweep.py` exit 0)
-- [ ] store listing passes (`listing.py` exit 0), if shipping to stores
-- [ ] production build passes
-- [ ] privacy policy and terms live, every processor listed
-- [ ] account deletion works
-- [ ] favicon, titles, OG image, emails, app icon are yours
+- [ ] suíte e2e verde: {{n passaram / n}}
+- [ ] nenhum bug S1 ou S2 aberto
+- [ ] paridade: todos os must-haves prontos ({{n/n}}), nota de funcionalidades {{n}}
+- [ ] varredura de rebrand limpa (`sweep.py` com exit 0)
+- [ ] listing da loja passa (`listing.py` com exit 0), se for publicar nas lojas
+- [ ] build de produção passa
+- [ ] política de privacidade e termos no ar, com todos os processadores listados
+- [ ] exclusão de conta funciona
+- [ ] favicon, títulos, imagem OG, e-mails e ícone do app são seus
 
-## Production
+## Produção
 
-- [ ] separate production database, backups on, migrations in the deploy
-- [ ] env vars set (names match .env.example)
-- [ ] Stripe live: products, prices, webhook endpoint + secret, one real purchase refunded
-- [ ] OAuth redirect URIs and origins include the production domain
-- [ ] Google OAuth verification approved (if using sensitive scopes)
-- [ ] email sending domain verified
+- [ ] banco de produção separado, backups ligados, migrações no deploy
+- [ ] variáveis de ambiente configuradas (nomes batem com o .env.example)
+- [ ] Stripe live: produtos, preços, endpoint de webhook + segredo, uma compra real reembolsada
+- [ ] redirect URIs e origens do OAuth incluem o domínio de produção
+- [ ] verificação do Google OAuth aprovada (se usar escopos sensíveis)
+- [ ] domínio de envio de e-mail verificado
 
-## Domain
+## Domínio
 
 - [ ] A @ -> {{value}}
 - [ ] CNAME www -> {{value}}
-- [ ] SPF, DKIM, DMARC set
-- [ ] canonical host chosen, the other redirects
-- [ ] HTTPS valid
+- [ ] SPF, DKIM, DMARC configurados
+- [ ] host canônico escolhido, o outro redireciona
+- [ ] HTTPS válido
 
-## Watch
+## Acompanhamento
 
-- [ ] error tracking
-- [ ] uptime checks
+- [ ] rastreamento de erros
+- [ ] checagens de uptime
 - [ ] analytics
-- [ ] core flow done on the live site, desktop and phone
+- [ ] fluxo central feito no site no ar, no desktop e no celular

@@ -1,13 +1,15 @@
 ---
 name: replica-design
 description: >-
-  Rebuilds an app's design system for a clone: colour roles, type scale,
-  spacing, radius, shadows and every component with its states, as design
-  tokens plus component specs, with original assets instead of the target's
-  logos, icons, illustrations or licensed fonts. Includes a WCAG contrast
-  checker. Use when the user says "match the design", "rebuild the design
-  system", "get the colours and fonts", "make it look like X", "design tokens
-  for my clone", or after /replica-architect.
+  Reconstrói o design system de um app para o clone: papéis de cor, escala
+  tipográfica, espaçamento, raio, sombras e cada componente com seus estados,
+  como design tokens mais specs de componentes, usando assets originais no lugar
+  de logos, ícones, ilustrações ou fontes licenciadas do alvo. Inclui um
+  verificador de contraste WCAG. Use quando o usuário disser "iguala o design",
+  "reconstrói o design system", "pega as cores e as fontes", "deixa com a cara
+  do X", "design tokens pro meu clone", ou depois do /replica-architect.
+  Triggers: "match the design", "rebuild the design system", "get the colours
+  and fonts", "make it look like X", "design tokens for my clone".
 ---
 
 # replica-design
@@ -21,64 +23,69 @@ RECIBO: RECIBO: replica-design | ✅<passo> · ⏭️<passo>(motivo) | tokens de
 
 Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
 
-Reads `replica/recon.md` and the screenshots in `replica/screens/`. Writes
-`replica/design/tokens.json` (template in this folder), `tokens.css`, the
-Tailwind mapping, and `replica/design/components.md`.
+Lê `replica/recon.md` e as screenshots em `replica/screens/`. Escreve
+`replica/design/tokens.json` (template nesta pasta), `tokens.css`, o mapeamento
+para o Tailwind e `replica/design/components.md`.
 
 ```bash
 python3 contrast.py replica/design/tokens.json     # every text pair, WCAG ratio
 ```
 
-## The rules
+## As regras
 
-What you rebuild is the **system**: the roles, the scale, the patterns, the
-way a form or a modal behaves. Those are not ownable, and users expect them.
-What you never take:
+O que você reconstrói é o **sistema**: os papéis, a escala, os padrões, o jeito
+como um formulário ou um modal se comporta. Isso não tem dono, e os usuários
+esperam. O que você nunca leva:
 
-- **Logos, icons, illustrations, photos, sounds.** Use an open icon set
-  (Lucide, Phosphor, Heroicons, Tabler, all MIT or similar) and make or
-  commission your own illustrations. Do not trace theirs.
-- **Licensed fonts.** If the original uses a paid or proprietary font, pick
-  an open one with the same job: Inter, Geist, IBM Plex, Manrope, Source Serif.
-- **Their copy.** Every label and empty state gets written fresh.
-- **Their brand colour.** Record it as a role (`accent`), use a neutral
-  placeholder now, and replica-brand gives you your own. The signature colour
-  plus the signature layout is trade dress, and it changes before launch.
+- **Logos, ícones, ilustrações, fotos, sons.** Use um conjunto de ícones aberto
+  (Lucide, Phosphor, Heroicons, Tabler, todos MIT ou similar) e faça ou
+  encomende suas próprias ilustrações. Não copie as deles pelo contorno.
+- **Fontes licenciadas.** Se o original usa uma fonte paga ou proprietária,
+  escolha uma aberta com a mesma função: Inter, Geist, IBM Plex, Manrope,
+  Source Serif.
+- **O texto deles.** Cada rótulo e cada estado vazio é escrito do zero.
+- **A cor da marca deles.** Registre como um papel (`accent`), use um
+  placeholder neutro por enquanto, e o replica-brand dá a sua própria. A cor
+  de assinatura somada ao layout de assinatura é trade dress, e muda antes do
+  lançamento.
 
-## Step 1: measure, do not guess
+## Passo 1: meça, não chute
 
-From the screenshots (zoom in, use a colour picker on the user's machine):
+A partir das screenshots (dê zoom, use um conta-gotas de cor na máquina do
+usuário):
 
-- **Colour roles**, not colours: bg, surface, border, border-input, text,
-  text-muted, accent, on-accent, danger, success, warning. Count how many
-  greys the app really uses. Usually 5 to 7.
-- **Type scale**: sizes, line heights, weights. Snap to a scale (12, 14, 16,
-  20, 28, 40 is common). Note the font category, not the font file.
-- **Spacing**: measure gaps between elements. It is almost always a 4 or 8
-  base. Write the scale.
-- **Radius, shadow, motion**: two or three of each.
-- **Layout**: max content width, grid, breakpoints, sidebar width, header height.
+- **Papéis de cor**, não cores: bg, surface, border, border-input, text,
+  text-muted, accent, on-accent, danger, success, warning. Conte quantos cinzas
+  o app realmente usa. Geralmente de 5 a 7.
+- **Escala tipográfica**: tamanhos, alturas de linha, pesos. Encaixe numa escala
+  (12, 14, 16, 20, 28, 40 é comum). Anote a categoria da fonte, não o arquivo.
+- **Espaçamento**: meça os vãos entre os elementos. Quase sempre é base 4 ou 8.
+  Escreva a escala.
+- **Raio, sombra, movimento**: dois ou três de cada.
+- **Layout**: largura máxima do conteúdo, grid, breakpoints, largura da
+  sidebar, altura do header.
 
-## Step 2: write the tokens
+## Passo 2: escreva os tokens
 
-Fill `tokens.json`. Keep the role names. replica-brand only changes values.
-Generate `tokens.css` as custom properties and map them into Tailwind's theme
-so components use `bg-surface text-muted`, never raw hex.
+Preencha o `tokens.json`. Mantenha os nomes dos papéis. O replica-brand só
+troca os valores. Gere o `tokens.css` como custom properties e mapeie-os no
+tema do Tailwind, para que os componentes usem `bg-surface text-muted`, nunca
+hex cru.
 
-Add a `pairs` list for every text and background combination the app uses,
-then:
+Adicione uma lista `pairs` com toda combinação de texto e fundo que o app usa,
+e então:
 
 ```bash
 python3 contrast.py replica/design/tokens.json
 ```
 
-AA is the floor: 4.5:1 for body text, 3:1 for large text and for input
-borders and focus rings. It exits 1 on a failure. Fix it in the tokens, not
-per component.
+AA é o piso: 4,5:1 para texto corrido, 3:1 para texto grande e para bordas de
+campo e anéis de foco. O script sai com código 1 se houver falha. Conserte nos
+tokens, não componente por componente.
 
-## Step 3: component specs
+## Passo 3: specs de componentes
 
-For every component in the recon list, one block in `components.md`:
+Para cada componente da lista do reconhecimento, um bloco em `components.md`:
 
 ```
 Button
@@ -90,19 +97,19 @@ Button
   used on   S02, S07, S09
 ```
 
-Every state the recon saw, plus the ones it should have: focus, disabled,
-loading, error, empty. Keyboard and screen reader behaviour is part of the
-spec.
+Todo estado que o reconhecimento viu, mais os que ele deveria ter visto: focus,
+disabled, loading, error, empty. O comportamento de teclado e de leitor de tela
+faz parte da spec.
 
-## Step 4: build the primitives
+## Passo 4: construa os primitivos
 
-Build the components in code once, in isolation (a `/design` route or
-Storybook), before any screen. Use an accessible base if the stack has one
-(Radix, shadcn/ui, React Aria). Screenshot the page. That is the design system
-check.
+Construa os componentes em código uma vez, isolados (uma rota `/design` ou
+Storybook), antes de qualquer tela. Use uma base acessível se a stack tiver uma
+(Radix, shadcn/ui, React Aria). Tire uma screenshot da página. Essa é a
+verificação do design system.
 
-## Output
+## Saída
 
-`tokens.json`, `tokens.css`, the Tailwind config, `components.md`, the
-primitives built, and a contrast report with zero AA failures. Next:
+`tokens.json`, `tokens.css`, a config do Tailwind, `components.md`, os
+primitivos construídos e um relatório de contraste com zero falhas AA. Próximo:
 `/replica-build`.

@@ -1,42 +1,42 @@
-# Architecture: {{your app}} (a rebuild of {{app}}'s core features)
+# Arquitetura: {{seu app}} (uma reconstrução das features centrais de {{app}})
 
 ## Stack
 
-| layer | choice | why |
+| camada | escolha | por quê |
 | --- | --- | --- |
 | web | | |
-| database | | |
+| banco de dados | | |
 | auth | | |
-| payments | | |
-| email | | |
+| pagamentos | | |
+| e-mail | | |
 | jobs | | |
-| hosting | | |
+| hospedagem | | |
 
 ## Schema
 
-Tables: {{n}}. Access rules: {{RLS | data-layer checks}}.
+Tabelas: {{n}}. Regras de acesso: {{RLS | checagens na camada de dados}}.
 
 ```sql
--- or see replica/schema.sql
+-- ou veja replica/schema.sql
 ```
 
 ## API
 
-| method path | does | who | input | output | flow |
+| método caminho | faz o quê | quem | entrada | saída | fluxo |
 | --- | --- | --- | --- | --- | --- |
 
-Webhooks in: {{...}}  Webhooks out: {{...}}
-Jobs: {{name, schedule, what it does}}
+Webhooks de entrada: {{...}}  Webhooks de saída: {{...}}
+Jobs: {{nome, agenda, o que faz}}
 
-## The parts that bite
+## As partes que mordem
 
-- time zones:
-- idempotency:
-- races:
+- fusos horários:
+- idempotência:
+- condições de corrida:
 
-## Build order
+## Ordem de construção
 
-1. Vertical slice: {{screens, tables, routes}}
-2. Must-haves:
-3. Should-haves:
-4. Fixes from replica-entrepreneur:
+1. Fatia vertical: {{telas, tabelas, rotas}}
+2. Must-haves (obrigatórias):
+3. Should-haves (desejáveis):
+4. Correções vindas do replica-entrepreneur:

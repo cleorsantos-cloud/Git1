@@ -1,13 +1,16 @@
 ---
 name: replica-diff
 description: >-
-  Compares an app clone against the original: a feature parity score from the
-  feature matrix (weighted by must, should, could) with the missing list in
-  build order, plus a screenshot layout diff that ignores colour so a rebrand
-  does not count against you. Two standard-library Python tools. Use when the
-  user says "how close is my clone", "compare it to the original", "what's
-  missing", "parity check", "diff the screens", "is it ready", or after
-  /replica-test.
+  Compara um clone de app com o original: nota de paridade de funcionalidades
+  a partir da matriz de features (ponderada por must, should, could) com a
+  lista do que falta na ordem de construção, mais um diff de layout por
+  screenshots que ignora cor, para que um rebrand não conte contra você. Duas
+  ferramentas Python só com biblioteca padrão. Use quando o usuário disser
+  "quão perto está meu clone", "compara com o original", "o que falta",
+  "checagem de paridade", "diff das telas", "está pronto?", ou depois do
+  /replica-test. Gatilhos em inglês: "how close is my clone", "compare it to
+  the original", "what's missing", "parity check", "diff the screens", "is it
+  ready".
 ---
 
 # replica-diff
@@ -21,7 +24,7 @@ RECIBO: RECIBO: replica-diff | ✅<passo> · ⏭️<passo>(motivo) | score de pa
 
 Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
 
-Two tools in this folder, both standard-library Python, no installs:
+Duas ferramentas nesta pasta, ambas Python com biblioteca padrão, sem instalar nada:
 
 ```bash
 python3 parity.py replica/features.csv                         # feature parity + missing list
@@ -30,73 +33,78 @@ python3 imgdiff.py a.png b.png --json > replica/diffs/S07.json # for parity.py -
 python3 parity.py replica/features.csv --visual replica/diffs/*.json --markdown > replica/parity.md
 ```
 
-## What parity means here
+## O que paridade significa aqui
 
-**Parity means it does the same job, not that it looks the same.** The
-feature score is the number that matters: can a user do everything they could
-do in the original. The layout score checks structure (is the information in
-the same places, in the same hierarchy), because that is what makes a switcher
-feel at home. It deliberately ignores colour, because replica-brand changes
-every colour on purpose. Do not chase pixel parity with the original. Its
-exact look is its trade dress, and it changes before launch.
+**Paridade significa fazer o mesmo trabalho, não ter a mesma aparência.** A
+nota de funcionalidades é o número que importa: o usuário consegue fazer tudo
+o que fazia no original? A nota de layout confere a estrutura (a informação
+está nos mesmos lugares, na mesma hierarquia), porque é isso que faz quem está
+migrando se sentir em casa. Ela ignora a cor de propósito, porque o
+replica-brand troca todas as cores de propósito. Não persiga paridade de
+pixel com o original. O visual exato dele é o trade dress, e ele muda antes
+do lançamento.
 
-## Step 1: feature parity
+## Passo 1: paridade de features
 
-Make sure `replica/features.csv` is current: every row's `clone` column is
-`yes`, `partial` (with a note), `no`, or `skip` (with a reason). Then:
+Confirme que o `replica/features.csv` está atualizado: a coluna `clone` de
+cada linha é `yes`, `partial` (com nota), `no` ou `skip` (com motivo). Depois:
 
 ```bash
 python3 parity.py replica/features.csv
 ```
 
-It weights must 3, should 2, could 1, counts partial as half, leaves out
-`skip` rows and rows you added that the original does not have, and prints:
-the score, must-haves done of total, each area weakest first, and the missing
-list in build order. Must-haves not done means not shippable, and it says so.
+Ele pesa must 3, should 2, could 1, conta partial como metade, deixa de fora
+as linhas `skip` e as linhas que você adicionou e que o original não tem, e
+imprime: a nota, os must-haves feitos do total, cada área da mais fraca para a
+mais forte, e a lista do que falta na ordem de construção. Must-haves não
+concluídos significa que não dá para lançar, e ele avisa.
 
-## Step 2: layout diff
+## Passo 2: diff de layout
 
-For each key screen, take two screenshots at the **same viewport** (1440x900
-desktop, 390x844 mobile) in the **same state** (same data shape, same tab
-open, logged in the same way). The original's come from public pages or the
-user's own account, saved in `replica/screens/`. The clone's go in
+Para cada tela-chave, tire dois screenshots no **mesmo viewport** (1440x900
+desktop, 390x844 mobile) e no **mesmo estado** (mesmo formato de dados, mesma
+aba aberta, logado do mesmo jeito). Os do original vêm de páginas públicas ou
+da conta do próprio usuário, salvos em `replica/screens/`. Os do clone vão em
 `replica/clone-screens/`.
 
 ```bash
 python3 imgdiff.py replica/screens/S07.png replica/clone-screens/S07.png --out replica/diffs/S07.png
 ```
 
-Layout mode (default) turns both into edge maps, cuts them into a grid, and
-compares where things are, scoring only cells with something in them. It
-reports the score (matches 90+, close 75+, partly 50+, different), the
-regions that differ (in the original's pixel coordinates, biggest first), and
-a height difference if the clone's page is much longer or shorter. Retina and
-non-retina screenshots compare fine: both are scaled to the same width.
+O modo layout (padrão) transforma os dois em mapas de bordas, corta em uma
+grade e compara onde as coisas estão, pontuando só as células que têm
+conteúdo. Ele informa a nota (igual 90+, próximo 75+, parcial 50+, diferente),
+as regiões que diferem (nas coordenadas de pixel do original, maiores
+primeiro) e a diferença de altura, se a página do clone for muito mais longa
+ou mais curta. Screenshots retina e não retina podem ser comparados: ambos
+são escalados para a mesma largura.
 
-`--mode pixel` is exact comparison. Use it for your own regressions (clone
-today against clone last week), not against the original.
+`--mode pixel` é comparação exata. Use para as suas próprias regressões (clone
+de hoje contra clone da semana passada), não contra o original.
 
-## Step 3: behaviour diff
+## Passo 3: diff de comportamento
 
-Walk each flow in both apps and compare what the scores cannot see: clicks to
-finish the core flow, what happens on errors, what is remembered between
-visits, what emails arrive. Fewer clicks than the original is a win. Write
-each difference as: flow, original does, clone does, fix or keep.
+Percorra cada fluxo nos dois apps e compare o que as notas não enxergam:
+cliques para concluir o fluxo principal, o que acontece nos erros, o que é
+lembrado entre visitas, quais e-mails chegam. Menos cliques que o original é
+vitória. Escreva cada diferença assim: fluxo, o original faz, o clone faz,
+corrigir ou manter.
 
-## Step 4: the report
+## Passo 4: o relatório
 
-`replica/parity.md`: overall score, feature score, layout score per screen,
-missing features in build order, behaviour differences, and a verdict:
+`replica/parity.md`: nota geral, nota de funcionalidades, nota de layout por
+tela, funcionalidades faltando na ordem de construção, diferenças de
+comportamento e um veredito:
 
-- **not shippable**: any must-have missing, or any open S1 bug
-- **shippable**: all must-haves done, feature score 80+, no open S1 or S2
-- **better than the original**: shippable, plus fixes from
-  replica-entrepreneur. This is the goal. A straight copy has no reason to exist.
+- **não lançável**: qualquer must-have faltando, ou qualquer bug S1 aberto
+- **lançável**: todos os must-haves feitos, nota de funcionalidades 80+, sem S1 nem S2 abertos
+- **melhor que o original**: lançável, mais as correções vindas do
+  replica-entrepreneur. Este é o objetivo. Uma cópia pura não tem razão de existir.
 
-Give honest numbers. A clone at 62% is at 62%.
+Dê números honestos. Um clone com 62% está em 62%.
 
-## Output
+## Saída
 
-`replica/parity.md`, the diff images, and the top five things to build next.
-Then `/replica-build` for the gaps, or `/replica-entrepreneur` if parity is
-there.
+`replica/parity.md`, as imagens de diff e as cinco primeiras coisas a
+construir. Depois `/replica-build` para as lacunas, ou `/replica-entrepreneur`
+se a paridade já estiver boa.

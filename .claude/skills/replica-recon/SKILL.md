@@ -1,13 +1,16 @@
 ---
 name: replica-recon
 description: >-
-  Reverse-engineers any app into a recon map: screen inventory, user flows,
-  component list, inferred data model and a feature matrix, from public pages,
-  screenshots, app store listings, help docs and the user's own account. The
-  first step of the Replica pack. Use when the user says "clone this app",
-  "reverse engineer X", "how does X work", "map out X", "what screens does X
-  have", "I want to build my own version of X", "copy this app", or pastes an
-  app's URL or App Store link and wants to rebuild it.
+  Faz a engenharia reversa de qualquer app em um mapa de reconhecimento:
+  inventário de telas, fluxos de usuário, lista de componentes, modelo de dados
+  inferido e matriz de features, a partir de páginas públicas, screenshots,
+  listagens de loja de apps, documentação de ajuda e a conta do próprio usuário.
+  É o primeiro passo do pacote Replica. Use quando o usuário disser "clona esse
+  app", "faz engenharia reversa do X", "como funciona o X", "mapeia o X", "quais
+  telas o X tem", "quero fazer minha versão do X", "copia esse app", ou colar a
+  URL ou o link da App Store de um app querendo reconstruí-lo. Triggers: "clone
+  this app", "reverse engineer X", "how does X work", "map out X", "what screens
+  does X have", "I want to build my own version of X", "copy this app".
 ---
 
 # replica-recon
@@ -21,10 +24,10 @@ RECIBO: RECIBO: replica-recon | ✅<passo> · ⏭️<passo>(motivo) | telas mape
 
 Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
 
-Everything else in the pack builds from what this skill writes. A bad recon
-map means a bad clone, so take the time here.
+Todo o resto do pacote se constrói sobre o que esta skill escreve. Um mapa de
+reconhecimento ruim dá um clone ruim, então dedique o tempo necessário aqui.
 
-Output goes in the user's project:
+A saída vai para o projeto do usuário:
 
 ```
 replica/recon.md        the recon map (template: recon-map.md in this folder)
@@ -32,63 +35,69 @@ replica/features.csv    the feature matrix (template: features.csv in this folde
 replica/screens/        reference screenshots of the original. Never shipped.
 ```
 
-## The rules, before anything else
+## As regras, antes de tudo
 
-This skill rebuilds **functionality and UX patterns**, clean-room style. It
-studies what the app does and how a user moves through it. It does not take
-anything the app owns.
+Esta skill reconstrói **funcionalidade e padrões de UX**, no estilo clean-room.
+Ela estuda o que o app faz e como o usuário se move por ele. Não leva nada que
+pertença ao app.
 
-- **Public sources and the user's own account only.** Never log into an
-  account that is not the user's, never ask for a password, never get past a
-  paywall or a login by any trick.
-- **Reading, not scraping.** No crawlers, no bulk downloads, no loops. If a
-  browser tool is connected to the user's own browser, read pages at human
-  speed with the user present.
-- **No source code, no private APIs.** Do not read or save the app's
-  JavaScript bundles, decompile its binary, or log its network calls to copy
-  endpoints. Public API docs are fine to read.
-- **Check the terms.** Some products' terms forbid using an account to build a
-  competing product. If the user's account is under terms like that, say so
-  and work from public sources only.
-- **Screenshots are reference.** They live in `replica/screens/`, are used to
-  compare layouts, and never go into the clone.
+- **Só fontes públicas e a conta do próprio usuário.** Nunca entre na conta de
+  outra pessoa, nunca peça senha, nunca contorne um paywall ou um login por
+  qualquer truque.
+- **Ler, não raspar.** Nada de crawlers, downloads em massa ou loops. Se uma
+  ferramenta de navegador estiver conectada ao navegador do próprio usuário,
+  leia as páginas em velocidade humana, com o usuário presente.
+- **Nada de código-fonte, nada de APIs privadas.** Não leia nem salve os
+  bundles de JavaScript do app, não descompile o binário, não registre as
+  chamadas de rede para copiar endpoints. Ler a documentação pública de API
+  pode.
+- **Confira os termos de uso.** Os termos de alguns produtos proíbem usar uma
+  conta para construir um produto concorrente. Se a conta do usuário estiver
+  sob termos assim, avise e trabalhe só com fontes públicas.
+- **Screenshots são referência.** Ficam em `replica/screens/`, servem para
+  comparar layouts e nunca entram no clone.
 
-## Step 1: scope
+## Passo 1: escopo
 
-Ask three things, or propose answers and get a yes:
+Pergunte três coisas, ou proponha as respostas e peça um sim:
 
-1. **Which app, which platform.** Web, iOS, Android, desktop.
-2. **Which slice.** "All of Notion" is not a project. "Notion's pages, blocks
-   and sharing" is. Default to the core loop: the one flow users pay for.
-3. **Who it is for.** The user's own business, a niche, a product to sell.
+1. **Qual app, qual plataforma.** Web, iOS, Android, desktop.
+2. **Qual fatia.** "Todo o Notion" não é um projeto. "As páginas, os blocos e o
+   compartilhamento do Notion" é. O padrão é o loop central: o fluxo pelo qual
+   os usuários pagam.
+3. **Para quem é.** O negócio do próprio usuário, um nicho, um produto para
+   vender.
 
-## Step 2: list the sources
+## Passo 2: liste as fontes
 
-Build a sources table first, with a URL on every row. In order of value:
+Monte primeiro uma tabela de fontes, com uma URL em cada linha. Em ordem de
+valor:
 
-| source | what it gives you |
+| fonte | o que entrega |
 | --- | --- |
-| help center / docs | the most complete feature list there is, and the settings |
-| pricing page | which features matter (they gate them) |
-| changelog | what was added recently, what the team thinks is important |
-| app store listing | screenshots of every key screen, the pitch, ratings |
-| public walkthrough videos | real flows, click by click |
-| marketing site | positioning, the core loop in their words |
-| the user's own account | the real thing, every state, driven by the user |
-| public API docs | the data model, almost for free |
+| central de ajuda / docs | a lista de features mais completa que existe, e as configurações |
+| página de preços | quais features importam (são as que eles travam por plano) |
+| changelog | o que foi adicionado recentemente, o que o time considera importante |
+| listagem da loja de apps | screenshots de cada tela-chave, o pitch, as avaliações |
+| vídeos públicos de demonstração | fluxos reais, clique a clique |
+| site de marketing | posicionamento, o loop central nas palavras deles |
+| a conta do próprio usuário | o produto real, em todos os estados, conduzido pelo usuário |
+| docs públicas da API | o modelo de dados, quase de graça |
 
-## Step 3: screen inventory
+## Passo 3: inventário de telas
 
-One row per screen. IDs are stable: S01, S02... Every other file refers to them.
+Uma linha por tela. Os IDs são estáveis: S01, S02... Todos os outros arquivos
+se referem a eles.
 
-`ID | screen | route or how you get there | purpose | key components | states seen`
+`ID | tela | rota ou como chegar | finalidade | componentes-chave | estados vistos`
 
-States matter: empty, loading, filled, error, permission denied, mobile. An
-empty state you did not record is an empty state you will not build.
+Os estados importam: vazio, carregando, preenchido, erro, sem permissão,
+mobile. Um estado vazio que você não registrou é um estado vazio que você não
+vai construir.
 
-## Step 4: user flows
+## Passo 4: fluxos de usuário
 
-F01, F02... Each one is a goal and the screens it passes through:
+F01, F02... Cada um é um objetivo e as telas por onde ele passa:
 
 ```
 F01 Guest books a meeting
@@ -96,17 +105,18 @@ F01 Guest books a meeting
     edge: no slots this week, time zone differs, slot taken while filling the form
 ```
 
-Count the clicks on the happy path. It becomes the number to beat.
+Conte os cliques do caminho feliz. Esse número vira a marca a superar.
 
-## Step 5: components
+## Passo 5: componentes
 
-Every repeated UI part: buttons, inputs, date pickers, modals, tables, toasts,
-nav. Name, variants, states, which screens use it. This becomes
-replica-design's component list.
+Toda parte repetida da interface: botões, campos, seletores de data, modais,
+tabelas, toasts, navegação. Nome, variantes, estados, quais telas usam. Isso
+vira a lista de componentes do replica-design.
 
-## Step 6: inferred data model
+## Passo 6: modelo de dados inferido
 
-Entities, fields and relationships, each with its evidence and a confidence:
+Entidades, campos e relacionamentos, cada um com sua evidência e um nível de
+confiança:
 
 ```
 Booking  id, event_type_id, start_at, end_at, guest_name, guest_email,
@@ -115,29 +125,33 @@ Booking  id, event_type_id, start_at, end_at, guest_name, guest_email,
          confidence: high
 ```
 
-Mark guesses as guesses. replica-architect turns this into a real schema.
+Marque palpite como palpite. O replica-architect transforma isso em um schema
+de verdade.
 
-## Step 7: feature matrix
+## Passo 7: matriz de features
 
-Write `replica/features.csv` (columns: feature, area, priority, original,
-clone, notes). Priority is must / should / could. `clone` starts at `no` for
-every row and gets filled in during the build. replica-diff scores it.
+Escreva `replica/features.csv` (colunas: feature, area, priority, original,
+clone, notes). A prioridade é must / should / could (deve / deveria / poderia).
+`clone` começa em `no` em todas as linhas e é preenchido durante a construção.
+O replica-diff dá a nota.
 
-## Step 8: what cannot be cloned
+## Passo 8: o que não dá pra clonar
 
-List it honestly, as `skip` rows with a reason: licensed content (a music
-catalogue, a stock library), the network and its users, data the app owns,
-partner deals, hardware, regulated licences (banking, health). "Clone any
-app" means the features and the flow, not what the app owns.
+Liste com honestidade, como linhas `skip` com o motivo: conteúdo licenciado (um
+catálogo de música, um banco de imagens), a rede e seus usuários, dados que o
+app possui, acordos com parceiros, hardware, licenças regulatórias (bancos,
+saúde). "Clonar qualquer app" significa as features e o fluxo, não o que o app
+possui.
 
-## Step 9: size it
+## Passo 9: dimensione
 
-Screens, flows, entities, and the hard parts (realtime, sync, payments,
-calendar or email integrations, offline). Give a size: S (a weekend), M (a
-few weeks), L (a quarter), XL (rescope it). No promises of a perfect clone.
+Telas, fluxos, entidades e as partes difíceis (tempo real, sincronização,
+pagamentos, integrações de calendário ou e-mail, offline). Dê um tamanho: S (um
+fim de semana), M (algumas semanas), L (um trimestre), XL (redefina o escopo).
+Sem prometer um clone perfeito.
 
-## Output
+## Saída
 
-`replica/recon.md` and `replica/features.csv`, then a five-line summary: the
-core loop, screen and flow counts, the three hardest parts, what is out of
-scope, and the next step: `/replica-architect`.
+`replica/recon.md` e `replica/features.csv`, depois um resumo de cinco linhas:
+o loop central, a contagem de telas e fluxos, as três partes mais difíceis, o
+que está fora do escopo e o próximo passo: `/replica-architect`.

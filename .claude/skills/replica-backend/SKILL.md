@@ -1,12 +1,15 @@
 ---
 name: replica-backend
 description: >-
-  Builds the backend of an app clone: auth, database migrations and access
-  rules, payments with Stripe, email, background jobs and third-party
-  integrations through official APIs only, plus a security checklist. Use when
-  the user says "add login", "set up auth", "wire up the database", "add
-  payments", "connect Stripe", "add Google Calendar", "send emails",
-  "backend for my clone", or when /replica-build is running on fake data.
+  Constrói o backend de um clone de app: auth, migrations do banco e regras de
+  acesso, pagamentos com Stripe, e-mail, jobs em background e integrações com
+  terceiros apenas por APIs oficiais, mais um checklist de segurança. Use
+  quando o usuário disser "coloca login", "configura o auth", "liga o banco de
+  dados", "coloca pagamento", "conecta o Stripe", "integra o Google Calendar",
+  "manda e-mails", "backend do meu clone", ou quando o /replica-build estiver
+  rodando com dados falsos. Gatilhos em inglês: "add login", "set up auth",
+  "wire up the database", "add payments", "connect Stripe", "add Google
+  Calendar", "send emails", "backend for my clone".
 ---
 
 # replica-backend
@@ -20,80 +23,87 @@ RECIBO: RECIBO: replica-backend | ✅<passo> · ⏭️<passo>(motivo) | itens do
 
 Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
 
-Reads `replica/architecture.md`. Writes migrations and server code, and keeps
-`replica/backend.md` (checklist below) up to date.
+Lê `replica/architecture.md`. Escreve migrations e código de servidor, e
+mantém `replica/backend.md` (checklist abaixo) em dia.
 
-## The rules
+## As regras
 
-- **Official, public APIs only, with the user's own keys.** Never call the
-  original app's private endpoints, never reuse its OAuth client, never proxy
-  through it.
-- **The user creates accounts and keys.** Claude never signs up for services,
-  never types a password, card or live key. The user creates the Stripe,
-  Supabase, Resend or Google Cloud project and puts keys in `.env.local`.
-  Claude writes `.env.example` with every variable name and no values.
-- **Test mode first.** Stripe test keys and test cards until replica-deploy.
+- **Só APIs oficiais e públicas, com as chaves do próprio usuário.** Nunca
+  chame os endpoints privados do app original, nunca reuse o cliente OAuth
+  dele, nunca faça proxy por ele.
+- **O usuário cria as contas e as chaves.** O Claude nunca se cadastra em
+  serviços, nunca digita senha, cartão ou chave live. O usuário cria o projeto
+  no Stripe, Supabase, Resend ou Google Cloud e coloca as chaves em
+  `.env.local`. O Claude escreve o `.env.example` com todos os nomes de
+  variável e nenhum valor.
+- **Modo de teste primeiro.** Chaves e cartões de teste do Stripe até o
+  replica-deploy.
 
 ## Auth
 
-- Email sign up with verification, password reset, magic link if the original
-  has it. OAuth (Google, Apple) with the user's own developer apps.
-- Sessions: http-only secure cookies. Sign out everywhere.
-- Roles and teams if the recon map has them: owner, admin, member, with one
-  function that answers "can this user do this to this record".
-- Account deletion that actually deletes. Apple requires it for apps with
-  sign up.
+- Cadastro por e-mail com verificação, redefinição de senha, magic link se o
+  original tiver. OAuth (Google, Apple) com os apps de desenvolvedor do
+  próprio usuário.
+- Sessões: cookies http-only e secure. Sair de todos os dispositivos.
+- Papéis e times se o mapa do recon tiver: owner, admin, member, com uma única
+  função que responde "esse usuário pode fazer isso com esse registro".
+- Exclusão de conta que realmente exclui. A Apple exige isso para apps com
+  cadastro.
 
-## Database
+## Banco de dados
 
-- Migrations from `architecture.md`, checked in, run by a script.
-- Access rules on every table: row level security policies on Supabase, or
-  the authorisation function called in every query. Test it: a second user
-  must get nothing back.
-- Seed script with realistic fake data (no real people).
-- Backups on (the host's daily backups count, check they are enabled).
+- Migrations a partir do `architecture.md`, versionadas e executadas por um
+  script.
+- Regras de acesso em toda tabela: políticas de row level security no
+  Supabase, ou a função de autorização chamada em toda query. Teste: um
+  segundo usuário não pode receber nada de volta.
+- Script de seed com dados falsos realistas (sem pessoas reais).
+- Backups ligados (os backups diários do host contam, confira se estão
+  habilitados).
 
-## Payments
+## Pagamentos
 
-- Stripe Checkout for sign up to a plan, the Customer Portal for changes and
-  cancelling. Do not build card forms.
-- Webhooks: verify the signature, store the event id, make every handler
-  idempotent (Stripe retries). Handle `checkout.session.completed`,
+- Stripe Checkout para assinar um plano, o Customer Portal para mudanças e
+  cancelamento. Não construa formulários de cartão.
+- Webhooks: verifique a assinatura, guarde o id do evento, torne todo handler
+  idempotente (o Stripe reenvia). Trate `checkout.session.completed`,
   `customer.subscription.updated`, `customer.subscription.deleted`,
   `invoice.payment_failed`.
-- Subscription status lives in your database, updated by webhooks, read by
-  your app. Never trust the client.
-- Cancelling is one click. Hard-to-cancel billing is a top complaint about
-  most apps, and in many places it is illegal.
+- O status da assinatura vive no seu banco, atualizado por webhooks e lido
+  pelo seu app. Nunca confie no client.
+- Cancelar é um clique. Cobrança difícil de cancelar é uma das maiores
+  reclamações da maioria dos apps e, em muitos lugares, é ilegal.
 
-## Email and jobs
+## E-mail e jobs
 
-- Transactional email through Resend or Postmark from your own domain.
-  Templates written fresh.
-- Jobs for anything time-based (reminders, digests, sync, cleanup) with
-  retries and a dead-letter log. Times in UTC, shown in the user's zone.
+- E-mail transacional por Resend ou Postmark, a partir do seu próprio domínio.
+  Templates escritos do zero.
+- Jobs para tudo que depende de tempo (lembretes, digests, sync, limpeza), com
+  retries e um log de dead-letter. Horários em UTC, exibidos no fuso do
+  usuário.
 
-## Integrations
+## Integrações
 
-For each integration in the feature matrix: the official API, the OAuth
-scopes needed (fewest possible), the provider's review process, rate limits.
-Google scopes like Calendar need Google's OAuth verification before public
-launch, which takes weeks. Start it early and write that in `backend.md`.
+Para cada integração da matriz de features: a API oficial, os escopos OAuth
+necessários (o mínimo possível), o processo de revisão do provedor, os limites
+de taxa. Escopos do Google como o Calendar precisam da verificação OAuth do
+Google antes do lançamento público, o que leva semanas. Comece cedo e
+registre isso no `backend.md`.
 
-## Security checklist
+## Checklist de segurança
 
-- [ ] secrets only in env vars, `.env*` in `.gitignore`, nothing in client bundles
-- [ ] input validated on the server (zod or similar) on every route
-- [ ] authorisation checked on every read and write, tested with a second user
-- [ ] rate limits on auth, sign up, and anything that sends email or SMS
-- [ ] webhooks verify signatures
-- [ ] uploads: size and type limits, served from a separate domain or bucket
-- [ ] no user data in URLs or logs
-- [ ] dependencies audited (`npm audit`)
-- [ ] privacy policy lists every processor (Stripe, Resend, host, analytics)
+- [ ] segredos só em variáveis de ambiente, `.env*` no `.gitignore`, nada nos bundles do client
+- [ ] entrada validada no servidor (zod ou similar) em toda rota
+- [ ] autorização checada em toda leitura e escrita, testada com um segundo usuário
+- [ ] rate limit em auth, cadastro e em tudo que envia e-mail ou SMS
+- [ ] webhooks verificam assinaturas
+- [ ] uploads: limites de tamanho e tipo, servidos de um domínio ou bucket separado
+- [ ] nenhum dado de usuário em URLs ou logs
+- [ ] dependências auditadas (`npm audit`)
+- [ ] política de privacidade lista todo processador (Stripe, Resend, host, analytics)
 
-## Output
+## Saída
 
-Working auth, database, payments in test mode, email and the integrations,
-`.env.example`, `replica/backend.md` with the checklist ticked, feature
-matrix rows updated. Next: `/replica-test`.
+Auth, banco, pagamentos em modo de teste, e-mail e integrações funcionando,
+`.env.example`, `replica/backend.md` com o checklist marcado, linhas da matriz
+de features atualizadas. Próximo: `/replica-test`.

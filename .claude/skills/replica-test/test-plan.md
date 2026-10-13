@@ -1,10 +1,10 @@
-# Test plan: {{your app}}
+# Plano de testes: {{seu app}}
 
-Build: {{commit}}  Date: {{YYYY-MM-DD}}  Env: local, seed data
+Build: {{commit}}  Data: {{AAAA-MM-DD}}  Ambiente: local, dados de seed
 
-| case | flow | type | steps | expected | auto | result |
+| caso | fluxo | tipo | passos | esperado | auto | resultado |
 | --- | --- | --- | --- | --- | --- | --- |
-| F01-H1 | guest books a meeting | happy | open /u/demo/30min, pick tomorrow 10:00, fill form, submit | confirmation screen, booking on host dashboard, email to both | e2e | |
-| F01-E1 | | edge: slot taken while filling form | | clear message, pick another slot, no double booking | e2e | |
-| F01-E2 | | edge: guest in another time zone | | times shown in guest zone, stored in UTC | e2e | |
-| F01-N1 | | negative: card declined | | error shown, no booking created | manual | |
+| F01-H1 | visitante agenda uma reunião | feliz | abrir /u/demo/30min, escolher amanhã 10:00, preencher o formulário, enviar | tela de confirmação, agendamento no dashboard do anfitrião, e-mail para os dois | e2e | |
+| F01-E1 | | borda: horário ocupado enquanto preenche o formulário | | mensagem clara, escolher outro horário, sem agendamento duplicado | e2e | |
+| F01-E2 | | borda: visitante em outro fuso horário | | horários mostrados no fuso do visitante, salvos em UTC | e2e | |
+| F01-N1 | | negativo: cartão recusado | | erro exibido, nenhum agendamento criado | manual | |

@@ -1,13 +1,15 @@
 ---
 name: replica-test
 description: >-
-  Clicks through every flow of an app clone and tests it for bugs: a test plan
-  generated from the recon flows with happy paths and edge cases, Playwright
-  end-to-end tests where possible, a browser click-through where not, and bug
-  reports in a fixed format with severity, steps and evidence. Use when the
-  user says "test my clone", "find bugs", "QA this", "click through
-  everything", "write e2e tests", "does it work", or after /replica-build or
-  /replica-backend.
+  Clica por todos os fluxos de um clone de app e testa à procura de bugs:
+  plano de testes gerado a partir dos fluxos do recon com caminhos felizes e
+  casos de borda, testes end-to-end com Playwright onde der, passada manual no
+  navegador onde não der, e relatórios de bug em formato fixo com severidade,
+  passos e evidência. Use quando o usuário disser "testa meu clone", "acha os
+  bugs", "faz um QA disso", "clica em tudo", "escreve os testes e2e", "isso
+  funciona?", ou depois do /replica-build ou /replica-backend. Gatilhos em
+  inglês: "test my clone", "find bugs", "QA this", "click through everything",
+  "write e2e tests", "does it work".
 ---
 
 # replica-test
@@ -21,76 +23,79 @@ RECIBO: RECIBO: replica-test | ✅<passo> · ⏭️<passo>(motivo) | testes pass
 
 Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
 
-Reads the flows in `replica/recon.md`. Writes `replica/test-plan.md`,
-`replica/bugs.md`, and end-to-end tests in the project (`e2e/`). Templates in
-this folder: `test-plan.md`, `bug-report.md`, `e2e.example.spec.ts`.
+Lê os fluxos em `replica/recon.md`. Escreve `replica/test-plan.md`,
+`replica/bugs.md` e testes end-to-end no projeto (`e2e/`). Templates nesta
+pasta: `test-plan.md`, `bug-report.md`, `e2e.example.spec.ts`.
 
-## The rule
+## A regra
 
-**Test your clone, not the original.** Never load test, fuzz, script or
-hammer the original app's servers. Using the original by hand, as a normal
-user, to see how it behaves is fine.
+**Teste o seu clone, não o original.** Nunca faça load test, fuzz, script ou
+martelada nos servidores do app original. Usar o original à mão, como um
+usuário normal, para ver como ele se comporta, tudo bem.
 
-## Step 1: the plan
+## Passo 1: o plano
 
-For every flow F01, F02... in the recon map, write:
+Para cada fluxo F01, F02... do mapa do recon, escreva:
 
-- **Happy path**: the steps, and what the user should see at the end.
-- **Edge cases** that apply. Go down this list for every flow:
-  empty input, very long input, emoji and accents, two tabs at once,
-  double click on submit, back button mid-flow, refresh mid-flow, slow
-  network, offline, expired session, second user's data (must be invisible),
-  time zones and daylight saving, mobile width, keyboard only, screen reader
-  labels.
-- **Negative cases**: wrong password, card declined (Stripe test card
-  `4000 0000 0000 0002`), permission denied, deleted record.
+- **Caminho feliz**: os passos e o que o usuário deve ver no final.
+- **Casos de borda** que se aplicam. Passe por esta lista em todo fluxo:
+  entrada vazia, entrada muito longa, emoji e acentos, duas abas ao mesmo
+  tempo, clique duplo no submit, botão voltar no meio do fluxo, refresh no
+  meio do fluxo, rede lenta, offline, sessão expirada, dados de um segundo
+  usuário (devem ser invisíveis), fusos horários e horário de verão, largura
+  mobile, só teclado, labels para leitor de tela.
+- **Casos negativos**: senha errada, cartão recusado (cartão de teste do
+  Stripe `4000 0000 0000 0002`), permissão negada, registro apagado.
 
-Number every case: F01-H1, F01-E3, F01-N2.
+Numere todo caso: F01-H1, F01-E3, F01-N2.
 
-## Step 2: automate what you can
+## Passo 2: automatize o que der
 
-Playwright, one spec per flow, against the local dev server with seed data.
-Use roles and labels for selectors (`getByRole('button', { name: 'Book' })`),
-never CSS classes. See `e2e.example.spec.ts`.
+Playwright, um spec por fluxo, contra o servidor de desenvolvimento local com
+dados de seed. Use roles e labels como seletores
+(`getByRole('button', { name: 'Book' })`), nunca classes CSS. Veja
+`e2e.example.spec.ts`.
 
 ```bash
 npm i -D @playwright/test && npx playwright install chromium
 npx playwright test
 ```
 
-Add to every spec: fail on console errors, fail on any 5xx response, and an
-axe accessibility scan (`@axe-core/playwright`) on each screen.
+Acrescente a todo spec: falhar em erros de console, falhar em qualquer
+resposta 5xx e um scan de acessibilidade com axe (`@axe-core/playwright`) em
+cada tela.
 
-## Step 3: click through the rest
+## Passo 3: clique pelo resto
 
-What cannot be automated (emails arriving, OAuth with real providers,
-payments end to end, visual glitches) gets a manual pass. If a browser tool is
-available, drive the local clone with it and screenshot each step. Otherwise
-give the user the checklist and wait for answers.
+O que não dá para automatizar (e-mails chegando, OAuth com provedores reais,
+pagamentos de ponta a ponta, glitches visuais) recebe uma passada manual. Se
+houver uma ferramenta de navegador, dirija o clone local com ela e tire
+screenshot de cada passo. Senão, entregue o checklist ao usuário e espere as
+respostas.
 
-## Step 4: report bugs
+## Passo 4: reporte os bugs
 
-Every bug goes in `replica/bugs.md` in the `bug-report.md` format: an ID, a
-severity, exact steps, expected, actual, evidence. Severity:
+Todo bug vai em `replica/bugs.md` no formato do `bug-report.md`: um ID, uma
+severidade, passos exatos, esperado, obtido, evidência. Severidade:
 
-| | means |
+| | significa |
 | --- | --- |
-| S1 | data loss, security hole, payments wrong, core flow blocked |
-| S2 | a feature broken, no workaround |
-| S3 | broken with a workaround, or visibly wrong |
-| S4 | cosmetic |
+| S1 | perda de dados, falha de segurança, pagamento errado, fluxo principal bloqueado |
+| S2 | uma feature quebrada, sem contorno |
+| S3 | quebrada mas com contorno, ou visivelmente errada |
+| S4 | cosmético |
 
-Only report what you reproduced. "Might be an issue" goes in a separate
-"to check" list.
+Reporte só o que você reproduziu. "Pode ser um problema" vai numa lista
+separada de "a verificar".
 
-## Step 5: fix loop
+## Passo 5: loop de correção
 
-Fix S1 and S2 first. For every fix: write the failing test first, fix, watch
-it pass, keep the test. Re-run the whole suite after each batch. Update
-`bugs.md` with the commit that fixed each one.
+Corrija S1 e S2 primeiro. Em cada correção: escreva o teste que falha
+primeiro, corrija, veja o teste passar, mantenha o teste. Rode a suíte inteira
+depois de cada lote. Atualize o `bugs.md` com o commit que corrigiu cada um.
 
-## Output
+## Saída
 
-`test-plan.md`, the specs, `bugs.md`, and a summary: cases run, passed,
-failed, bugs by severity, fixed so far. Ship nothing with an open S1. Next:
-`/replica-diff`.
+`test-plan.md`, os specs, `bugs.md` e um resumo: casos executados, passaram,
+falharam, bugs por severidade, corrigidos até agora. Não publique nada com
+S1 aberto. Próximo: `/replica-diff`.

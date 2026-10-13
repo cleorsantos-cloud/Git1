@@ -1,58 +1,58 @@
-# Recon map: {{app}} ({{platform}})
+# Mapa de reconhecimento: {{app}} ({{plataforma}})
 
-Scope: {{the slice being cloned}}
-For: {{who the clone is for}}
-Date: {{YYYY-MM-DD}}
+Escopo: {{a fatia que está sendo clonada}}
+Para: {{para quem é o clone}}
+Data: {{AAAA-MM-DD}}
 
-## Sources
+## Fontes
 
-| # | source | URL | notes |
+| # | fonte | URL | notas |
 | --- | --- | --- | --- |
-| 1 | help center | | |
+| 1 | central de ajuda | | |
 
-## Core loop
+## Loop central
 
-{{one sentence: the thing users pay for}}
+{{uma frase: aquilo pelo que os usuários pagam}}
 
-## Screens
+## Telas
 
-| ID | screen | route / how to reach | purpose | key components | states seen |
+| ID | tela | rota / como chegar | finalidade | componentes-chave | estados vistos |
 | --- | --- | --- | --- | --- | --- |
-| S01 | | | | | empty, filled, error |
+| S01 | | | | | vazio, preenchido, erro |
 
-## Flows
+## Fluxos
 
 ```
-F01 {{goal}}
+F01 {{objetivo}}
     S01 -> S02 -> S03
-    happy path clicks: {{n}}
-    edge: {{cases}}
+    cliques do caminho feliz: {{n}}
+    edge: {{casos}}
 ```
 
-## Components
+## Componentes
 
-| component | variants | states | used on |
+| componente | variantes | estados | usado em |
 | --- | --- | --- | --- |
-| Button | primary, secondary, ghost, danger | default, hover, focus, disabled, loading | all |
+| Button | primary, secondary, ghost, danger | default, hover, focus, disabled, loading | todas |
 
-## Inferred data model
+## Modelo de dados inferido
 
 ```
-{{Entity}}  {{fields}}
-            evidence: {{screen IDs, help articles}}
-            confidence: high | medium | guess
+{{Entidade}}  {{campos}}
+              evidence: {{IDs de tela, artigos de ajuda}}
+              confidence: high | medium | guess
 ```
 
-Relationships: {{User 1-n EventType, EventType 1-n Booking, ...}}
+Relacionamentos: {{User 1-n EventType, EventType 1-n Booking, ...}}
 
-## Feature matrix
+## Matriz de features
 
-See `features.csv`. Must: {{n}}, should: {{n}}, could: {{n}}, skip: {{n}}.
+Veja `features.csv`. Must (deve): {{n}}, should (deveria): {{n}}, could (poderia): {{n}}, skip (pular): {{n}}.
 
-## Out of scope (cannot or should not be cloned)
+## Fora do escopo (não dá ou não deve ser clonado)
 
-- {{licensed content, the network, partner deals, ...}}
+- {{conteúdo licenciado, a rede, acordos com parceiros, ...}}
 
-## Size
+## Tamanho
 
-Screens {{n}}, flows {{n}}, entities {{n}}. Hard parts: {{list}}. Size: {{S|M|L|XL}}.
+Telas {{n}}, fluxos {{n}}, entidades {{n}}. Partes difíceis: {{lista}}. Tamanho: {{S|M|L|XL}}.

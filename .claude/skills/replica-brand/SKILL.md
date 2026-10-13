@@ -1,13 +1,16 @@
 ---
 name: replica-brand
 description: >-
-  Names and rebrands an app clone so it is the user's own: name candidates
-  with the trademark, domain, store and handle checks to run, a new palette
-  checked for contrast, a logo brief, a voice guide, and a sweep tool that
-  finds anything of the original left in the codebase. Use when the user says
-  "name my app", "rebrand the clone", "make it mine", "pick a name and
-  colours", "logo brief", "brand voice", "check for leftovers", or after
-  /replica-entrepreneur. Always runs before /replica-launch.
+  Batiza e faz o rebrand de um clone de app para que seja do próprio usuário:
+  candidatos de nome com as checagens de marca, domínio, loja e handle a
+  rodar, uma paleta nova com contraste verificado, um brief de logo, um guia
+  de voz e uma ferramenta de varredura que acha qualquer sobra do original no
+  código. Use quando o usuário disser "dá um nome pro meu app", "faz o rebrand
+  do clone", "faz isso virar meu", "escolhe nome e cores", "brief de logo",
+  "voz da marca", "confere se sobrou algo do original", ou depois do
+  /replica-entrepreneur. Roda sempre antes do /replica-launch. Gatilhos em
+  inglês: "name my app", "rebrand the clone", "make it mine", "pick a name and
+  colours", "logo brief", "brand voice", "check for leftovers".
 ---
 
 # replica-brand
@@ -21,99 +24,104 @@ RECIBO: RECIBO: replica-brand | ✅<passo> · ⏭️<passo>(motivo) | nome escol
 
 Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
 
-Nothing launches under the original's identity. This skill is the line
-between "a clone" and "your app".
+Nada é lançado sob a identidade do original. Esta skill é a linha entre "um
+clone" e "o seu app".
 
-Tool in this folder:
+Ferramenta nesta pasta:
 
 ```bash
 python3 sweep.py . --avoid "Original Name,Its Company" --domains original.com --colors "#006bff"
 python3 sweep.py . --config replica/brand.json        # same, from the brand file
 ```
 
-Writes `replica/brand.md` and `replica/brand.json` (`avoid`, `domains`,
-`colors`, used by `sweep.py`, `listing.py` and replica-deploy).
+Grava `replica/brand.md` e `replica/brand.json` (`avoid`, `domains`,
+`colors`, usados pelo `sweep.py`, pelo `listing.py` e pelo replica-deploy).
 
-## Step 1: the name
+## Passo 1: o nome
 
-Read the angle from `replica/fixes.md`. Generate 20 candidates across styles:
-descriptive (Booklink), compound (Slotwise), invented (Calvo), metaphor
-(Harbor), verb (Book). Then cut to 5 with these filters:
+Leia o ângulo em `replica/fixes.md`. Gere 20 candidatos em estilos variados:
+descritivo (Booklink), composto (Slotwise), inventado (Calvo), metáfora
+(Harbor), verbo (Book). Depois corte para 5 com estes filtros:
 
-- **Not confusingly similar to the original** in sound, look or meaning, and
-  not to any other app in the same category. That is the test trademark
-  offices use, so it is the test here. No puns on their name, no "-ly" twin.
-- Short, spellable after hearing it once, no awkward meaning in big languages.
-- Says something about the angle, or at least does not fight it.
+- **Não pode ser confundível com o original** em som, aparência ou
+  significado, nem com qualquer outro app da mesma categoria. Esse é o teste
+  que os escritórios de marcas usam, então é o teste daqui. Nada de trocadilho
+  com o nome deles, nada de gêmeo com "-ly".
+- Curto, soletrável depois de ouvir uma vez, sem significado estranho nos
+  idiomas grandes.
+- Diz algo sobre o ângulo, ou pelo menos não briga com ele.
 
-## Step 2: the checks, run, not assumed
+## Passo 2: as checagens, executadas, não presumidas
 
-For each of the 5, a row per check. Mark each **to run**, or the result with
-the date it was run. Never write "available" for a check nobody ran.
+Para cada um dos 5, uma linha por checagem. Marque cada uma como **a rodar**,
+ou com o resultado e a data em que foi rodada. Nunca escreva "disponível"
+para uma checagem que ninguém rodou.
 
-| check | where |
+| checagem | onde |
 | --- | --- |
-| US trademark | tmsearch.uspto.gov, the app's class (usually 9 and 42) |
-| EU trademark | euipo.europa.eu eSearch, or TMview for many offices |
-| Canada | ised-isde.canada.ca trademarks database |
+| marca nos EUA | tmsearch.uspto.gov, a classe do app (geralmente 9 e 42) |
+| marca na UE | euipo.europa.eu eSearch, ou TMview para vários escritórios |
+| Canadá | base de marcas de ised-isde.canada.ca |
 | global | WIPO Global Brand Database |
-| domain | `whois name.com`, or the registrar's search |
-| App Store and Play | search the exact name |
+| domínio | `whois name.com`, ou a busca do registrador |
+| App Store e Play | busque o nome exato |
 | handles | X, Instagram, TikTok, GitHub |
-| the web | search "name + category" |
+| a web | busque "nome + categoria" |
 
-These are screening checks, not legal clearance. Before spending money on
-the name, a trademark lawyer should do a proper search.
+São checagens de triagem, não liberação jurídica. Antes de gastar dinheiro com
+o nome, um advogado de marcas deve fazer uma busca de verdade.
 
-## Step 3: palette
+## Passo 3: paleta
 
-A new palette, written into the same token roles replica-design set up.
-Pick a primary brand hue from a different family than the original's (if
-theirs is blue, yours is not a nearby blue). Then:
+Uma paleta nova, escrita nos mesmos papéis de token que o replica-design
+montou. Escolha um matiz de marca primário de uma família diferente da do
+original (se o dele é azul, o seu não é um azul parecido). Depois:
 
 ```bash
 python3 ../replica-design/contrast.py replica/design/tokens.json
 ```
 
-Zero AA failures. Add the original's brand colours to `brand.json` so the
-sweep catches any that survive.
+Zero falhas de AA. Adicione as cores de marca do original ao `brand.json`
+para que a varredura pegue qualquer uma que sobreviva.
 
-## Step 4: logo brief
+## Passo 4: brief de logo
 
-Not a logo, a brief for whoever makes it (the user, a designer, an image
-model):
+Não é um logo, é um brief para quem for fazê-lo (o usuário, um designer, um
+modelo de imagem):
 
-- the idea in one line, tied to the name and angle
-- mark type: wordmark, symbol plus wordmark, or monogram
-- must work at 16px (favicon) and as a 1024px app icon
-- deliverables: SVG, app icon 1024x1024 with no transparency for iOS,
-  favicon set, social image 1200x630
-- **must not resemble the original's mark**: no shared shape, colour pair or
-  letterform trick. Put the original's logo next to the drafts and check.
+- a ideia em uma linha, ligada ao nome e ao ângulo
+- tipo de marca: wordmark, símbolo mais wordmark, ou monograma
+- tem que funcionar em 16px (favicon) e como ícone de app em 1024px
+- entregáveis: SVG, ícone de app 1024x1024 sem transparência para iOS, kit de
+  favicon, imagem social 1200x630
+- **não pode lembrar a marca do original**: nada de forma, par de cores ou
+  truque de letra em comum. Ponha o logo do original ao lado dos rascunhos e
+  confira.
 
-## Step 5: voice
+## Passo 5: voz
 
-Three words for how it sounds, with what each does not mean ("direct, not
-blunt"). Five do and don't pairs. Then rewrite the 10 most-seen strings in
-the clone (sign up, empty states, the main button, the confirmation, the
-error) in that voice. All fresh, none echoing the original's phrasing.
+Três palavras para como ela soa, com o que cada uma não significa ("direta,
+não ríspida"). Cinco pares de faça e não faça. Depois reescreva nessa voz as
+10 strings mais vistas do clone (cadastro, estados vazios, o botão principal,
+a confirmação, o erro). Tudo novo, nada ecoando a formulação do original.
 
-## Step 6: the sweep
+## Passo 6: a varredura
 
-Replace every placeholder name, colour and string. Then:
+Troque todo nome, cor e string provisórios. Depois:
 
 ```bash
 python3 sweep.py . --config replica/brand.json
 ```
 
-It searches file contents and file names for the original's name (also inside
-identifiers like `CalendlyEmbed`), domains and colours, skipping
-`node_modules`, build output and the `replica/` planning folder. Exit 1 means
-something is left. Fix until it says clean. Also check by eye: the favicon,
-the page titles, the email templates, the OG image, the app icon.
+Ela procura no conteúdo e nos nomes dos arquivos o nome do original (inclusive
+dentro de identificadores como `CalendlyEmbed`), domínios e cores, ignorando
+`node_modules`, saída de build e a pasta de planejamento `replica/`. Saída 1
+significa que sobrou algo. Corrija até ela dizer que está limpo. Confira
+também a olho: o favicon, os títulos das páginas, os templates de e-mail, a
+imagem OG, o ícone do app.
 
-## Output
+## Saída
 
-`replica/brand.md` (name with checks, palette, logo brief, voice),
-`replica/brand.json`, updated tokens, rewritten strings, and a clean sweep.
-Next: `/replica-launch`.
+`replica/brand.md` (nome com as checagens, paleta, brief de logo, voz),
+`replica/brand.json`, tokens atualizados, strings reescritas e uma varredura
+limpa. Próximo: `/replica-launch`.

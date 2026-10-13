@@ -1,13 +1,16 @@
 ---
 name: replica-deploy
 description: >-
-  Ships an app clone live on the user's own domain: a preflight gate (tests
-  green, parity must-haves done, rebrand sweep clean, listing linted, legal
-  pages up), production database and env vars, the host, DNS records for the
-  domain and for email, Stripe live mode, OAuth redirects, monitoring, and
-  mobile builds to TestFlight and Play. Use when the user says "deploy it",
-  "ship it", "put it live", "connect my domain", "go to production",
-  "publish the app", or after /replica-launch.
+  Coloca no ar um clone de app no domínio do próprio usuário: portão de
+  checagem pré-voo (preflight) com testes verdes, itens essenciais de paridade
+  prontos, varredura de rebrand limpa, listing validado e páginas legais no ar;
+  depois banco e variáveis de produção, host, registros DNS do domínio e do
+  e-mail, Stripe em modo live, redirects de OAuth, monitoramento e builds
+  mobile para TestFlight e Play. Use quando o usuário disser "coloca no ar",
+  "faz o deploy", "publica o app", "conecta meu domínio", "vai pra produção",
+  "sobe pra produção", ou depois de /replica-launch. Triggers in English:
+  "deploy it", "ship it", "put it live", "connect my domain", "go to
+  production", "publish the app".
 ---
 
 # replica-deploy
@@ -21,21 +24,23 @@ RECIBO: RECIBO: replica-deploy | ✅<passo> · ⏭️<passo>(motivo) | itens do 
 
 Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
 
-Reads everything in `replica/`. Writes `replica/deploy.md` (the checklist in
-`preflight.md` in this folder, filled in).
+Lê tudo em `replica/`. Grava `replica/deploy.md` (o checklist do
+`preflight.md` desta pasta, preenchido).
 
-## The rules
+## As regras
 
-- **Nothing goes live without the user's go.** Show the preflight results and
-  ask.
-- **The user buys and signs in.** Claude never buys a domain, enters a card,
-  types a password or pastes a live key. Claude writes the exact DNS records,
-  env var names and commands; the user does the account steps.
-- **Not until it is rebranded.** The sweep must be clean. No exceptions.
+- **Nada vai ao ar sem o ok do usuário.** Mostre os resultados do preflight e
+  pergunte.
+- **O usuário compra e faz login.** O Claude nunca compra domínio, digita
+  cartão, digita senha nem cola chave live. O Claude escreve os registros DNS,
+  os nomes das variáveis de ambiente e os comandos exatos; o usuário faz os
+  passos nas contas.
+- **Só depois do rebrand.** A varredura (sweep) tem que estar limpa. Sem
+  exceções.
 
-## Step 1: preflight
+## Passo 1: preflight
 
-Run every check and paste the results into `deploy.md`:
+Rode todas as checagens e cole os resultados no `deploy.md`:
 
 ```bash
 npx playwright test                                                  # replica-test
@@ -45,69 +50,71 @@ python3 ../replica-launch/listing.py replica/launch/listing.json     # if shippi
 npm run build                                                        # production build passes
 ```
 
-(Paths are relative to wherever the pack is installed. Under
-`~/.claude/skills/` that is `~/.claude/skills/replica-diff/parity.py` and so
-on.)
+(Os caminhos são relativos ao lugar onde o pack foi instalado. Em
+`~/.claude/skills/` ficam `~/.claude/skills/replica-diff/parity.py` e assim
+por diante.)
 
-Plus by hand: no open S1 or S2 bugs, privacy policy and terms pages live
-(listing every processor), cookie banner if you use non-essential cookies in
-the EU or UK, account deletion works, the favicon, titles and OG image are
-yours.
+Mais, à mão: nenhum bug S1 ou S2 aberto, páginas de política de privacidade e
+termos no ar (listando todos os processadores), banner de cookies se você usa
+cookies não essenciais na UE ou no Reino Unido, exclusão de conta funcionando,
+favicon, títulos e imagem OG são seus.
 
-Any failure stops the deploy. Say which and why.
+Qualquer falha trava o deploy. Diga qual e por quê.
 
-## Step 2: production services
+## Passo 2: serviços de produção
 
-- A **separate production project** for the database (never the dev one),
-  backups on, migrations run by the deploy, not by hand.
-- Env vars set in the host for production, matching `.env.example`. Live
-  keys only here.
-- **Stripe**: switch to live mode, recreate products and prices, add the
-  production webhook endpoint and its signing secret, test one real
-  purchase and refund it.
-- **OAuth**: add the production domain to every provider's redirect URIs and
-  authorised origins. Google scopes that need verification must be approved,
-  or only test users can sign in.
-- **Email**: the sending domain verified with the provider.
+- Um **projeto de produção separado** para o banco de dados (nunca o de
+  desenvolvimento), backups ligados, migrações rodadas pelo deploy, não à mão.
+- Variáveis de ambiente configuradas no host para produção, batendo com o
+  `.env.example`. Chaves live só aqui.
+- **Stripe**: passe para o modo live, recrie produtos e preços, adicione o
+  endpoint de webhook de produção e o segredo de assinatura dele, faça uma
+  compra real de teste e reembolse.
+- **OAuth**: adicione o domínio de produção aos redirect URIs e às origens
+  autorizadas de cada provedor. Escopos do Google que exigem verificação
+  precisam estar aprovados, senão só usuários de teste conseguem entrar.
+- **E-mail**: o domínio de envio verificado no provedor.
 
-## Step 3: host and domain
+## Passo 3: host e domínio
 
-Default: Vercel for Next.js (Netlify, Cloudflare Pages, Fly or Render
-otherwise). Connect the repo so `main` deploys and pull requests get preview
-URLs.
+Padrão: Vercel para Next.js (Netlify, Cloudflare Pages, Fly ou Render nos
+outros casos). Conecte o repositório para que a `main` faça deploy e os pull
+requests ganhem URLs de preview.
 
-The domain, after the user buys it at any registrar:
+O domínio, depois que o usuário o comprar em qualquer registrador:
 
-| record | name | value |
+| registro | nome | valor |
 | --- | --- | --- |
-| A | @ | the host's apex IP (Vercel: shown in the domain settings) |
-| CNAME | www | the host's target (Vercel: `cname.vercel-dns.com`) |
-| TXT | @ or a subdomain | the host's verification value, if asked |
+| A | @ | o IP do apex do host (Vercel: aparece nas configurações do domínio) |
+| CNAME | www | o destino do host (Vercel: `cname.vercel-dns.com`) |
+| TXT | @ ou um subdomínio | o valor de verificação do host, se pedido |
 
-Email DNS from the email provider: SPF (TXT), DKIM (CNAME or TXT), and a
-DMARC record starting at `v=DMARC1; p=none; rua=mailto:you@yourdomain` then
-tightened to `quarantine` once reports are clean. Without these, your
-confirmation emails go to spam.
+DNS de e-mail vindo do provedor de e-mail: SPF (TXT), DKIM (CNAME ou TXT) e um
+registro DMARC começando em `v=DMARC1; p=none; rua=mailto:you@yourdomain` e
+depois apertado para `quarantine` quando os relatórios estiverem limpos. Sem
+isso, seus e-mails de confirmação caem no spam.
 
-Pick one canonical host (apex or www) and redirect the other. HTTPS is
-automatic on the hosts above; check it.
+Escolha um host canônico (apex ou www) e redirecione o outro. O HTTPS é
+automático nos hosts acima; confira.
 
-## Step 4: watch it
+## Passo 4: monitoramento
 
-Error tracking (Sentry or the host's), uptime checks on the home page and the
-core flow's API, logs kept, analytics (a privacy-friendly one avoids the
-cookie banner), and an alert to the user's email or phone. Then do the core
-flow on the live site yourself, and ask the user to do it on their phone.
+Rastreamento de erros (Sentry ou o do host), checagens de uptime na home e na
+API do fluxo central, logs guardados, analytics (um que respeite a
+privacidade dispensa o banner de cookies) e um alerta para o e-mail ou o
+celular do usuário. Depois faça você mesmo o fluxo central no site no ar e
+peça ao usuário que faça no celular dele.
 
-## Step 5: mobile, if there is an app
+## Passo 5: mobile, se houver app
 
-Expo: `eas build` then `eas submit` to TestFlight and Play internal testing.
-Native: archive in Xcode, upload to App Store Connect; Gradle bundle to Play
-Console. The user owns the developer accounts ($99 a year for Apple, $25 once
-for Google). Beta first, then review with the listing from replica-launch.
+Expo: `eas build` e depois `eas submit` para o TestFlight e para o teste
+interno do Play. Nativo: archive no Xcode e upload para o App Store Connect;
+bundle do Gradle para o Play Console. O usuário é dono das contas de
+desenvolvedor (US$ 99 por ano na Apple, US$ 25 uma única vez no Google). Beta
+primeiro, depois a revisão com o listing do replica-launch.
 
-## Output
+## Saída
 
-`replica/deploy.md` with every check and its result, the live URL, the DNS
-records set, and what to watch in the first week. The clone is now an app
-with your name on it.
+`replica/deploy.md` com cada checagem e seu resultado, a URL no ar, os
+registros DNS configurados e o que acompanhar na primeira semana. O clone agora
+é um app com o seu nome.

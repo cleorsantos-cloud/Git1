@@ -1,13 +1,16 @@
 ---
 name: replica-architect
 description: >-
-  Plans the stack, database schema and API for an app clone, from the recon
-  map replica-recon wrote. Picks boring, managed tech, turns the inferred data
-  model into real SQL with indexes and access rules, lists every route by
-  flow, and orders the build as a thin vertical slice first. Use when the user
-  says "plan the clone", "what stack should I use", "design the database",
-  "write the schema", "plan the API", "architecture for my version of X", or
-  after /replica-recon finishes.
+  Planeja a stack, o schema do banco e a API de um clone de app, a partir do
+  mapa de reconhecimento que o replica-recon escreveu. Escolhe tecnologia
+  simples e gerenciada, transforma o modelo de dados inferido em SQL de verdade
+  com índices e regras de acesso, lista cada rota por fluxo e ordena a
+  construção começando por uma fatia vertical fina. Use quando o usuário disser
+  "planeja o clone", "qual stack eu uso", "desenha o banco de dados", "escreve o
+  schema", "planeja a API", "arquitetura da minha versão do X", ou depois que o
+  /replica-recon terminar. Triggers: "plan the clone", "what stack should I
+  use", "design the database", "write the schema", "plan the API", "architecture
+  for my version of X".
 ---
 
 # replica-architect
@@ -21,50 +24,51 @@ RECIBO: RECIBO: replica-architect | ✅<passo> · ⏭️<passo>(motivo) | tabela
 
 Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
 
-Reads `replica/recon.md` and `replica/features.csv`. Writes
-`replica/architecture.md` (template: architecture.md in this folder).
+Lê `replica/recon.md` e `replica/features.csv`. Escreve
+`replica/architecture.md` (template: architecture.md nesta pasta).
 
-If there is no recon map, stop and run `/replica-recon` first. Planning a
-clone from memory of what an app does is how you miss half of it.
+Se não houver mapa de reconhecimento, pare e rode `/replica-recon` primeiro.
+Planejar um clone de memória, do que você acha que o app faz, é o jeito de
+perder metade dele.
 
-## Step 1: the stack
+## Passo 1: a stack
 
-Use what the user already knows if they have a stack. Otherwise the default,
-because every part is managed, documented and cheap at zero users:
+Use o que o usuário já conhece, se ele tiver uma stack. Do contrário, o padrão,
+porque cada peça é gerenciada, documentada e barata com zero usuários:
 
-| layer | default | swap for |
+| camada | padrão | alternativas |
 | --- | --- | --- |
-| web app | Next.js (App Router) + TypeScript | Remix, SvelteKit, Rails |
-| styling | Tailwind, tokens from replica-design | CSS modules |
+| app web | Next.js (App Router) + TypeScript | Remix, SvelteKit, Rails |
+| estilos | Tailwind, tokens do replica-design | CSS modules |
 | mobile | Expo (React Native) | SwiftUI, Kotlin |
-| database | Postgres on Supabase or Neon | PlanetScale, SQLite (Turso) |
-| ORM | Drizzle or Prisma | raw SQL |
-| auth | Supabase Auth or Auth.js | Clerk |
-| payments | Stripe Checkout + Billing | Lemon Squeezy, Paddle |
-| email | Resend or Postmark | SES |
-| jobs | Vercel Cron, Inngest or Trigger.dev | a worker on Fly |
-| files | Supabase Storage or Cloudflare R2 | S3 |
-| hosting | Vercel | Netlify, Fly, Render |
+| banco de dados | Postgres no Supabase ou Neon | PlanetScale, SQLite (Turso) |
+| ORM | Drizzle ou Prisma | SQL puro |
+| auth | Supabase Auth ou Auth.js | Clerk |
+| pagamentos | Stripe Checkout + Billing | Lemon Squeezy, Paddle |
+| e-mail | Resend ou Postmark | SES |
+| jobs | Vercel Cron, Inngest ou Trigger.dev | um worker no Fly |
+| arquivos | Supabase Storage ou Cloudflare R2 | S3 |
+| hospedagem | Vercel | Netlify, Fly, Render |
 
-Write each choice with one line of why. One database. No microservices. The
-clone does not need the original's architecture, it needs the original's
-features.
+Escreva cada escolha com uma linha de por quê. Um banco de dados. Nada de
+microsserviços. O clone não precisa da arquitetura do original, precisa das
+features do original.
 
-## Step 2: the schema
+## Passo 2: o schema
 
-Turn the inferred data model into SQL. For every table:
+Transforme o modelo de dados inferido em SQL. Para toda tabela:
 
 - `id uuid primary key default gen_random_uuid()`, `created_at`, `updated_at`
-- an owner column (`user_id` or `org_id`) on everything a user owns
-- foreign keys with an `on delete` rule decided, not defaulted
-- indexes on every foreign key and every column you filter or sort by
-- enums or check constraints for status fields
-- times as `timestamptz`, always, stored in UTC
-- money as integer cents plus a currency column
-- access rules: Postgres row level security on Supabase, or one
-  authorisation check per query in the data layer. Write which.
+- uma coluna de dono (`user_id` ou `org_id`) em tudo que pertence a um usuário
+- chaves estrangeiras com uma regra de `on delete` decidida, não a padrão
+- índices em toda chave estrangeira e em toda coluna que você filtra ou ordena
+- enums ou check constraints para campos de status
+- horários como `timestamptz`, sempre, guardados em UTC
+- dinheiro como inteiro em centavos mais uma coluna de moeda
+- regras de acesso: row level security do Postgres no Supabase, ou uma checagem
+  de autorização por consulta na camada de dados. Escreva qual das duas.
 
-Example, for a booking app:
+Exemplo, para um app de agendamento:
 
 ```sql
 create table bookings (
@@ -85,40 +89,42 @@ create table bookings (
 create index on bookings (host_id, start_at);
 ```
 
-Then the hard constraints the recon found. Two guests booking the same slot
-is a database problem (an exclusion constraint or a unique index), not a UI
-problem.
+Depois, as restrições duras que o reconhecimento encontrou. Dois convidados
+reservando o mesmo horário é um problema de banco de dados (uma exclusion
+constraint ou um índice único), não um problema de interface.
 
-## Step 3: the API
+## Passo 3: a API
 
-One table per flow from the recon map. For every route or server action:
+Uma tabela por fluxo do mapa de reconhecimento. Para cada rota ou server action:
 
-`method path | what it does | who can call it | input | output | flow`
+`método caminho | o que faz | quem pode chamar | entrada | saída | fluxo`
 
-Plus webhooks in (Stripe, calendar providers) and out, and background jobs
-(reminders, sync, cleanup) with their schedule.
+Mais os webhooks de entrada (Stripe, provedores de calendário) e de saída, e os
+jobs em segundo plano (lembretes, sincronização, limpeza) com a agenda de cada
+um.
 
-Only official, public APIs with the user's own keys. Never the original app's
-private endpoints, even if they are visible in a browser.
+Só APIs oficiais e públicas, com as chaves do próprio usuário. Nunca os
+endpoints privados do app original, mesmo que estejam visíveis no navegador.
 
-## Step 4: the parts that bite
+## Passo 4: as partes que mordem
 
-Write a line on each that applies: time zones and daylight saving, idempotency
-(webhooks arrive twice), race conditions, rate limits, file size limits,
-search, realtime, offline, email deliverability, multi-tenancy, GDPR deletion.
+Escreva uma linha sobre cada uma que se aplicar: fusos horários e horário de
+verão, idempotência (webhooks chegam duas vezes), condições de corrida, limites
+de requisições, limites de tamanho de arquivo, busca, tempo real, offline,
+entregabilidade de e-mail, multi-tenancy, exclusão de dados conforme a LGPD/GDPR.
 
-## Step 5: build order
+## Passo 5: ordem de construção
 
-1. **Vertical slice.** The core loop end to end, ugly: sign up, do the one
-   thing, see the result. Proves the stack.
-2. **Must-haves** from `features.csv`, by area.
-3. **Should-haves**, then could-haves.
-4. **The fixes** replica-entrepreneur finds, once it has run.
+1. **Fatia vertical.** O loop central de ponta a ponta, feio: cadastro, fazer a
+   única coisa, ver o resultado. Prova a stack.
+2. **Must-haves** (obrigatórias) do `features.csv`, por área.
+3. **Should-haves** (desejáveis), depois could-haves (opcionais).
+4. **As correções** que o replica-entrepreneur encontrar, depois de rodar.
 
-Each milestone lists its screens (S-IDs), tables and routes.
+Cada marco lista suas telas (IDs S), tabelas e rotas.
 
-## Output
+## Saída
 
-`replica/architecture.md`, the SQL in `replica/schema.sql` or as the first
-migration, and a summary: stack in one line, table count, route count, the
-three riskiest parts, and the next step: `/replica-design`.
+`replica/architecture.md`, o SQL em `replica/schema.sql` ou como a primeira
+migration, e um resumo: a stack em uma linha, o número de tabelas, o número de
+rotas, as três partes mais arriscadas e o próximo passo: `/replica-design`.
