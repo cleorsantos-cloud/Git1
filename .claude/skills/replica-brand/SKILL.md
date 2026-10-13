@@ -12,6 +12,15 @@ description: >-
 
 # replica-brand
 
+## Contrato de execução
+
+PASSOS: nome → checagens → paleta → brief de logo → voz → varredura
+BLOQUEIA: nenhum. Todo passo pode ser pulado ou reordenado conforme o projeto.
+PODE PULAR: qualquer passo, desde que apareça como ⏭️ no recibo com o motivo.
+RECIBO: RECIBO: replica-brand | ✅<passo> · ⏭️<passo>(motivo) | nome escolhido · sobras do original na varredura
+
+Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
+
 Nothing launches under the original's identity. This skill is the line
 between "a clone" and "your app".
 

@@ -13,6 +13,15 @@ description: >-
 
 # replica-entrepreneur
 
+## Contrato de execução
+
+PASSOS: coletar avaliações → ranquear → três listas → plano de correção → ângulo
+BLOQUEIA: nenhum. Todo passo pode ser pulado ou reordenado conforme o projeto.
+PODE PULAR: qualquer passo, desde que apareça como ⏭️ no recibo com o motivo.
+RECIBO: RECIBO: replica-entrepreneur | ✅<passo> · ⏭️<passo>(motivo) | avaliações lidas · fontes · dores ranqueadas
+
+Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
+
 A straight copy of an app has no reason to exist. This skill finds the reason:
 what the original's users hate, in their own words, and fixes it in yours.
 

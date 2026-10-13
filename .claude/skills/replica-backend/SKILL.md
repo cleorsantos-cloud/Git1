@@ -11,6 +11,15 @@ description: >-
 
 # replica-backend
 
+## Contrato de execução
+
+PASSOS: auth → banco → pagamentos → e-mail e jobs → integrações → checklist de segurança
+BLOQUEIA: nenhum. Todo passo pode ser pulado ou reordenado conforme o projeto.
+PODE PULAR: qualquer passo, desde que apareça como ⏭️ no recibo com o motivo.
+RECIBO: RECIBO: replica-backend | ✅<passo> · ⏭️<passo>(motivo) | itens do checklist de segurança ✅/total
+
+Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
+
 Reads `replica/architecture.md`. Writes migrations and server code, and keeps
 `replica/backend.md` (checklist below) up to date.
 

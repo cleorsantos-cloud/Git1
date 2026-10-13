@@ -12,6 +12,15 @@ description: >-
 
 # replica-deploy
 
+## Contrato de execução
+
+PASSOS: preflight → serviços de produção → host e domínio → monitoramento → mobile (se houver app)
+BLOQUEIA: nenhum. Todo passo pode ser pulado ou reordenado conforme o projeto.
+PODE PULAR: qualquer passo, desde que apareça como ⏭️ no recibo com o motivo.
+RECIBO: RECIBO: replica-deploy | ✅<passo> · ⏭️<passo>(motivo) | itens do preflight ✅/total · URL no ar
+
+Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
+
 Reads everything in `replica/`. Writes `replica/deploy.md` (the checklist in
 `preflight.md` in this folder, filled in).
 

@@ -12,6 +12,15 @@ description: >-
 
 # replica-recon
 
+## Contrato de execução
+
+PASSOS: escopo → fontes → telas → fluxos → componentes → modelo de dados → matriz de features → o que não dá pra clonar → tamanho
+BLOQUEIA: nenhum. Todo passo pode ser pulado ou reordenado conforme o projeto.
+PODE PULAR: qualquer passo, desde que apareça como ⏭️ no recibo com o motivo.
+RECIBO: RECIBO: replica-recon | ✅<passo> · ⏭️<passo>(motivo) | telas mapeadas · fluxos · features na matriz
+
+Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
+
 Everything else in the pack builds from what this skill writes. A bad recon
 map means a bad clone, so take the time here.
 

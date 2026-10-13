@@ -12,6 +12,15 @@ description: >-
 
 # replica-launch
 
+## Contrato de execução
+
+PASSOS: landing page → preço → listing das lojas → plano de lançamento
+BLOQUEIA: nenhum. Todo passo pode ser pulado ou reordenado conforme o projeto.
+PODE PULAR: qualquer passo, desde que apareça como ⏭️ no recibo com o motivo.
+RECIBO: RECIBO: replica-launch | ✅<passo> · ⏭️<passo>(motivo) | avisos do lint do listing · faixa de preço definida
+
+Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
+
 Reads `replica/fixes.md` (the angle and the evidence), `replica/brand.md`,
 and `replica/brand.json`. Writes `replica/launch/`: `landing.md`,
 `pricing.md`, `listing.json`, `launch-plan.md`.

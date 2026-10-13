@@ -12,6 +12,15 @@ description: >-
 
 # replica-design
 
+## Contrato de execução
+
+PASSOS: medir o original → tokens → specs de componentes → primitivos
+BLOQUEIA: nenhum. Todo passo pode ser pulado ou reordenado conforme o projeto.
+PODE PULAR: qualquer passo, desde que apareça como ⏭️ no recibo com o motivo.
+RECIBO: RECIBO: replica-design | ✅<passo> · ⏭️<passo>(motivo) | tokens definidos · componentes especificados · pares de contraste reprovados
+
+Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
+
 Reads `replica/recon.md` and the screenshots in `replica/screens/`. Writes
 `replica/design/tokens.json` (template in this folder), `tokens.css`, the
 Tailwind mapping, and `replica/design/components.md`.

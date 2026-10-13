@@ -11,6 +11,15 @@ description: >-
 
 # replica-build
 
+## Contrato de execução
+
+PASSOS: shell do app → fatia vertical → tela por tela → build log
+BLOQUEIA: nenhum. Todo passo pode ser pulado ou reordenado conforme o projeto.
+PODE PULAR: qualquer passo, desde que apareça como ⏭️ no recibo com o motivo.
+RECIBO: RECIBO: replica-build | ✅<passo> · ⏭️<passo>(motivo) | telas prontas / total · features ticadas na matriz
+
+Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
+
 Reads `replica/recon.md`, `replica/architecture.md`, `replica/design/`.
 Updates `replica/features.csv` (the `clone` column) and keeps
 `replica/build-log.md`.

@@ -12,6 +12,15 @@ description: >-
 
 # replica-test
 
+## Contrato de execução
+
+PASSOS: plano de testes → automatizar → clicar no resto → reportar bugs → loop de correção
+BLOQUEIA: nenhum. Todo passo pode ser pulado ou reordenado conforme o projeto.
+PODE PULAR: qualquer passo, desde que apareça como ⏭️ no recibo com o motivo.
+RECIBO: RECIBO: replica-test | ✅<passo> · ⏭️<passo>(motivo) | testes passando/total · bugs abertos por severidade
+
+Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
+
 Reads the flows in `replica/recon.md`. Writes `replica/test-plan.md`,
 `replica/bugs.md`, and end-to-end tests in the project (`e2e/`). Templates in
 this folder: `test-plan.md`, `bug-report.md`, `e2e.example.spec.ts`.

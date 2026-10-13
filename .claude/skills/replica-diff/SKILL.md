@@ -12,6 +12,15 @@ description: >-
 
 # replica-diff
 
+## Contrato de execução
+
+PASSOS: paridade de features → diff de layout → diff de comportamento → relatório
+BLOQUEIA: nenhum. Todo passo pode ser pulado ou reordenado conforme o projeto.
+PODE PULAR: qualquer passo, desde que apareça como ⏭️ no recibo com o motivo.
+RECIBO: RECIBO: replica-diff | ✅<passo> · ⏭️<passo>(motivo) | score de paridade % · must-haves faltando
+
+Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
+
 Two tools in this folder, both standard-library Python, no installs:
 
 ```bash

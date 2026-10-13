@@ -12,6 +12,15 @@ description: >-
 
 # replica-architect
 
+## Contrato de execução
+
+PASSOS: stack → schema → API → pontos críticos → ordem de construção
+BLOQUEIA: nenhum. Todo passo pode ser pulado ou reordenado conforme o projeto.
+PODE PULAR: qualquer passo, desde que apareça como ⏭️ no recibo com o motivo.
+RECIBO: RECIBO: replica-architect | ✅<passo> · ⏭️<passo>(motivo) | tabelas no schema · rotas na API
+
+Checklist: antes de começar, crie um todo por passo acima; marque cada um ao terminar ou ao pular.
+
 Reads `replica/recon.md` and `replica/features.csv`. Writes
 `replica/architecture.md` (template: architecture.md in this folder).
 
